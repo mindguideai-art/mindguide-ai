@@ -3,7 +3,10 @@ import { ArrowRight, CalendarPlus, ClipboardCheck, CreditCard, MessageCircle, Ph
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { getSettings } from "@/lib/settings";
-import { firstName, formatDate, formatDateTime } from "@/lib/format";
+import { firstName, formatDate, formatDateTime, naira } from "@/lib/format";
+import { PLANS } from "@/lib/constants";
+import { startSubscription } from "@/app/actions/patient";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { StatusBadge } from "@/components/ui/misc";
 import { MoodCheckin } from "@/components/mood-checkin";
 import { getEntitlements, hasFeature } from "@/lib/plans";
@@ -45,6 +48,7 @@ export default async function PatientHome() {
   const name = firstName(user.fullName) || "there";
   const subActive = sub && ["active", "cancelled"].includes(sub.status) && sub.current_period_end && sub.current_period_end > now;
   const week = [...(moods ?? [])].reverse();
+  const chosen = PLANS.find((p) => p.key === user.chosenPlan) ?? null;
 
   return (
     <div className="space-y-6">
@@ -138,9 +142,23 @@ export default async function PatientHome() {
               </>
             ) : (
               <>
-                <p className="font-display mt-2 text-xl font-bold">Choose a plan to start</p>
-                <p className="mt-1 text-sm text-muted">Plans start from ₦10,000 a month and include sessions with a verified therapist.</p>
-                <Link href="/patient/subscription" className="btn-accent mt-5 w-full">See plans</Link>
+                {chosen ? (
+                  <>
+                    <p className="font-display mt-2 text-xl font-bold">{chosen.name} plan</p>
+                    <p className="mt-1 text-sm text-muted">You chose this when you signed up. Activate it to start booking sessions.</p>
+                    <form action={startSubscription} className="mt-5">
+                      <input type="hidden" name="plan" value={chosen.key} />
+                      <SubmitButton className="btn-accent w-full" pendingText="Opening payment…">Activate {chosen.name} · {naira(chosen.price)}/month</SubmitButton>
+                    </form>
+                    <Link href="/patient/subscription" className="mt-3 block text-center text-sm font-semibold text-brand-700">Compare plans</Link>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-display mt-2 text-xl font-bold">Choose a plan to start</p>
+                    <p className="mt-1 text-sm text-muted">Plans start from ₦10,000 a month and include sessions with a verified therapist.</p>
+                    <Link href="/patient/subscription" className="btn-accent mt-5 w-full">See plans</Link>
+                  </>
+                )}
               </>
             )}
           </div>

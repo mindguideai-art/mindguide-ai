@@ -19,6 +19,8 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
     supabase.from("payments").select("reference, plan, amount_kobo, status, paid_at, created_at").eq("patient_id", user.id).order("created_at", { ascending: false }).limit(20),
   ]);
   const [features, ent] = await Promise.all([getPlanFeatures(), getEntitlements(user.id)]);
+  const picked = !sp.plan ? user.chosenPlan : PLANS.some((p) => p.key === sp.plan) ? sp.plan : null;
+  const demo = process.env.DEMO_PAYMENTS === "true" && !process.env.PAYSTACK_SECRET_KEY;
   const live = sub && sub.current_period_end && new Date(sub.current_period_end) > new Date() && ["active", "cancelled"].includes(sub.status);
 
   return (
@@ -26,6 +28,7 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
       <PageHeader title="Subscription" text="Choose the plan that suits you. Plans renew monthly and you can cancel any time." />
       {sp.paid && <Notice kind="success">Payment received. Your plan is now active.</Notice>}
       {sp.pending && <Notice kind="warning">We&apos;re confirming your payment. This page will update shortly.</Notice>}
+      {demo && <Notice kind="info">Demo mode: choosing a plan activates it straight away, without a real payment.</Notice>}
       {sp.error && <Notice kind="error">We couldn&apos;t start the payment. Please try again or contact support.</Notice>}
 
       {live && ent.active && (
@@ -77,12 +80,13 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {PLANS.map((p) => {
           const current = live && sub.plan === p.key && sub.status === "active";
-          const featured = p.key === "standard";
+          const featured = !live && picked ? p.key === picked : p.key === "standard";
           return (
-            <div key={p.key} className={`card flex flex-col ${current ? "ring-2 ring-brand-500" : featured ? "border-brand-300" : ""}`}>
+            <div key={p.key} className={`card flex flex-col ${current || (!live && picked === p.key) ? "ring-2 ring-brand-500" : featured ? "border-brand-300" : ""}`}>
               <div className="flex items-center justify-between">
                 <p className="font-display text-lg font-semibold">{p.name}</p>
                 {current && <span className="badge bg-brand-100 text-brand-800">Your plan</span>}
+                {!live && picked === p.key && <span className="badge bg-sun-50 text-sun-700">Your choice</span>}
               </div>
               <p className="font-display mt-3 text-3xl font-semibold">{naira(p.price)}</p>
               <p className="text-xs text-muted">per month</p>

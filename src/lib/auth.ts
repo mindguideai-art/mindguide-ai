@@ -11,6 +11,8 @@ export type CurrentUser = {
   role: Role;
   fullName: string;
   isActive: boolean;
+  /** Plan picked at registration, before paying (patients only). */
+  chosenPlan: string | null;
 };
 
 /** Reads the signed-in user once per request. Returns null when signed out. */
@@ -32,6 +34,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     role: profile.role as Role,
     fullName: profile.full_name,
     isActive: profile.is_active,
+    chosenPlan: typeof user.user_metadata?.chosen_plan === "string" ? user.user_metadata.chosen_plan : null,
   };
 });
 

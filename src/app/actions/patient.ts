@@ -14,6 +14,8 @@ import { formatDateTime } from "@/lib/format";
 import { PLANS, type PlanKey } from "@/lib/constants";
 import { initializeTransaction, disableSubscription } from "@/lib/paystack";
 import { headers } from "next/headers";
+import { recordSuccessfulPayment } from "@/lib/billing";
+import type { PaystackTransaction } from "@/lib/paystack";
 
 export type ActionState = { error?: string; message?: string } | undefined;
 
@@ -245,6 +247,11 @@ export async function reportConcern(_: ActionState, form: FormData): Promise<Act
 }
 
 // ---------------- Subscription ----------------
+/** True while the demo runs without Paystack: DEMO_PAYMENTS=true and no Paystack key set. */
+function demoPayments() {
+  return process.env.DEMO_PAYMENTS === "true" && !process.env.PAYSTACK_SECRET_KEY;
+}
+
 export async function startSubscription(form: FormData) {
   const user = await requireRole("patient");
   const planKey = String(form.get("plan")) as PlanKey;
@@ -254,6 +261,21 @@ export async function startSubscription(form: FormData) {
   const reference = `sub_${crypto.randomUUID().replace(/-/g, "")}`;
   const admin = createAdminClient();
   await admin.from("payments").insert({ patient_id: user.id, reference, plan: plan.key, amount_kobo: plan.price * 100 });
+
+  // Demo mode: no Paystack account yet, so activate the plan straight away (marked "demo" in payments).
+  if (demoPayments()) {
+    await recordSuccessfulPayment({
+      reference,
+      amount: plan.price * 100,
+      status: "success",
+      channel: "demo",
+      paid_at: new Date().toISOString(),
+      metadata: { patient_id: user.id, plan: plan.key },
+      customer: { customer_code: null },
+    } as unknown as PaystackTransaction);
+    revalidatePath("/patient", "layout");
+    redirect("/patient/subscription?paid=1");
+  }
 
   let url: string;
   try {

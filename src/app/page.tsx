@@ -233,7 +233,7 @@ export default async function Home() {
                       <li key={x} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${featured ? "text-sun-300" : "text-brand-600"}`} /> {x}</li>
                     ))}
                   </ul>
-                  <Link href="/register" className={`mt-7 ${featured ? "btn-accent" : "btn-secondary"}`}>Get started</Link>
+                  <Link href={`/register?plan=${p.key}`} className={`mt-7 ${featured ? "btn-accent" : "btn-secondary"}`}>Choose {p.name}</Link>
                 </div>
               );
             })}

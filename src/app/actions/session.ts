@@ -52,6 +52,8 @@ export async function registerPatient(_: FormState, form: FormData): Promise<For
   const prevDetails = String(form.get("previous_support_details") ?? "").trim();
   const areas = pickList(form, "support_areas", SUPPORT_AREAS);
   const preferred = String(form.get("preferred_support") ?? "either");
+  const planRaw = String(form.get("plan") ?? "");
+  const chosenPlan = ["basic", "standard", "premium", "family"].includes(planRaw) ? planRaw : null;
 
   if (!fullName || !email) return { error: "Enter your name and email." };
   if (passwordProblem(password)) return { error: passwordProblem(password)! };
@@ -71,7 +73,7 @@ export async function registerPatient(_: FormState, form: FormData): Promise<For
     email,
     password,
     options: {
-      data: { role: "patient", full_name: fullName, phone },
+      data: { role: "patient", full_name: fullName, phone, chosen_plan: chosenPlan },
       emailRedirectTo: `${await siteUrl()}/auth/confirm?next=/patient/assessment`,
     },
   });
