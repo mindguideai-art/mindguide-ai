@@ -4,10 +4,13 @@ import { useActionState } from "react";
 import { login } from "@/app/actions/session";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { Notice } from "@/components/ui/misc";
+import { ResendForm } from "./resend-form";
 
-export function LoginForm({ next, notice }: { next?: string; notice?: string }) {
+export function LoginForm({ next, notice, showResend = false }: { next?: string; notice?: string; showResend?: boolean }) {
   const [state, action] = useActionState(login, undefined);
   return (
+    <div className="space-y-6">
+    {(showResend || state?.unconfirmed) && <ResendForm key={state?.unconfirmed} email={state?.unconfirmed} />}
     <form action={action} className="space-y-4">
       {notice && <Notice>{notice}</Notice>}
       {state?.error && <Notice kind="error">{state.error}</Notice>}
@@ -26,5 +29,6 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
         <Link href="/register" className="text-brand-700">Create an account</Link>
       </div>
     </form>
+    </div>
   );
 }

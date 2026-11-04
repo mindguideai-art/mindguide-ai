@@ -1,12 +1,13 @@
 "use server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { homeFor, type Role } from "@/lib/auth";
 import { CONCERNS, GENDERS, NIGERIAN_STATES, SUPPORT_AREAS } from "@/lib/constants";
 import { passwordProblem } from "@/lib/password";
 
-export type FormState = { error?: string; message?: string } | undefined;
+export type FormState = { error?: string; message?: string; unconfirmed?: string } | undefined;
 
 async function siteUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
@@ -18,13 +19,41 @@ function safeNext(next: string | null) {
   return next && next.startsWith("/") && !next.startsWith("//") ? next : null;
 }
 
+/** Confirms an email link (sign-up, password reset) when the person presses the button on /auth/verify. */
+export async function verifyEmailLink(form: FormData) {
+  const tokenHash = String(form.get("token_hash") ?? "");
+  const rawType = String(form.get("type") ?? "");
+  const type = (rawType === "signup" || rawType === "magiclink" ? "email" : rawType) as EmailOtpType;
+  if (!tokenHash || !["email", "recovery", "invite", "email_change"].includes(type)) redirect("/login?error=link");
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
+  if (error || !data.user) redirect("/login?error=link");
+  const next = safeNext(String(form.get("next") ?? ""));
+  if (next) redirect(next);
+  if (type === "recovery") redirect("/reset-password");
+  const role = (data.user.user_metadata?.role as Role | undefined) ?? "patient";
+  redirect(role === "therapist" ? "/therapist/profile" : role === "patient" ? "/patient/assessment" : homeFor(role));
+}
+
+/** Sends a fresh confirmation email. Always answers the same way so it doesn't reveal which emails exist. */
+export async function resendConfirmation(_: FormState, form: FormData): Promise<FormState> {
+  const email = String(form.get("email") ?? "").trim().toLowerCase();
+  if (!email.includes("@")) return { error: "Enter the email you signed up with." };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${await siteUrl()}/auth/confirm` } });
+  if (error && /security purposes|rate/i.test(error.message)) return { error: "Please wait a minute before asking for another link." };
+  return { message: `If ${email} is waiting for confirmation, a new link is on its way. Open it in this browser, and use it within an hour.` };
+}
+
 export async function login(_: FormState, form: FormData): Promise<FormState> {
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.user) {
-    return { error: error?.message === "Email not confirmed" ? "Please confirm your email first. Check your inbox." : "Incorrect email or password." };
+    return error?.message === "Email not confirmed"
+      ? { error: "Please confirm your email first. Check your inbox, or send a new link below.", unconfirmed: email }
+      : { error: "Incorrect email or password." };
   }
   const admin = createAdminClient();
   const { data: profile } = await admin.from("profiles").select("role").eq("id", data.user.id).single();

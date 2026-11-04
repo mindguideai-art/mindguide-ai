@@ -33,11 +33,16 @@ npm run dev                  # open http://localhost:3000
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` – `anon` public key
    - `SUPABASE_SERVICE_ROLE_KEY` – `service_role` secret key (never share this)
 4. Go to **Authentication → URL Configuration** and set **Site URL** to your live domain (for example `https://www.yourdomain.com`). Add `http://localhost:3000/**` and `https://www.yourdomain.com/**` under **Redirect URLs**.
-5. *(Recommended)* Go to **Authentication → Email Templates** and, in the *Confirm signup* and *Reset password* templates, change the link's `href` to:
-   ```
-   {{ .RedirectTo }}&token_hash={{ .TokenHash }}&type={{ .Type }}
-   ```
-   This lets the links open on any device. The default links also work, as long as people open them in the same browser they signed up in.
+5. **(Important) Email links.** Go to **Authentication → Email Templates**:
+   - In **Confirm signup**, change the link's `href` to:
+     ```
+     {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup
+     ```
+   - In **Reset password**, change it to:
+     ```
+     {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery
+     ```
+   These links work on any device. They open a page with a button, so email security scanners that open links automatically can't use them up ("Email link is invalid or has expired").
 6. **Make yourself an admin.** Sign up on the site like a normal patient, then run this in the SQL Editor:
    ```sql
    update profiles set role = 'admin' where email = 'you@example.com';

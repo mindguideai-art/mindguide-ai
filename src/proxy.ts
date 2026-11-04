@@ -42,6 +42,13 @@ export async function proxy(request: NextRequest) {
   }
 
   const path = request.nextUrl.pathname;
+  // Supabase sends people back with ?error_code=otp_expired (and similar) when an email link fails.
+  if (request.nextUrl.searchParams.get("error_code") && path !== "/login") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "?error=link";
+    return NextResponse.redirect(url);
+  }
   if (!user && PROTECTED.some((p) => path === p || path.startsWith(p + "/"))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
