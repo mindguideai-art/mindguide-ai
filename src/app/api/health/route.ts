@@ -26,14 +26,15 @@ export async function GET() {
       const db = createSupabaseClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
         auth: { persistSession: false, autoRefreshToken: false },
       });
-      const { error } = await db.from("settings").select("key", { head: true, count: "exact" });
+      const { error: e1, status } = await db.from("settings").select("key").limit(1);
+      const error = e1 ? { message: `${e1.message || ""} ${e1.code || ""} ${e1.hint || ""} (HTTP ${status})`.trim() } : null;
       database = !error
         ? "ok"
-        : /does not exist|schema cache/i.test(error.message)
+        : /does not exist|schema cache|PGRST205|42P01|HTTP 404/i.test(error.message)
           ? "tables missing: run supabase/schema.sql in the Supabase SQL Editor"
           : /fetch failed|ENOTFOUND|ECONNREFUSED/i.test(error.message)
             ? "unreachable: check NEXT_PUBLIC_SUPABASE_URL is your project URL (https://xxxx.supabase.co)"
-          : /api key|jwt|unauthorized/i.test(error.message)
+          : /api key|jwt|unauthorized|HTTP 401|HTTP 403/i.test(error.message)
             ? "key rejected: check SUPABASE_SERVICE_ROLE_KEY"
             : `error: ${error.message}`;
     } catch (e) {
