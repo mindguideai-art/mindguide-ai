@@ -19,6 +19,13 @@ function safeNext(next: string | null) {
   return next && next.startsWith("/") && !next.startsWith("//") ? next : null;
 }
 
+function friendlyAuthError(msg?: string) {
+  if (!msg) return "Could not create your account. Please try again.";
+  if (/email rate limit/i.test(msg)) return "We can't send more emails right now because the hourly email limit was reached. Please try again in an hour.";
+  if (/security purposes/i.test(msg)) return "Please wait a minute and try again.";
+  return msg;
+}
+
 /** Confirms an email link (sign-up, password reset) when the person presses the button on /auth/verify. */
 export async function verifyEmailLink(form: FormData) {
   const tokenHash = String(form.get("token_hash") ?? "");
@@ -41,7 +48,7 @@ export async function resendConfirmation(_: FormState, form: FormData): Promise<
   if (!email.includes("@")) return { error: "Enter the email you signed up with." };
   const supabase = await createClient();
   const { error } = await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${await siteUrl()}/auth/confirm` } });
-  if (error && /security purposes|rate/i.test(error.message)) return { error: "Please wait a minute before asking for another link." };
+  if (error && /security purposes|rate/i.test(error.message)) return { error: friendlyAuthError(error.message) };
   return { message: `If ${email} is waiting for confirmation, a new link is on its way. Open it in this browser, and use it within an hour.` };
 }
 
@@ -106,7 +113,7 @@ export async function registerPatient(_: FormState, form: FormData): Promise<For
       emailRedirectTo: `${await siteUrl()}/auth/confirm?next=/patient/assessment`,
     },
   });
-  if (error || !data.user) return { error: error?.message ?? "Could not create your account." };
+  if (error || !data.user) return { error: friendlyAuthError(error?.message) };
   if (data.user.identities && data.user.identities.length === 0) return { error: "An account with this email already exists. Please sign in." };
 
   const { error: pErr } = await createAdminClient().from("patient_profiles").insert({
@@ -147,7 +154,7 @@ export async function registerTherapist(_: FormState, form: FormData): Promise<F
       emailRedirectTo: `${await siteUrl()}/auth/confirm?next=/therapist/profile`,
     },
   });
-  if (error || !data.user) return { error: error?.message ?? "Could not create your account." };
+  if (error || !data.user) return { error: friendlyAuthError(error?.message) };
   if (data.user.identities && data.user.identities.length === 0) return { error: "An account with this email already exists. Please sign in." };
   if (data.session) redirect("/therapist/profile");
   return { message: `We sent a confirmation link to ${email}. Open it to complete your profile and submit your licence.` };
