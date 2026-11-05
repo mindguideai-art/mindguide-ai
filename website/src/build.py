@@ -130,7 +130,7 @@ def layout(page, title, description, body):
     <div class="footer-grid">
       <div>
         <a class="brand" href="index.html"><img src="assets/img/mindguide-mark.png" alt="" width="38" height="38"><span><span class="mind">MindGuide</span> <b>AI</b></span></a>
-        <p>Private online therapy with licensed, verified professionals. Guiding minds, empowering women, across Nigeria.</p>
+        <p>A technology-enabled mental health and wellbeing platform making care more accessible, affordable, personalised and inclusive. Guiding minds, empowering women.</p>
       </div>
       <div>
         <h4>Get support</h4>
@@ -572,31 +572,93 @@ THERAPISTS = f"""
 ABOUT = f"""
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">About MindGuide AI</p>
-    <h1>Mental health care that meets you where you are</h1>
-    <p class="lead">MindGuide AI is a Nigerian online therapy platform. We connect people, especially women, with licensed therapists through private video and voice sessions, and use simple, careful technology to make the first step easier.</p>
+    <p class="eyebrow">About us</p>
+    <h1>No one should navigate their mental wellbeing alone</h1>
+    <p class="lead">MindGuide AI is a technology-enabled mental health and wellbeing platform designed to make mental healthcare more accessible, affordable, personalised and inclusive.</p>
   </div>
 </section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap about-split">
+    <div>
+      <p class="eyebrow">Why we exist</p>
+      <h2 style="margin-top:14px">Every mental health journey is different</h2>
+    </div>
+    <div class="prose">
+      <p>We recognise that mental health journeys are different. Everyone experiences emotional and psychological challenges differently, and finding the right support can often be difficult due to cost, limited access to professionals, stigma and a lack of reliable information.</p>
+      <p>MindGuide AI addresses these challenges by combining artificial intelligence, professional mental health services, education and community support to create a more connected approach to mental wellbeing.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">What we offer</p>
+      <h2>One connected place for your wellbeing</h2>
+    </div>
+    <div class="cards">
+      <div class="card">{icon("brain", 28)}<h3>AI-assisted assessments</h3><p>Wellbeing assessments with personalised recommendations, so you know where to start.</p></div>
+      <div class="card">{icon("badge", 28)}<h3>Qualified professionals</h3><p>Connect with verified mental health professionals by video or voice, from wherever you are.</p></div>
+      <div class="card">{icon("file", 28)}<h3>Educational resources</h3><p>Reliable information to help you understand mental health and look after yourself.</p></div>
+      <div class="card">{icon("users", 28)}<h3>Supportive communities</h3><p>Connect with others who understand, in a safe and supportive space.</p></div>
+      <div class="card">{icon("calendar", 28)}<h3>Programmes and events</h3><p>Discover relevant mental health programmes and events that help you grow.</p></div>
+      <div class="card">{icon("heart", 28)}<h3>Strategic partnerships</h3><p>Working with hospitals, NGOs and institutions to strengthen referrals, counselling and community support.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap about-split">
+    <div>
+      <p class="eyebrow">Beyond digital access</p>
+      <h2 style="margin-top:14px">Working with partners who share our goal</h2>
+    </div>
+    <div class="prose">
+      <p>Our approach extends beyond digital access. Through strategic partnerships with hospitals, healthcare professionals, NGOs, educational institutions and other relevant organisations, we aim to strengthen access to mental health education, professional referrals, counselling and community-based support.</p>
+      <div class="chips" style="margin-top:22px">{''.join(f'<span>{c}</span>' for c in ["Hospitals", "Healthcare professionals", "NGOs", "Educational institutions", "Community organisations"])}</div>
+      <p style="margin-top:22px">Interested in partnering with us? <a href="contact.html">Get in touch</a>.</p>
+    </div>
+  </div>
+</section>
+
 <section class="section manifesto">
   <div class="wrap manifesto-grid">
     <div>
-      <p class="eyebrow">Our mission</p>
-      <blockquote style="margin-top:18px">Guiding minds, <span>empowering women.</span></blockquote>
+      <p class="eyebrow">What we believe</p>
+      <blockquote style="margin-top:18px">Technology should complement human care, <span>not replace it.</span></blockquote>
     </div>
-    <div>
-      <p class="lead" style="color:var(--ink)">Too many people go without support because therapy feels expensive, far away or hard to talk about. Women often carry the most and ask for help the least.</p>
-      <p class="lead" style="margin-top:18px">We’re changing that by making care private, affordable and available from a phone, with professionals our team has verified, and plans that start at ₦10,000 a month.</p>
+    <div class="prose">
+      <p>At MindGuide AI, our goal is to bridge the gap between individuals who need support and the people, services and resources that can help them.</p>
+      <p>We are building an inclusive mental health ecosystem where no one has to navigate their mental wellbeing journey without guidance, connection or support.</p>
+      <p class="tagline">MindGuide AI · Guiding minds… empowering women</p>
     </div>
   </div>
 </section>
+
 <section class="section">
+  <div class="wrap mv">
+    <article class="mv-card">
+      <p class="eyebrow">Our mission</p>
+      <p class="mv-lead">To make mental health and wellbeing support more accessible, affordable and personalised by connecting individuals to the right professional care, resources, communities and support systems through technology, education and strategic partnerships.</p>
+      <p>We are committed to creating a safe and supportive environment where everyone can access guidance, build emotional resilience and take meaningful steps towards better mental wellbeing.</p>
+    </article>
+    <article class="mv-card mv-dark">
+      <p class="eyebrow">Our vision</p>
+      <p class="mv-lead">To become a leading technology-driven mental health and wellbeing ecosystem that transforms how individuals access, experience and sustain mental healthcare across Africa and beyond.</p>
+      <p>We envision a world where seeking mental health support is accessible, affordable, stigma-free and integrated into everyday life.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
   <div class="wrap">
     <div class="section-head"><p class="eyebrow">What we stand for</p><h2>Our promises to you</h2></div>
     <div class="values">
       <div><h3>Safety first</h3><p>Every therapist’s licence is checked before they’re listed. If an assessment shows someone may be at risk, our team is alerted and the person sees emergency contacts straight away.</p></div>
       <div><h3>Your privacy, your choice</h3><p>Calls are encrypted and connect directly between you and your therapist. You decide which therapists can see your details, and you can stop sharing anytime.</p></div>
       <div><h3>Care without judgement</h3><p>Whatever you’re going through, you deserve to be heard with respect, warmth and confidentiality.</p></div>
-      <div><h3>Technology that helps, not replaces</h3><p>Our AI helps you find the right therapist and understand how you’re doing. Your care always comes from a qualified human professional.</p></div>
+      <div><h3>Stigma-free support</h3><p>Seeking help is a strength. We make it private and simple so you can take the first step on your own terms.</p></div>
     </div>
   </div>
 </section>
@@ -692,7 +754,7 @@ PAGES = {
     "how-it-works.html": ("How it works · MindGuide AI", "Create an account, take a 2-minute assessment, meet a matched therapist and join private video or voice sessions in your browser.", HOW),
     "pricing.html": ("Plans and prices · MindGuide AI", "Monthly therapy plans from ₦10,000: Basic, Standard, Premium and Family. Pay with Paystack and cancel anytime.", PRICING),
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
-    "about.html": ("About · MindGuide AI", "MindGuide AI connects people across Nigeria, especially women, with licensed therapists through private online sessions.", ABOUT),
+    "about.html": ("About us · MindGuide AI", "MindGuide AI is a technology-enabled mental health and wellbeing platform making mental healthcare more accessible, affordable, personalised and inclusive.", ABOUT),
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),
     "contact.html": ("Contact · MindGuide AI", "Get in touch with the MindGuide AI team.", CONTACT),
     "404.html": ("Page not found · MindGuide AI", "This page doesn't exist.", NOT_FOUND),
