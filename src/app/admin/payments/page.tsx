@@ -5,11 +5,13 @@ import { PLANS } from "@/lib/constants";
 import { markPayout } from "@/app/actions/admin";
 import { PageHeader, StatCard, StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Revenue & payouts" };
 
 export default async function AdminPayments() {
-  await requireRole("admin");
+  const me = await requireRole("admin");
+  logAccess(me, "payments");
   const db = createAdminClient();
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const [{ data: payments }, { data: subs }, { data: owed }] = await Promise.all([

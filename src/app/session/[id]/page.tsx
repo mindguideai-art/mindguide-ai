@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CalendarClock } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { formatDateTime, nowMs } from "@/lib/format";
 import { joinAppointmentCall } from "@/lib/calls";
@@ -15,7 +15,7 @@ const EARLY_MINUTES = 15;
 /** Opens the built-in call for a confirmed appointment, inside its time window. */
 export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await getCurrentUser();
+  const user = await requireUser();
   if (!user) redirect("/login");
   const supabase = await createClient();
   const { data: a } = await supabase.from("appointments").select("id, patient_id, therapist_id, starts_at, ends_at, type, status").eq("id", id).single();

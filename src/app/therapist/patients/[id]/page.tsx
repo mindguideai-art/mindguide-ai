@@ -7,12 +7,14 @@ import { formatDate, formatDateTime } from "@/lib/format";
 import { EMOTIONAL_STATES } from "@/lib/constants";
 import { Notice, PageHeader, StatusBadge } from "@/components/ui/misc";
 import { LineChart } from "@/components/line-chart";
+import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Patient" };
 
 export default async function TherapistPatient({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireRole("therapist");
+  logAccess(user, "patient_details", id);
   const canMessage = (await getEntitlements(id)).features.messaging;
   const supabase = await createClient();
   const [{ data: profile }, { data: consent }, { data: appts }] = await Promise.all([

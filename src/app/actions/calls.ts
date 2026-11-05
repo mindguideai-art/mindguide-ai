@@ -1,10 +1,10 @@
 "use server";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getVerifiedUser } from "@/lib/auth";
 import { createCall } from "@/lib/calls";
 
 export async function startCall(form: FormData) {
-  const user = await getCurrentUser();
+  const user = await getVerifiedUser();
   if (!user || (user.role !== "patient" && user.role !== "therapist")) redirect("/login");
   const other = String(form.get("other_id") ?? "");
   const type = form.get("type") === "audio" ? "audio" : "video";

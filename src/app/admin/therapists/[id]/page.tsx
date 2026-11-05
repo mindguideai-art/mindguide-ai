@@ -7,10 +7,12 @@ import { reviewTherapist } from "@/app/actions/admin";
 import { PageHeader, StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { Avatar } from "@/components/avatar";
+import { logAccess } from "@/lib/audit";
 
 export default async function ReviewTherapist({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await requireRole("admin");
+  const me = await requireRole("admin");
+  logAccess(me, "therapist_documents", id);
   const db = createAdminClient();
   const [{ data: t }, { data: p }, { data: docs }, { count: sessions }] = await Promise.all([
     db.from("therapist_profiles").select("*").eq("id", id).single(),

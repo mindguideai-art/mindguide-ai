@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Chat } from "@/components/chat";
 import { getEntitlements } from "@/lib/plans";
+import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Conversation" };
 
@@ -10,6 +11,7 @@ export default async function TherapistChat({ params, searchParams }: { params: 
   const { patientId } = await params;
   const sp = await searchParams;
   const user = await requireRole("therapist");
+  logAccess(user, "messages", patientId);
   const supabase = await createClient();
   const ent = await getEntitlements(patientId);
   const [{ data: p }, { data: msgs }] = await Promise.all([

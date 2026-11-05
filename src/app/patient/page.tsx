@@ -223,7 +223,7 @@ export default async function PatientHome() {
             <Link href="/patient/subscription" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700">Manage plan <ArrowRight className="size-3.5" /></Link>
           </div>
           )}
-          <a href="/api/telegram" target="_blank" rel="noopener" className="group relative overflow-hidden rounded-2xl bg-[linear-gradient(120deg,var(--color-brand-500),var(--color-brand-700)_55%,var(--color-sun-400))] p-5 text-white transition hover:brightness-110">
+          <a href="/community" className="group relative overflow-hidden rounded-2xl bg-[linear-gradient(120deg,var(--color-brand-500),var(--color-brand-700)_55%,var(--color-sun-400))] p-5 text-white transition hover:brightness-110">
             <Users className="absolute -bottom-3 -right-3 size-24 text-white/15" />
             <p className="font-display text-lg font-bold">Join our community</p>
             <p className="mt-1 text-sm">Connect with others on Telegram <ArrowRight className="inline size-3.5 transition group-hover:translate-x-0.5" /></p>

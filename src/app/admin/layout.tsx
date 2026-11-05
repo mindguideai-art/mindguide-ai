@@ -8,6 +8,7 @@ const NAV: NavItem[] = [
   { href: "/admin/appointments", label: "Appointments", icon: "calendar" },
   { href: "/admin/payments", label: "Revenue & payouts", icon: "wallet" },
   { href: "/admin/reports", label: "Reports & flags", icon: "alert" },
+  { href: "/admin/access-log", label: "Access log", icon: "list" },
   { href: "/admin/settings", label: "Settings", icon: "settings" },
 ];
 

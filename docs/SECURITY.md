@@ -5,10 +5,10 @@ MindGuide AI stores health information, so treat this list as required before re
 ## Already built into the app
 
 - **Row Level Security on every table.** Patients see only their own records. Therapists see a patient's details only after the patient gives consent. Triggers stop users from changing their own role, approval status or other people's appointments.
-- **Two-factor login for admins.** Every admin must add an authenticator app (Google or Microsoft Authenticator) and enter a 6-digit code at each sign-in. This is enforced in two places:
-  - The app sends admins to `/mfa/setup` or `/mfa/verify` until they enter a code.
-  - The database's `is_admin()` check requires a two-factor session (`aal2`). A stolen admin password alone can't read patient data, even through the API.
-  - If an admin loses their phone, another admin can reset it from **Admin → Users → Reset two-factor**.
+- **Two-factor login for admins and therapists.** Every admin and therapist must add an authenticator app (Google or Microsoft Authenticator) and enter a 6-digit code at each sign-in. This is enforced in two places:
+  - The app sends admins and therapists to `/mfa/setup` or `/mfa/verify` until they enter a code.
+  - The database requires a two-factor session (`aal2`) before an admin or therapist can read patient data (`is_admin()` and `mfa_ok()`). A stolen password alone can't read patient records, even through the API.
+  - If an admin or therapist loses their phone, an admin can reset it from **Admin → Users → Reset two-factor**.
 - **Password rule.** At least 10 characters, with letters and numbers. Match this in Supabase (below).
 - **Security headers on every page:**
   - A Content Security Policy that blocks scripts and connections from other sites.
@@ -19,14 +19,17 @@ MindGuide AI stores health information, so treat this list as required before re
   - Paystack webhooks are checked against Paystack's signature.
   - The reminder job needs `CRON_SECRET`.
 - **Secret keys stay out of GitHub.** Keys live only in environment variables, and `.env*` files are ignored by git. The Supabase service key is used only on the server.
-- **Audit log.** The `events` table records sign-ins, two-factor setup, two-factor sign-ins and two-factor resets.
+- **Access log.** Every time a therapist or admin opens patient details, session notes, messages, risk reports, therapist documents, the user list, payments or appointments, it's recorded (`record_access_log`) and shown in **Admin → Access log**. The `events` table also records sign-ins and two-factor changes.
+- **Retention.** Old technical data is deleted automatically every night. See [`DATA-RETENTION.md`](DATA-RETENTION.md).
+- **Service providers.** Every company that receives user data is listed in [`SERVICE-PROVIDERS.md`](SERVICE-PROVIDERS.md).
+- **Community.** People see rules and privacy tips at `/community` before joining Telegram. Group settings: [`TELEGRAM-COMMUNITY.md`](TELEGRAM-COMMUNITY.md).
 - **Dependencies.** `npm audit` reported 0 known vulnerabilities on 4 Nov 2026. Re-run it monthly.
 
 ## Supabase (dashboard settings)
 
 1. **Plan: Pro** ($25/month). It includes daily backups kept for 7 days and leaked-password protection. Compute size *Small* is recommended (about $5/month extra after the included credit).
 2. **Region:** choose London (`eu-west-2`) or Frankfurt (`eu-central-1`) when creating the project. It can't be changed later.
-3. **Database:** run `supabase/schema.sql` in the SQL editor.
+3. **Database:** run `supabase/schema.sql` in the SQL editor. For a project created before 5 Nov 2026, also run each file in `supabase/migrations/` once, oldest first.
 4. **Authentication → Sign In / Providers → Email:**
    - [ ] Confirm email: **on**
    - [ ] Secure password change: **on**

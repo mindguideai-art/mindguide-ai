@@ -5,6 +5,7 @@ import { formatDateTime } from "@/lib/format";
 import { resolveReport } from "@/app/actions/admin";
 import { EmptyState, PageHeader, StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Reports & flags" };
 
@@ -14,7 +15,8 @@ type Row = {
 };
 
 export default async function AdminReports({ searchParams }: { searchParams: Promise<{ status?: string; source?: string }> }) {
-  await requireRole("admin");
+  const me = await requireRole("admin");
+  logAccess(me, "risk_reports");
   const sp = await searchParams;
   const status = sp.status === "resolved" ? "resolved" : "open";
   const db = createAdminClient();

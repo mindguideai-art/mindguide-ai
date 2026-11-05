@@ -44,7 +44,30 @@ export async function requireRole(role: Role): Promise<CurrentUser> {
   if (!user) redirect("/login");
   if (!user.isActive) redirect("/suspended");
   if (user.role !== role) redirect(homeFor(user.role));
-  if (role === "admin") {
+  // Staff who can see patient records must sign in with a two-factor code.
+  if (role === "admin" || role === "therapist") {
+    const mfa = await getMfaState();
+    if (mfa !== "verified") redirect(mfa === "none" ? "/mfa/setup" : "/mfa/verify");
+  }
+  return user;
+}
+
+const isStaff = (role: Role) => role === "admin" || role === "therapist";
+
+/** The signed-in user, or null. Staff count as signed in only after entering their two-factor code. */
+export async function getVerifiedUser(): Promise<CurrentUser | null> {
+  const user = await getCurrentUser();
+  if (!user || !user.isActive) return null;
+  if (isStaff(user.role) && (await getMfaState()) !== "verified") return null;
+  return user;
+}
+
+/** Any signed-in role, sending staff to two-factor setup or verification first. */
+export async function requireUser(): Promise<CurrentUser> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+  if (!user.isActive) redirect("/suspended");
+  if (isStaff(user.role)) {
     const mfa = await getMfaState();
     if (mfa !== "verified") redirect(mfa === "none" ? "/mfa/setup" : "/mfa/verify");
   }

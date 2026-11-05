@@ -240,19 +240,26 @@ returns boolean language sql stable security definer set search_path = public as
   select public.current_role_is('admin') and coalesce(auth.jwt() ->> 'aal', 'aal1') = 'aal2';
 $$;
 
-create or replace function public.has_consent(p uuid, t uuid)
+-- Therapists and admins must have entered their two-factor code (aal2) to read patient data.
+create or replace function public.mfa_ok()
 returns boolean language sql stable security definer set search_path = public as $$
-  select exists (select 1 from consents where patient_id = p and therapist_id = t and granted);
+  select coalesce((select role::text from profiles where id = auth.uid()), 'patient') not in ('therapist', 'admin')
+      or coalesce(auth.jwt() ->> 'aal', 'aal1') = 'aal2';
 $$;
 
--- Therapist and patient share an appointment (needed for profile lookups & messaging)
+create or replace function public.has_consent(p uuid, t uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select public.mfa_ok() and exists (select 1 from consents where patient_id = p and therapist_id = t and granted);
+$$;
+
 create or replace function public.has_relationship(p uuid, t uuid)
 returns boolean language sql stable security definer set search_path = public as $$
-  select exists (
+  select public.mfa_ok() and exists (
     select 1 from appointments
     where patient_id = p and therapist_id = t and status in ('requested','accepted','completed')
   );
 $$;
+
 
 -- Create a profile row automatically when someone signs up.
 -- Role comes from sign-up metadata but can never be 'admin' (admins are promoted manually).
@@ -391,23 +398,26 @@ create policy "blocked owner write" on blocked_dates for all using (therapist_id
 
 -- appointments
 create policy "appointment parties read" on appointments for select
-  using (patient_id = auth.uid() or therapist_id = auth.uid() or public.is_admin());
+  using (patient_id = auth.uid() or (therapist_id = auth.uid() and public.mfa_ok()) or public.is_admin());
 create policy "patient books" on appointments for insert
   with check (patient_id = auth.uid() and status = 'requested'
     and exists (select 1 from therapist_profiles t where t.id = therapist_id and t.status = 'approved'));
 create policy "parties update" on appointments for update
-  using (patient_id = auth.uid() or therapist_id = auth.uid() or public.is_admin());
+  using (patient_id = auth.uid() or (therapist_id = auth.uid() and public.mfa_ok()) or public.is_admin());
 
 -- consents
-create policy "consent parties read" on consents for select using (patient_id = auth.uid() or therapist_id = auth.uid() or public.is_admin());
+create policy "consent parties read" on consents for select
+  using (patient_id = auth.uid() or (therapist_id = auth.uid() and public.mfa_ok()) or public.is_admin());
 create policy "patient manages consent" on consents for all using (patient_id = auth.uid()) with check (patient_id = auth.uid());
 
 -- messages
-create policy "message parties read" on messages for select using (patient_id = auth.uid() or therapist_id = auth.uid());
+create policy "message parties read" on messages for select
+  using (patient_id = auth.uid() or (therapist_id = auth.uid() and public.mfa_ok()));
 create policy "message parties send" on messages for insert
-  with check (sender_id = auth.uid() and (patient_id = auth.uid() or therapist_id = auth.uid())
+  with check (sender_id = auth.uid() and (patient_id = auth.uid() or (therapist_id = auth.uid() and public.mfa_ok()))
     and public.has_relationship(patient_id, therapist_id));
-create policy "message mark read" on messages for update using (patient_id = auth.uid() or therapist_id = auth.uid());
+create policy "message mark read" on messages for update
+  using (patient_id = auth.uid() or (therapist_id = auth.uid() and public.mfa_ok()));
 
 -- assessments & mood
 create policy "assessment own" on assessments for select
@@ -545,12 +555,12 @@ alter table notifications enable row level security;
 alter table reviews enable row level security;
 alter table session_notes enable row level security;
 
-create policy "call parties read" on calls for select using (caller_id = auth.uid() or callee_id = auth.uid() or public.is_admin());
-create policy "call parties update" on calls for update using (caller_id = auth.uid() or callee_id = auth.uid());
+create policy "call parties read" on calls for select using (((caller_id = auth.uid() or callee_id = auth.uid()) and public.mfa_ok()) or public.is_admin());
+create policy "call parties update" on calls for update using ((caller_id = auth.uid() or callee_id = auth.uid()) and public.mfa_ok());
 create policy "signal parties read" on call_signals for select
-  using (exists (select 1 from calls c where c.id = call_id and (c.caller_id = auth.uid() or c.callee_id = auth.uid())));
+  using (public.mfa_ok() and exists (select 1 from calls c where c.id = call_id and (c.caller_id = auth.uid() or c.callee_id = auth.uid())));
 create policy "signal parties send" on call_signals for insert
-  with check (sender_id = auth.uid() and exists (
+  with check (sender_id = auth.uid() and public.mfa_ok() and exists (
     select 1 from calls c where c.id = call_id and c.status in ('ringing','ongoing') and (c.caller_id = auth.uid() or c.callee_id = auth.uid())));
 
 create policy "own notifications" on notifications for select using (user_id = auth.uid());
@@ -563,7 +573,8 @@ create policy "patient reviews own completed session" on reviews for insert
       and a.therapist_id = reviews.therapist_id and a.status = 'completed'));
 
 create policy "therapist own notes" on session_notes for all
-  using (therapist_id = auth.uid()) with check (therapist_id = auth.uid()
+  using (therapist_id = auth.uid() and public.mfa_ok())
+  with check (therapist_id = auth.uid() and public.mfa_ok()
     and exists (select 1 from appointments a where a.id = appointment_id and a.therapist_id = auth.uid()));
 
 -- Call parties may only move a call through its states, never change who is on it
@@ -600,3 +611,20 @@ create table if not exists assistant_messages (
 create index if not exists assistant_messages_contact on assistant_messages (channel, contact, created_at desc);
 alter table assistant_messages enable row level security;
 -- No policies: only the server (service role) can read or write these rows.
+
+-- 2. Access log ---------------------------------------------------------------
+create table if not exists record_access_log (
+  id bigint generated always as identity primary key,
+  viewer_id uuid references profiles(id) on delete set null,
+  viewer_role text,
+  subject_id uuid references profiles(id) on delete set null,  -- whose information was viewed
+  record text not null,                                        -- e.g. 'patient_details', 'session_notes'
+  record_id text,
+  created_at timestamptz not null default now()
+);
+create index if not exists record_access_log_created on record_access_log (created_at desc);
+create index if not exists record_access_log_subject on record_access_log (subject_id, created_at desc);
+alter table record_access_log enable row level security;
+drop policy if exists "access log admin read" on record_access_log;
+create policy "access log admin read" on record_access_log for select using (public.is_admin());
+-- Rows are written by the server only (service role).

@@ -11,6 +11,7 @@ import { StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { Avatar } from "@/components/avatar";
 import { NotesForm } from "@/components/notes-form";
+import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Session" };
 
@@ -29,6 +30,7 @@ export default async function TherapistAppointment({ params }: { params: Promise
     supabase.from("calls").select("answered_at, ended_at, status").eq("appointment_id", id).order("created_at", { ascending: false }).limit(5),
   ]);
   if (!a) notFound();
+  logAccess(user, "session_notes", a.patient_id, a.id);
   const pf = (await getEntitlements(a.patient_id)).features;
   const name = (a.patient as unknown as { full_name: string } | null)?.full_name ?? "Patient";
   const started = new Date(a.starts_at).getTime() <= nowMs();

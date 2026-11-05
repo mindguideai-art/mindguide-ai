@@ -3,12 +3,14 @@ import { requireRole } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { formatDateTime } from "@/lib/format";
 import { PageHeader, StatusBadge } from "@/components/ui/misc";
+import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Appointments" };
 const STATUSES = ["all", "requested", "accepted", "completed", "cancelled", "rejected"];
 
 export default async function AdminAppointments({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  await requireRole("admin");
+  const me = await requireRole("admin");
+  logAccess(me, "appointments");
   const { status: s } = await searchParams;
   const status = STATUSES.includes(s ?? "") ? s! : "all";
   const db = createAdminClient();

@@ -291,7 +291,7 @@ export default async function Home() {
             <p className="font-semibold text-white">Platform</p>
             <Link href="/register" className="block hover:text-white">Find a therapist</Link>
             <Link href="/register/therapist" className="block hover:text-white">Join as a therapist</Link>
-            <a href="/api/telegram" className="block hover:text-white">Community on Telegram</a>
+            <a href="/community" className="block hover:text-white">Community on Telegram</a>
           </div>
           <div className="space-y-2.5 text-sm">
             <p className="font-semibold text-white">Legal</p>

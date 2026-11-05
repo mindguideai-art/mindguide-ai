@@ -13,9 +13,9 @@ export const dynamic = "force-dynamic";
 export default async function MfaSetup() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
-  if (user.role !== "admin") redirect(homeFor(user.role));
+  if (user.role !== "admin" && user.role !== "therapist") redirect(homeFor(user.role));
   const state = await getMfaState();
-  if (state === "verified") redirect("/admin");
+  if (state === "verified") redirect(homeFor(user.role));
   if (state === "pending") redirect("/mfa/verify");
 
   // Clear any half-finished setup, then create a fresh authenticator secret.
@@ -29,7 +29,7 @@ export default async function MfaSetup() {
   const qr = data ? `data:image/svg+xml;base64,${Buffer.from(data.totp.qr_code.replace(/^data:image\/svg\+xml;utf-8,/, "")).toString("base64")}` : "";
 
   return (
-    <AuthCard title="Protect your admin account" text="Admin accounts can see patient records, so they need a second step at sign-in: a code from an app on your phone.">
+    <AuthCard title="Protect your account" text={user.role === "admin" ? "Admin accounts can see patient records, so they need a second step at sign-in: a code from an app on your phone." : "Therapist accounts can see patient records, so they need a second step at sign-in: a code from an app on your phone. It takes about a minute to set up."}>
       {error || !data ? (
         <Notice kind="error">We couldn&apos;t start setup. Please refresh the page. If it keeps happening, check that two-factor (TOTP) is turned on in Supabase under Authentication → Multi-Factor.</Notice>
       ) : (
@@ -59,7 +59,7 @@ export default async function MfaSetup() {
           <MfaForm factorId={data.id} label="Turn on two-factor login" />
           <p className="flex items-start gap-2 text-xs text-muted">
             <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-brand-600" />
-            If you lose your phone, another admin can reset this for you from the Users page.
+            If you lose your phone, {user.role === "admin" ? "another admin can reset this for you from the Users page" : "contact the MindGuide AI team and they can reset it for you"}.
           </p>
         </div>
       )}

@@ -1,11 +1,11 @@
 "use server";
-import { getCurrentUser } from "@/lib/auth";
+import { getVerifiedUser } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { notify } from "@/lib/notifications";
 import { getEntitlements } from "@/lib/plans";
 
 export async function sendMessage(patientId: string, therapistId: string, body: string) {
-  const user = await getCurrentUser();
+  const user = await getVerifiedUser();
   if (!user || (user.id !== patientId && user.id !== therapistId)) return { error: "Not allowed" };
   const text = body.trim().slice(0, 4000);
   if (!text) return { error: "Empty message" };
@@ -45,7 +45,7 @@ export async function sendMessage(patientId: string, therapistId: string, body: 
 }
 
 export async function markRead(patientId: string, therapistId: string) {
-  const user = await getCurrentUser();
+  const user = await getVerifiedUser();
   if (!user) return;
   const supabase = await createClient();
   await supabase

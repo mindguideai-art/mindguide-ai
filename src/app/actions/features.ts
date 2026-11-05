@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser, requireRole } from "@/lib/auth";
+import { getVerifiedUser, requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { notify } from "@/lib/notifications";
 import { CONCERNS, NIGERIAN_STATES, SUPPORT_AREAS } from "@/lib/constants";
@@ -56,7 +56,7 @@ export async function saveSessionNote(_: FormState, form: FormData): Promise<For
 
 // ---------------- Settings ----------------
 export async function updateAccount(_: FormState, form: FormData): Promise<FormState> {
-  const user = await getCurrentUser();
+  const user = await getVerifiedUser();
   if (!user) redirect("/login");
   const fullName = String(form.get("full_name") ?? "").trim();
   if (!fullName) return { error: "Please enter your name." };
@@ -90,7 +90,7 @@ export async function updateAccount(_: FormState, form: FormData): Promise<FormS
 }
 
 export async function changePassword(_: FormState, form: FormData): Promise<FormState> {
-  const user = await getCurrentUser();
+  const user = await getVerifiedUser();
   if (!user) redirect("/login");
   const password = String(form.get("password") ?? "");
   const confirm = String(form.get("confirm") ?? "");

@@ -31,6 +31,9 @@ export function AssessmentForm() {
         <label className="label" htmlFor="notes">Is there anything else you&apos;d like your therapist to know? (optional)</label>
         <textarea id="notes" name="notes" rows={4} className="input" maxLength={2000} />
       </div>
+      <p className="text-xs text-muted">
+        Your answers (not your name or contact details) are sent to our AI provider, Anthropic, to write your summary. It isn&apos;t a diagnosis. Please don&apos;t include names or contact details in the box above.
+      </p>
       <SubmitButton className="btn-primary w-full sm:w-auto" pendingText="Analysing your answers…">See my results</SubmitButton>
     </form>
   );

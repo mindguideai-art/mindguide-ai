@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { iceServers } from "@/lib/calls";
 import { CallScreen } from "@/components/calls/call-screen";
@@ -8,7 +8,7 @@ export const metadata = { title: "Call" };
 
 export default async function CallPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await getCurrentUser();
+  const user = await requireUser();
   if (!user) redirect("/login");
   const supabase = await createClient();
   const { data: call } = await supabase.from("calls").select("*").eq("id", id).single();
