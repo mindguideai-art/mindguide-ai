@@ -18,6 +18,10 @@ export async function GET() {
     ANTHROPIC_API_KEY: Boolean(process.env.ANTHROPIC_API_KEY),
     RESEND_API_KEY: Boolean(process.env.RESEND_API_KEY),
     TERMII_API_KEY: Boolean(process.env.TERMII_API_KEY),
+    WHATSAPP_TOKEN: Boolean(process.env.WHATSAPP_TOKEN),
+    WHATSAPP_PHONE_NUMBER_ID: Boolean(process.env.WHATSAPP_PHONE_NUMBER_ID),
+    WHATSAPP_APP_SECRET: Boolean(process.env.WHATSAPP_APP_SECRET),
+    WHATSAPP_VERIFY_TOKEN: Boolean(process.env.WHATSAPP_VERIFY_TOKEN),
   };
 
   let database = "not checked: Supabase settings missing";

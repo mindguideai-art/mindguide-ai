@@ -588,3 +588,15 @@ alter publication supabase_realtime add table calls;
 -- Make yourself an admin (run after signing up with your email):
 --   update profiles set role = 'admin' where email = 'you@example.com';
 -- =====================================================================
+create table if not exists assistant_messages (
+  id bigint generated always as identity primary key,
+  channel text not null default 'whatsapp',
+  contact text not null,            -- WhatsApp number (wa_id)
+  role text not null check (role in ('user','assistant')),
+  content text not null,
+  wa_message_id text unique,        -- stops the same WhatsApp message being answered twice
+  created_at timestamptz not null default now()
+);
+create index if not exists assistant_messages_contact on assistant_messages (channel, contact, created_at desc);
+alter table assistant_messages enable row level security;
+-- No policies: only the server (service role) can read or write these rows.

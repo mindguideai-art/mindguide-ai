@@ -11,6 +11,9 @@ import pathlib, re
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 APP_URL = "https://mindguide-ai.vercel.app"
 EMAIL = "mindguideai@gmail.com"
+# WhatsApp number in international format without + or spaces, e.g. 2348012345678. Leave empty to hide WhatsApp buttons.
+WHATSAPP = ""
+SITE_URL = "https://mindguide-website.vercel.app"  # the website's own address, used in sitemap.xml
 
 ICONS = {
     "check": '<path d="M20 6 9 17l-5-5"/>',
@@ -161,7 +164,9 @@ def layout(page, title, description, body):
     </div>
   </div>
 </footer>
+<div id="mg-assistant" data-api="{APP_URL}/api/assistant" data-app="{APP_URL}" data-whatsapp="{WHATSAPP}"></div>
 <script src="assets/site.js"></script>
+<script src="assets/assistant.js"></script>
 </body>
 </html>
 """
@@ -386,7 +391,7 @@ HOME = f"""
       <h2>Good to know</h2>
     </div>
     {faq_html({"": FAQS["Getting started"][:2] + FAQS["Privacy and safety"][:1] + FAQS["Sessions"][2:3] + FAQS["Privacy and safety"][2:3]}, with_titles=False)}
-    <p style="margin-top:24px"><a href="faq.html" class="btn btn-ghost">All questions {ARROW}</a></p>
+    <div class="btn-row" style="margin-top:24px"><a href="faq.html" class="btn btn-ghost">All questions {ARROW}</a><button type="button" class="btn btn-primary" data-open-assistant>Ask the MindGuide Assistant</button></div>
   </div>
 </section>
 {cta_block()}
@@ -624,11 +629,14 @@ FAQ = f"""
 <section class="section" style="padding-top:0">
   <div class="wrap">
     {faq_html(FAQS)}
-    <div class="crisis" style="margin-top:56px">{icon("alert", 24)}<p><b>In an emergency, don’t wait.</b> If you are in danger or thinking about harming yourself, call <b>112</b> or go to the nearest hospital now.</p></div>
+    <div class="btn-row" style="margin-top:40px"><button type="button" class="btn btn-primary" data-open-assistant>Ask the MindGuide Assistant</button><a class="btn btn-ghost" href="contact.html">Contact us</a></div>
+    <div class="crisis" style="margin-top:40px">{icon("alert", 24)}<p><b>In an emergency, don’t wait.</b> If you are in danger or thinking about harming yourself, call <b>112</b> or go to the nearest hospital now.</p></div>
   </div>
 </section>
 {cta_block()}
 """
+
+WA_ITEM = (f'<div class="contact-item"><span class="ico" style="background:#e9fbef;color:#1a9e52">{icon("phone", 22)}</span><div><b>WhatsApp</b><a href="https://wa.me/{WHATSAPP}">+{WHATSAPP}</a></div></div>' if WHATSAPP else "")
 
 CONTACT = f"""
 <section class="page-hero">
@@ -642,6 +650,8 @@ CONTACT = f"""
   <div class="wrap contact-grid">
     <div class="contact-list">
       <div class="contact-item"><span class="ico">{icon("mail", 22)}</span><div><b>Email</b><span id="email-text">{EMAIL}</span><button class="copy-btn" type="button" data-copy="{EMAIL}">Copy</button></div></div>
+      <div class="contact-item"><span class="ico">{icon("message", 22)}</span><div><b>MindGuide Assistant</b><span>Instant answers about plans, privacy and booking. </span><button class="copy-btn" type="button" data-open-assistant>Start a chat</button></div></div>
+      {WA_ITEM}
       <div class="contact-item"><span class="ico">{icon("send", 22)}</span><div><b>Telegram community</b><a href="{APP_URL}/api/telegram">Join the conversation</a></div></div>
       <div class="contact-item"><span class="ico">{icon("pin", 22)}</span><div><b>Where we work</b><span>Online, across all 36 states and the FCT</span></div></div>
       <div class="contact-item"><span class="ico">{icon("users", 22)}</span><div><b>Already a member?</b><a href="{APP_URL}/login">Sign in</a><span> and use Privacy &amp; support to reach our team.</span></div></div>
@@ -665,6 +675,17 @@ CONTACT = f"""
 </section>
 """
 
+NOT_FOUND = f"""
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Page not found</p>
+    <h1>We couldn’t find that page</h1>
+    <p class="lead">The link may be old or mistyped. Try the home page, or ask the MindGuide Assistant.</p>
+    <div class="btn-row" style="margin-top:32px"><a class="btn btn-primary" href="index.html">Go to the home page {ARROW}</a><button type="button" class="btn btn-ghost" data-open-assistant>Ask the assistant</button></div>
+  </div>
+</section>
+"""
+
 PAGES = {
     "index.html": ("MindGuide AI · Online therapy in Nigeria", "Private video and voice therapy with licensed, verified therapists across Nigeria. Guiding minds, empowering women. Plans from ₦10,000 a month.", HOME),
     "how-it-works.html": ("How it works · MindGuide AI", "Create an account, take a 2-minute assessment, meet a matched therapist and join private video or voice sessions in your browser.", HOW),
@@ -673,6 +694,7 @@ PAGES = {
     "about.html": ("About · MindGuide AI", "MindGuide AI connects people across Nigeria, especially women, with licensed therapists through private online sessions.", ABOUT),
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),
     "contact.html": ("Contact · MindGuide AI", "Get in touch with the MindGuide AI team.", CONTACT),
+    "404.html": ("Page not found · MindGuide AI", "This page doesn't exist.", NOT_FOUND),
 }
 
 if __name__ == "__main__":
@@ -689,3 +711,6 @@ if __name__ == "__main__":
             head = re.sub(r"<title>.*?</title>", "<title>MindGuide AI Website</title>", head, count=1)
             (preview / "index.html").write_text(head.strip() + "\n" + inner.strip() + "\n")
         print("wrote", name)
+    urls = "".join(f"<url><loc>{SITE_URL}/{'' if n == 'index.html' else n}</loc></url>" for n in PAGES if n != "404.html")
+    (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
+    (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
