@@ -220,7 +220,7 @@ create table settings (
   updated_at timestamptz not null default now()
 );
 insert into settings (key, value) values
-  ('telegram_link', '"https://t.me/your_channel"'),
+  ('telegram_link', '"https://t.me/+tdTz3hcagzkyNjQ0"'),
   ('cancellation_cutoff_hours', '24'),
   ('helplines', '[{"name":"Emergency services (Nigeria)","phone":"112"}]'),
   ('plans', '{"basic":{"name":"Basic","price":10000},"standard":{"name":"Standard","price":20000},"premium":{"name":"Premium","price":30000},"family":{"name":"Family","price":50000}}');

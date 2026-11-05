@@ -13,6 +13,7 @@ APP_URL = "https://mindguide-ai.vercel.app"
 EMAIL = "mindguideai@gmail.com"
 # WhatsApp number in international format without + or spaces, e.g. 2348012345678. Leave empty to hide WhatsApp buttons.
 WHATSAPP = ""
+TELEGRAM = "https://t.me/+tdTz3hcagzkyNjQ0"
 SITE_URL = "https://mindguide-website.vercel.app"  # the website's own address, used in sitemap.xml
 
 ICONS = {
@@ -154,7 +155,7 @@ def layout(page, title, description, body):
         <ul>
           <li><a href="{APP_URL}/privacy">Privacy policy</a></li>
           <li><a href="{APP_URL}/terms">Terms of use</a></li>
-          <li><a href="{APP_URL}/api/telegram">Telegram community</a></li>
+          <li><a href="{TELEGRAM}">Telegram community</a></li>
         </ul>
       </div>
     </div>
@@ -164,7 +165,7 @@ def layout(page, title, description, body):
     </div>
   </div>
 </footer>
-<div id="mg-assistant" data-api="{APP_URL}/api/assistant" data-app="{APP_URL}" data-whatsapp="{WHATSAPP}"></div>
+<div id="mg-assistant" data-api="{APP_URL}/api/assistant" data-app="{APP_URL}" data-whatsapp="{WHATSAPP}" data-telegram="{TELEGRAM}"></div>
 <script src="assets/site.js"></script>
 <script src="assets/assistant.js"></script>
 </body>
@@ -652,7 +653,7 @@ CONTACT = f"""
       <div class="contact-item"><span class="ico">{icon("mail", 22)}</span><div><b>Email</b><span id="email-text">{EMAIL}</span><button class="copy-btn" type="button" data-copy="{EMAIL}">Copy</button></div></div>
       <div class="contact-item"><span class="ico">{icon("message", 22)}</span><div><b>MindGuide Assistant</b><span>Instant answers about plans, privacy and booking. </span><button class="copy-btn" type="button" data-open-assistant>Start a chat</button></div></div>
       {WA_ITEM}
-      <div class="contact-item"><span class="ico">{icon("send", 22)}</span><div><b>Telegram community</b><a href="{APP_URL}/api/telegram">Join the conversation</a></div></div>
+      <div class="contact-item"><span class="ico">{icon("send", 22)}</span><div><b>Telegram community</b><a href="{TELEGRAM}">Join the conversation</a></div></div>
       <div class="contact-item"><span class="ico">{icon("pin", 22)}</span><div><b>Where we work</b><span>Online, across all 36 states and the FCT</span></div></div>
       <div class="contact-item"><span class="ico">{icon("users", 22)}</span><div><b>Already a member?</b><a href="{APP_URL}/login">Sign in</a><span> and use Privacy &amp; support to reach our team.</span></div></div>
       <div class="crisis">{icon("alert", 24)}<p><b>Need urgent help?</b> This inbox isn’t monitored around the clock. In an emergency call <b>112</b>.</p></div>

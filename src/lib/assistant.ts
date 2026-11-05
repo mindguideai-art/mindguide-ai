@@ -28,7 +28,7 @@ Facts you can rely on:
 - Privacy: calls are encrypted and connect directly between patient and therapist. Patients choose which therapists can see their details and can stop sharing anytime.
 - Therapists can apply at ${SITE}/register/therapist: create a profile, upload their licence, get verified by the team, set their hours. The platform handles bookings, calls, reminders and payments.
 - Topics therapists help with: anxiety, depression, stress and burnout, grief, relationships and marriage, trauma, sleep, self-esteem, family issues, parenting, work pressure, life changes, addiction, anger.
-- Links: create an account ${SITE}/register · sign in ${SITE}/login · Telegram community ${SITE}/api/telegram. Contact email: mindguideai@gmail.com.
+- Links: create an account ${SITE}/register · sign in ${SITE}/login · Telegram community https://t.me/+tdTz3hcagzkyNjQ0. Contact email: mindguideai@gmail.com.
 - Not an emergency service. Emergency number in Nigeria: 112.
 
 Rules:
@@ -58,7 +58,8 @@ const FAQ: [RegExp, string][] = [
   [/(assessment|test|quiz|ai)/i, `The assessment is 7 short questions based on standard screening scales. It gives you a gentle summary and suggests therapists who fit. It isn't a diagnosis. It's free when you create an account: ${SITE}/register`],
   [/(cancel|reschedul|refund)/i, `You can reschedule or cancel a session up to 24 hours before it starts, from your sessions page. You can cancel your plan anytime and keep it until the end of the month you paid for.`],
   [/(video|voice|call|internet|data|app|download|phone)/i, `Sessions run in your browser on a phone, tablet or computer, with no app to download. Choose video, or voice if your internet is slow, since it uses much less data.`],
-  [/(contact|email|support|human|agent|talk to (someone|a person))/i, `You can email the team at mindguideai@gmail.com, or join our Telegram community: ${SITE}/api/telegram`],
+  [/(telegram|community|group)/i, `Join the MindGuide AI community on Telegram to connect with others and get extra support: https://t.me/+tdTz3hcagzkyNjQ0`],
+  [/(contact|email|support|human|agent|talk to (someone|a person))/i, `You can email the team at mindguideai@gmail.com, or join our Telegram community: https://t.me/+tdTz3hcagzkyNjQ0`],
 ];
 
 export function fallbackReply(text: string) {

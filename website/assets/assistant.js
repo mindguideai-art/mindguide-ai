@@ -6,6 +6,7 @@
   var API = root.getAttribute("data-api");
   var APP = root.getAttribute("data-app");
   var WA = (root.getAttribute("data-whatsapp") || "").replace(/\D/g, "");
+  var TG = root.getAttribute("data-telegram") || "";
   var STORE = "mg-assistant-v1";
 
   var CRISIS = /\b(suicid\w*|kill (my ?self|me)|end (my|it all)|end my life|want(ed)? to die|wan die|make i die|better off dead|hurt(ing)? my ?self|self[- ]?harm|cut(ting)? my ?self|overdose|no reason to live|can'?t go on|he (is )?(beat|beating|hit|hitting) me|being abused|not safe at home)\b/i;
@@ -20,7 +21,8 @@
     [/(cancel|reschedul|refund)/i, "You can reschedule or cancel a session up to 24 hours before it starts. You can cancel your plan anytime and keep it until the end of the month you paid for."],
     [/(video|voice|call|internet|data|app|download|phone)/i, "Sessions run in your browser on a phone, tablet or computer, with no app to download. Choose video, or voice if your internet is slow, since it uses much less data."],
     [/(talk to someone|talk now|need help|feel|sad|depress|anxious|anxiety|stress|lonely|tired)/i, "Thank you for sharing that. It takes courage. A verified MindGuide therapist can listen and help you work through it, by video or voice, from wherever you are. You can create a free account and see matched therapists in a few minutes: " + APP + "/register"],
-    [/(contact|email|support|human|agent)/i, "You can email the team at mindguideai@gmail.com" + (WA ? ", or chat with us on WhatsApp." : ".")]
+    [/(telegram|community|group)/i, "Join the MindGuide AI community on Telegram to connect with others and get extra support: " + TG],
+    [/(contact|email|support|human|agent)/i, "You can email the team at mindguideai@gmail.com" + (TG ? ", or join our Telegram community: " + TG : ".")]
   ];
   var CHIPS = ["How does it work?", "How much does it cost?", "Is it private?", "I want to talk to someone", "I'm a therapist"];
   var WELCOME = "Hi, I'm the **MindGuide Assistant** 👋\nI can answer questions about MindGuide AI and help you get started. What would you like to know?";

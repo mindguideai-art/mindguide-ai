@@ -18,8 +18,11 @@ This rewrites the HTML pages. Styles are in `assets/style.css`, scripts in `asse
 - **Contact email:** change `EMAIL` in the same file.
 
 ## Hosting on Vercel
-1. In Vercel, **Add New → Project** and import the `mindguideai-art/mindguide-ai` repository again.
-2. Set **Root Directory** to `website` and **Framework Preset** to **Other**. Leave the build command empty.
+1. In Vercel, **Add New → Project** and import the `mindguideai-art/mindguideai` repository.
+2. Set **Framework Preset** to **Other**. Leave the root directory and build command as they are.
 3. Deploy. When the client has a domain, add `www.yourdomain.com` to this project (the website) and `app.yourdomain.com` to the web app project.
 
-It also works on any ordinary web hosting (cPanel): upload everything in this folder except `src/` and `preview/` to `public_html`.
+It also works on any ordinary web hosting (cPanel): upload everything in this repository except `src/` to `public_html`.
+
+## Chat assistant
+The chat window (`assets/assistant.js`) sends questions to the web app at `APP_URL/api/assistant`. Smart answers need `ANTHROPIC_API_KEY` set in the web app's hosting; without it, it answers from a built-in FAQ. Set `WHATSAPP` in `src/build.py` to show WhatsApp buttons.
