@@ -686,5 +686,6 @@ if __name__ == "__main__":
             head = re.search(r"<head>(.*?)</head>", html, re.S).group(1)
             head = re.sub(r'<meta charset[^>]*>\s*<meta name="viewport"[^>]*>\s*', "", head)
             inner = re.search(r"<body>(.*?)</body>", html, re.S).group(1)
+            head = re.sub(r"<title>.*?</title>", "<title>MindGuide AI Website</title>", head, count=1)
             (preview / "index.html").write_text(head.strip() + "\n" + inner.strip() + "\n")
         print("wrote", name)
