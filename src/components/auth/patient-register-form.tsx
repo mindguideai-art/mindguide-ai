@@ -262,7 +262,7 @@ export function PatientRegisterForm({ plans, initialPlan }: { plans: PlanOption[
             <input type="checkbox" name="agree" className="mt-1" required={step === 4} />
             <span>
               I agree to the <Link href="/terms" className="text-brand-700 underline">terms of use</Link> and{" "}
-              <Link href="/privacy" className="text-brand-700 underline">privacy and anonymity framework</Link>, and I understand this service
+              <Link href="/privacy" className="text-brand-700 underline">privacy policy</Link>, and I understand this service
               is not for emergencies.
             </span>
           </label>

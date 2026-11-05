@@ -43,7 +43,7 @@ export default function TherapistRegister() {
           <input type="checkbox" name="agree" className="mt-1" />
           <span>
             I agree to the <Link href="/terms" className="text-brand-700 underline">terms of use</Link> and{" "}
-            <Link href="/privacy" className="text-brand-700 underline">privacy and anonymity framework</Link>.
+            <Link href="/privacy" className="text-brand-700 underline">privacy policy</Link>.
           </span>
         </label>
         <SubmitButton className="btn-primary w-full" pendingText="Creating account…">Create therapist account</SubmitButton>

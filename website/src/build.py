@@ -151,12 +151,10 @@ def layout(page, title, description, body):
         </ul>
       </div>
       <div>
-        <h4>Policies</h4>
+        <h4>Legal</h4>
         <ul>
-          <li><a href="terms.html">Terms of Use</a></li>
-          <li><a href="privacy.html">Anonymity and protection</a></li>
-          <li><a href="safeguarding.html">Safeguarding</a></li>
-          <li><a href="company-policy.html">Company policy</a></li>
+          <li><a href="{APP_URL}/terms">Terms of use</a></li>
+          <li><a href="{APP_URL}/privacy">Privacy</a></li>
           <li><a href="{TELEGRAM}">Telegram community</a></li>
         </ul>
       </div>
@@ -751,64 +749,6 @@ NOT_FOUND = f"""
 </section>
 """
 
-# ---------------------------------------------------------------- policies
-import sys
-sys.path.insert(0, str(ROOT / "src" / "legal"))
-from clean import DOCS as LEGAL, toc as legal_toc  # noqa: E402
-
-LEGAL_FILES = {"terms": "terms.html", "anonymity": "privacy.html", "safeguarding": "safeguarding.html", "company-policy": "company-policy.html"}
-
-
-def legal_page(key):
-    meta = LEGAL[key]
-    body = (ROOT / "src" / "legal" / f"{key}.html").read_text()
-    nav = "".join(f'<li><a href="#{i}">{t}</a></li>' for i, t in legal_toc(body))
-    others = "".join(f'<li><a href="{LEGAL_FILES[k]}">{LEGAL[k]["title"]}</a></li>' for k in LEGAL if k != key)
-    return f"""
-<section class="page-hero legal-hero">
-  <div class="wrap">
-    <p class="eyebrow"><a href="policies.html" style="color:inherit;text-decoration:none">Policies</a></p>
-    <h1>{meta["title"]}</h1>
-    <p class="lead">{meta["summary"]}</p>
-    <p class="legal-status">{meta["status"]} · Effective date: <span class="tbc">to be confirmed</span></p>
-  </div>
-</section>
-<section class="section" style="padding-top:0">
-  <div class="wrap legal-grid">
-    <aside class="legal-aside">
-      <p class="eyebrow">On this page</p>
-      <ol class="legal-toc">{nav}</ol>
-      <p class="eyebrow" style="margin-top:28px">Other policies</p>
-      <ul class="legal-toc">{others}</ul>
-    </aside>
-    <article class="legal">{body}</article>
-  </div>
-</section>
-<section class="section" style="padding-top:0"><div class="wrap"><div class="crisis">{icon("alert", 24)}<p><b>MindGuide AI is not an emergency service.</b> If you or someone else is in immediate danger, call <b>112</b> or go to the nearest hospital emergency department.</p></div></div></section>
-"""
-
-
-POLICIES = f"""
-<section class="page-hero">
-  <div class="wrap">
-    <p class="eyebrow">Policies</p>
-    <h1>How we work, and how we protect you</h1>
-    <p class="lead">These documents explain the rules for using MindGuide AI, how we protect your identity and information, how we keep people safe, and the standards our team works to.</p>
-  </div>
-</section>
-<section class="section" style="padding-top:0">
-  <div class="wrap">
-    <div class="cards policy-cards">
-      <a class="card" href="terms.html">{icon("file", 28)}<h3>Terms of Use</h3><p>{LEGAL["terms"]["summary"]}.</p></a>
-      <a class="card" href="privacy.html">{icon("lock", 28)}<h3>User Anonymity and Protection</h3><p>{LEGAL["anonymity"]["summary"]}.</p></a>
-      <a class="card" href="safeguarding.html">{icon("shield", 28)}<h3>Safeguarding Policy</h3><p>{LEGAL["safeguarding"]["summary"]}.</p></a>
-      <a class="card" href="company-policy.html">{icon("users", 28)}<h3>Company Policy</h3><p>{LEGAL["company-policy"]["summary"]}.</p></a>
-    </div>
-    <p class="plans-note">Questions about these policies? Email <a href="mailto:{EMAIL}">{EMAIL}</a>.</p>
-  </div>
-</section>
-"""
-
 PAGES = {
     "index.html": ("MindGuide AI · Online therapy in Nigeria", "Private video and voice therapy with licensed, verified therapists across Nigeria. Guiding minds, empowering women. Plans from ₦10,000 a month.", HOME),
     "how-it-works.html": ("How it works · MindGuide AI", "Create an account, take a 2-minute assessment, meet a matched therapist and join private video or voice sessions in your browser.", HOW),
@@ -818,11 +758,6 @@ PAGES = {
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),
     "contact.html": ("Contact · MindGuide AI", "Get in touch with the MindGuide AI team.", CONTACT),
     "404.html": ("Page not found · MindGuide AI", "This page doesn't exist.", NOT_FOUND),
-    "policies.html": ("Policies · MindGuide AI", "Terms of Use, user anonymity and protection, safeguarding and company policy for MindGuide AI.", POLICIES),
-    "terms.html": ("Terms of Use · MindGuide AI", LEGAL["terms"]["summary"] + ".", legal_page("terms")),
-    "privacy.html": ("User Anonymity and Protection · MindGuide AI", LEGAL["anonymity"]["summary"] + ".", legal_page("anonymity")),
-    "safeguarding.html": ("Safeguarding Policy · MindGuide AI", LEGAL["safeguarding"]["summary"] + ".", legal_page("safeguarding")),
-    "company-policy.html": ("Company Policy · MindGuide AI", LEGAL["company-policy"]["summary"] + ".", legal_page("company-policy")),
 }
 
 if __name__ == "__main__":
