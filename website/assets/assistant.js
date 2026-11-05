@@ -56,7 +56,7 @@
         '<textarea id="mga-input" rows="1" placeholder="Ask about plans, privacy, booking…" maxlength="1000"></textarea>' +
         '<button type="submit" aria-label="Send">' + ICON.send + "</button>" +
       "</form>" +
-      '<p class="mga-note">AI assistant, not a therapist. In an emergency call <b>112</b>.</p>' +
+      '<p class="mga-note">AI assistant, not a therapist. Messages are processed by our AI provider, so please don\u2019t share personal details. In an emergency call <b>112</b>.</p>' +
     "</section>";
 
   var launcher = root.querySelector(".mga-launcher");

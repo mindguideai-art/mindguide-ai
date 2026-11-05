@@ -13,7 +13,7 @@ APP_URL = "https://mindguide-ai.vercel.app"
 EMAIL = "mindguideai@gmail.com"
 # WhatsApp number in international format without + or spaces, e.g. 2348012345678. Leave empty to hide WhatsApp buttons.
 WHATSAPP = ""
-TELEGRAM = "https://t.me/+tdTz3hcagzkyNjQ0"
+TELEGRAM = APP_URL + "/community"  # rules and privacy tips, then the Telegram group (https://t.me/+tdTz3hcagzkyNjQ0)
 SITE_URL = "https://mindguide-website.vercel.app"  # the website's own address, used in sitemap.xml
 
 ICONS = {
@@ -98,9 +98,8 @@ def layout(page, title, description, body):
 <meta property="og:image" content="assets/img/app-home.webp">
 <meta name="theme-color" content="#130f36">
 <link rel="icon" href="assets/img/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..700&display=swap">
+<link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>

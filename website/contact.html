@@ -11,9 +11,8 @@
 <meta property="og:image" content="assets/img/app-home.webp">
 <meta name="theme-color" content="#130f36">
 <link rel="icon" href="assets/img/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..700&display=swap">
+<link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -50,7 +49,7 @@
       <div class="contact-item"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><div><b>Email</b><span id="email-text">mindguideai@gmail.com</span><button class="copy-btn" type="button" data-copy="mindguideai@gmail.com">Copy</button></div></div>
       <div class="contact-item"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><div><b>MindGuide Assistant</b><span>Instant answers about plans, privacy and booking. </span><button class="copy-btn" type="button" data-open-assistant>Start a chat</button></div></div>
       
-      <div class="contact-item"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span><div><b>Telegram community</b><a href="https://t.me/+tdTz3hcagzkyNjQ0">Join the conversation</a></div></div>
+      <div class="contact-item"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span><div><b>Telegram community</b><a href="https://mindguide-ai.vercel.app/community">Join the conversation</a></div></div>
       <div class="contact-item"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>Where we work</b><span>Online, across all 36 states and the FCT</span></div></div>
       <div class="contact-item"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><b>Already a member?</b><a href="https://mindguide-ai.vercel.app/login">Sign in</a><span> and use Privacy &amp; support to reach our team.</span></div></div>
       <div class="crisis"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></svg><p><b>Need urgent help?</b> This inbox isn’t monitored around the clock. In an emergency call <b>112</b>.</p></div>
@@ -103,7 +102,7 @@
         <ul>
           <li><a href="https://mindguide-ai.vercel.app/terms">Terms of use</a></li>
           <li><a href="https://mindguide-ai.vercel.app/privacy">Privacy</a></li>
-          <li><a href="https://t.me/+tdTz3hcagzkyNjQ0">Telegram community</a></li>
+          <li><a href="https://mindguide-ai.vercel.app/community">Telegram community</a></li>
         </ul>
       </div>
     </div>
@@ -113,7 +112,7 @@
     </div>
   </div>
 </footer>
-<div id="mg-assistant" data-api="https://mindguide-ai.vercel.app/api/assistant" data-app="https://mindguide-ai.vercel.app" data-whatsapp="" data-telegram="https://t.me/+tdTz3hcagzkyNjQ0"></div>
+<div id="mg-assistant" data-api="https://mindguide-ai.vercel.app/api/assistant" data-app="https://mindguide-ai.vercel.app" data-whatsapp="" data-telegram="https://mindguide-ai.vercel.app/community"></div>
 <script src="assets/site.js"></script>
 <script src="assets/assistant.js"></script>
 </body>
