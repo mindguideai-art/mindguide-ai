@@ -2,7 +2,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* MindGuide AI: teal → indigo → magenta, taken from the logo. Lexend for headings (matches the wordmark), Plus Jakarta Sans for reading. */
+/* MindGuide AI: teal → indigo → magenta, taken from the logo. Bricolage Grotesque for headings, Figtree for reading. */
 @theme {
   --color-brand-50: #ecfaf8;
   --color-brand-100: #d0f2ee;
@@ -28,8 +28,8 @@
   --color-ink: #16152b;
   --color-muted: #5f6178;
   --color-line: #e5e6f0;
-  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Lexend Variable", "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Figtree Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
   --shadow-soft: 0 1px 2px rgb(30 25 90 / 0.04), 0 8px 24px -12px rgb(30 25 90 / 0.14);
   --shadow-lift: 0 2px 4px rgb(30 25 90 / 0.05), 0 18px 40px -18px rgb(30 25 90 / 0.32);
   --animate-ring: ring 1.8s ease-out infinite;
@@ -83,7 +83,6 @@ html {
 body {
   background: var(--color-mist);
   color: var(--color-ink);
-  font-feature-settings: "ss01";
 }
 h1, h2, h3 {
   text-wrap: balance;

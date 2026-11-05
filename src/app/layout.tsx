@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/plus-jakarta-sans";
-import "@fontsource-variable/lexend";
+import "@fontsource-variable/figtree";
+import "@fontsource-variable/bricolage-grotesque";
 import "./globals.css";
 import { APP_NAME } from "@/lib/constants";
 
