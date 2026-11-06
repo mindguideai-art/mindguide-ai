@@ -57,8 +57,8 @@ def icon(name, size=20):
 
 ARROW = f'<span class="arrow">{icon("arrow", 18)}</span>'
 
-NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.html", "Plans"), ("therapists.html", "For therapists"), ("events.html", "Events"), ("gallery.html", "Gallery"), ("about.html", "About"), ("faq.html", "FAQ"), ("contact.html", "Contact")]
-DESKTOP_HIDE = {"index.html", "faq.html"}  # FAQ stays in the mobile menu and footer to keep the top bar uncluttered
+NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.html", "Plans"), ("therapists.html", "For therapists"), ("events.html", "Events"), ("gallery.html", "Gallery"), ("about.html", "About"), ("team.html", "Our team"), ("faq.html", "FAQ"), ("contact.html", "Contact")]
+DESKTOP_HIDE = {"index.html", "faq.html", "team.html"}  # FAQ stays in the mobile menu and footer to keep the top bar uncluttered
 
 PLANS = [
     ("basic", "Basic", "₦10,000", "2 sessions a month", ["Verified, licensed therapists", "AI wellbeing assessment", "Session calendar", "Email and SMS reminders"], ["Private messaging", "Mood and progress tracker"]),
@@ -152,6 +152,7 @@ def layout(page, title, description, body, scripts=()):
         <h4>Company</h4>
         <ul>
           <li><a href="about.html">About us</a></li>
+          <li><a href="team.html">Our team</a></li>
           <li><a href="events.html">Events</a></li>
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="therapists.html">For therapists</a></li>
@@ -592,6 +593,20 @@ THERAPISTS = f"""
 {cta_block("Ready to support more people?", "Apply in minutes. We’ll review your licence and let you know by email.").replace(f'{APP_URL}/register"', f'{APP_URL}/register/therapist"').replace("Get started", "Apply to join").replace('href="pricing.html">See plans', 'href="contact.html">Contact us')}
 """
 
+TEAM_MEMBERS = [
+    ("Oluwakorede Atansuyi", "Founder & Chief Executive Officer", "team-oluwakorede-atansuyi.webp"),
+    ("Ogbodo Daniel Obumneme", "Chief Medical Officer", "team-ogbodo-daniel.webp"),
+]
+
+
+def team_html():
+    return '<div class="team">' + "".join(
+        f'<figure class="member"><div class="member-photo"><img src="assets/img/{img}" alt="Portrait of {name}" width="800" height="1000"></div>'
+        f'<figcaption><h3>{name}</h3><p>{role}</p></figcaption></figure>'
+        for name, role, img in TEAM_MEMBERS
+    ) + "</div>"
+
+
 ABOUT = f"""
 <section class="page-hero">
   <div class="wrap">
@@ -685,6 +700,15 @@ ABOUT = f"""
     </div>
   </div>
 </section>
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head-row">
+      <div class="section-head" style="margin-bottom:0"><p class="eyebrow">Our team</p><h2 style="font-size:var(--step-3)">Meet the people leading MindGuide AI</h2></div>
+      <a class="btn btn-ghost" href="team.html">Meet the team {ARROW}</a>
+    </div>
+    {team_html()}
+  </div>
+</section>
 <section class="section night">
   <div class="wrap night-grid">
     <div>
@@ -772,6 +796,36 @@ NOT_FOUND = f"""
 </section>
 """
 
+TEAM = f"""
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Our team</p>
+    <h1>The people behind MindGuide AI</h1>
+    <p class="lead">A team of healthcare and technology professionals working to make mental health support easier to reach, more affordable and free of stigma, for everyone.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:32px"><p class="eyebrow">Leadership</p></div>
+    {team_html()}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="ev-host">
+      <div>
+        <p class="eyebrow">Work with us</p>
+        <h2>Are you a licensed therapist?</h2>
+        <p>Join our network of verified psychologists, psychotherapists and counsellors, set your own hours and support clients across Nigeria.</p>
+      </div>
+      <a class="btn btn-light" href="therapists.html">Apply as a therapist {ARROW}</a>
+    </div>
+  </div>
+</section>
+"""
+
 EVENTS = f"""
 <section class="page-hero ev-hero">
   <div class="wrap">
@@ -846,6 +900,7 @@ PAGES = {
     "pricing.html": ("Plans and prices · MindGuide AI", "Monthly therapy plans from ₦10,000: Basic, Standard, Premium and Family. Pay with Paystack and cancel anytime.", PRICING),
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
     "about.html": ("About us · MindGuide AI", "MindGuide AI is a technology-enabled mental health and wellbeing platform making mental healthcare more accessible, affordable, personalised and inclusive.", ABOUT),
+    "team.html": ("Our team · MindGuide AI", "Meet the leadership of MindGuide AI: Oluwakorede Atansuyi, Founder and CEO, and Ogbodo Daniel Obumneme, Chief Medical Officer.", TEAM),
     "events.html": ("Events · MindGuide AI", "Mental health talks, workshops and community walks from MindGuide AI, online and across Nigeria. Register online in a minute.", EVENTS),
     "gallery.html": ("Gallery · MindGuide AI", "Photos from MindGuide AI community events, walks and workshops.", GALLERY),
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),

@@ -596,3 +596,12 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 .lb-btn:hover { background: rgba(255,255,255,.22); }
 .lb-close { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(12px + env(safe-area-inset-top, 0px)); }
 @media (max-width: 600px) { .lightbox { grid-template-columns: minmax(0, 1fr); } .lb-prev, .lb-next { position: absolute; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); } .lb-prev { left: 30%; } .lb-next { right: 30%; } .lightbox img { max-height: calc(100dvh - 200px); } }
+
+/* ---------- Team ---------- */
+.team { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 28px; max-width: 900px; }
+.member { margin: 0; display: grid; gap: 18px; }
+.member-photo { position: relative; aspect-ratio: 4 / 5; border-radius: 28px; overflow: hidden; background: var(--mist); }
+.member-photo::after { content: ""; position: absolute; inset: auto 0 0; height: 6px; background: var(--grad); }
+.member-photo img { width: 100%; height: 100%; object-fit: cover; }
+.member h3 { font-size: var(--step-2); }
+.member p { margin-top: 6px; font-size: 0.85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); }
