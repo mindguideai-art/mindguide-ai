@@ -117,7 +117,7 @@ export default async function Home() {
               Guiding minds,
               <br />
               <span className="relative text-gradient">
-                empowering women.
+                empowering lives.
                 <svg className="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9c60-6 140-8 296-3" stroke="#c026a8" strokeWidth="5" fill="none" strokeLinecap="round" /></svg>
               </span>
             </h1>

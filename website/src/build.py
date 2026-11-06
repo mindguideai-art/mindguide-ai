@@ -129,7 +129,7 @@ def layout(page, title, description, body):
     <div class="footer-grid">
       <div>
         <a class="brand" href="index.html"><img src="assets/img/mindguide-mark.png" alt="" width="38" height="38"><span><span class="mind">MindGuide</span> <b>AI</b></span></a>
-        <p>A technology-enabled mental health and wellbeing platform making care more accessible, affordable, personalised and inclusive. Guiding minds, empowering women.</p>
+        <p>A technology-enabled mental health and wellbeing platform making care more accessible, affordable, personalised and inclusive. Guiding minds, empowering lives.</p>
       </div>
       <div>
         <h4>Get support</h4>
@@ -194,7 +194,7 @@ def frame(img, url, alt, w=1280, h=800):
 
 FAQS = {
     "Getting started": [
-        ("Who is MindGuide AI for?", "Anyone in Nigeria who wants private, professional support for their mental health. We built MindGuide AI with women in mind, because so many carry heavy loads quietly, but everyone is welcome."),
+        ("Who is MindGuide AI for?", "Anyone in Nigeria who wants private, professional support for their mental health: students, working professionals, parents, couples and families. Whatever you’re going through, you’re welcome here."),
         ("How do I start?", "Create an account, answer a few short questions about how you’re feeling, and take the 2-minute wellbeing assessment. You’ll see therapists who specialise in what you’re going through, then choose a plan and book a time."),
         ("Do I need to download an app?", "No. MindGuide AI works in your web browser on a phone, tablet or computer. Allow your camera and microphone when your session starts."),
         ("What does the AI assessment do?", "It asks seven short questions based on standard screening scales, then gives you a plain-language summary and suggests therapists who fit. It is not a diagnosis. Your therapist talks through your needs with you."),
@@ -235,7 +235,7 @@ HOME = f"""
   <div class="wrap hero-grid">
     <div>
       <span class="pill"><i>New</i> Online therapy, made for Nigeria</span>
-      <h1>Guiding minds, <em class="grad-text">empowering women.</em></h1>
+      <h1>Guiding minds, <em class="grad-text">empowering lives.</em></h1>
       <p class="lead">Private video and voice sessions with licensed, verified therapists, from wherever you are. Book in minutes, track how you’re doing, and get support that fits your life.</p>
       <div class="btn-row">
         <a class="btn btn-glow" href="{APP_URL}/register">Find your therapist {ARROW}</a>
@@ -276,13 +276,13 @@ HOME = f"""
   <div class="wrap manifesto-grid">
     <div>
       <p class="eyebrow">Why we exist</p>
-      <blockquote style="margin-top:18px">Women hold families, careers and communities together. <span>Who holds space for them?</span></blockquote>
+      <blockquote style="margin-top:18px">Everyone carries something. <span>You don’t have to carry it alone.</span></blockquote>
       <p class="lead" style="margin-top:22px">MindGuide AI makes professional mental health support private, affordable and easy to reach, so you can look after yourself without explaining it to anyone.</p>
     </div>
     <div class="reasons">
       <div>{icon("lock", 26)}<div><h3>Talk privately, from anywhere</h3><p>No waiting rooms and no one needs to know. Join from your bedroom, your car or your office with the door closed.</p></div></div>
       <div>{icon("badge", 26)}<div><h3>Professionals you can trust</h3><p>Every therapist is licensed, and our team checks their licence and qualifications before they’re listed.</p></div></div>
-      <div>{icon("heart", 26)}<div><h3>Support for real life</h3><p>Anxiety, stress, relationships, grief, motherhood, work pressure, healing from the past. Bring whatever you’re carrying.</p></div></div>
+      <div>{icon("heart", 26)}<div><h3>Support for real life</h3><p>Anxiety, stress, relationships, grief, parenting, work pressure, healing from the past. Bring whatever you’re carrying.</p></div></div>
       <div>{icon("wallet", 26)}<div><h3>Plans that fit your budget</h3><p>Monthly plans from ₦10,000, paid securely with Paystack. Cancel anytime.</p></div></div>
     </div>
   </div>
@@ -630,7 +630,7 @@ ABOUT = f"""
     <div class="prose">
       <p>At MindGuide AI, our goal is to bridge the gap between individuals who need support and the people, services and resources that can help them.</p>
       <p>We are building an inclusive mental health ecosystem where no one has to navigate their mental wellbeing journey without guidance, connection or support.</p>
-      <p class="tagline">MindGuide AI · Guiding minds… empowering women</p>
+      <p class="tagline">MindGuide AI · Guiding minds, empowering lives</p>
     </div>
   </div>
 </section>
@@ -749,7 +749,7 @@ NOT_FOUND = f"""
 """
 
 PAGES = {
-    "index.html": ("MindGuide AI · Online therapy in Nigeria", "Private video and voice therapy with licensed, verified therapists across Nigeria. Guiding minds, empowering women. Plans from ₦10,000 a month.", HOME),
+    "index.html": ("MindGuide AI · Online therapy in Nigeria", "Private video and voice therapy with licensed, verified therapists across Nigeria. Guiding minds, empowering lives. Plans from ₦10,000 a month.", HOME),
     "how-it-works.html": ("How it works · MindGuide AI", "Create an account, take a 2-minute assessment, meet a matched therapist and join private video or voice sessions in your browser.", HOW),
     "pricing.html": ("Plans and prices · MindGuide AI", "Monthly therapy plans from ₦10,000: Basic, Standard, Premium and Family. Pay with Paystack and cancel anytime.", PRICING),
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
