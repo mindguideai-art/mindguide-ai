@@ -13,6 +13,7 @@ export const RETENTION = [
   { table: "notifications", days: 365, what: "In-app notifications" },
   { table: "events", days: 730, what: "Usage events (sign-ins, check-ins, Telegram clicks)" },
   { table: "calls", days: 730, what: "Call history: times and durations (no audio or video is ever recorded)" },
+  { table: "event_registrations", days: 730, what: "Event registrations (name, email, phone)" },
   { table: "record_access_log", days: 1095, what: "Access log of who viewed sensitive records" },
 ] as const;
 

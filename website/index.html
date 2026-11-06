@@ -20,7 +20,7 @@
 <header class="site-header">
   <div class="wrap nav">
     <a class="brand" href="index.html" aria-label="MindGuide AI home"><img src="assets/img/mindguide-mark.png" alt="" width="38" height="38"><span><span class="mind">MindGuide</span> <b>AI</b></span></a>
-    <nav class="nav-links" aria-label="Main"><a href="how-it-works.html">How it works</a><a href="pricing.html">Plans</a><a href="therapists.html">For therapists</a><a href="about.html">About</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></nav>
+    <nav class="nav-links" aria-label="Main"><a href="how-it-works.html">How it works</a><a href="pricing.html">Plans</a><a href="therapists.html">For therapists</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
     <div class="nav-cta">
       <a class="btn btn-ghost" href="https://mindguide-ai.vercel.app/login">Sign in</a>
       <a class="btn btn-primary" href="https://mindguide-ai.vercel.app/register">Get started</a>
@@ -29,7 +29,7 @@
   </div>
   <div class="mobile-menu" id="mobile-menu">
     <div class="wrap">
-      <nav aria-label="Mobile"><a href="index.html">Home</a><a href="how-it-works.html">How it works</a><a href="pricing.html">Plans</a><a href="therapists.html">For therapists</a><a href="about.html">About</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></nav>
+      <nav aria-label="Mobile"><a href="index.html">Home</a><a href="how-it-works.html">How it works</a><a href="pricing.html">Plans</a><a href="therapists.html">For therapists</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></nav>
       <div class="btn-row"><a class="btn btn-ghost" href="https://mindguide-ai.vercel.app/login">Sign in</a><a class="btn btn-primary" href="https://mindguide-ai.vercel.app/register">Get started</a></div>
     </div>
   </div>
@@ -235,6 +235,19 @@
     <div class="btn-row" style="margin-top:24px"><a href="faq.html" class="btn btn-ghost">All questions <span class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a><button type="button" class="btn btn-primary" data-open-assistant>Ask the MindGuide Assistant</button></div>
   </div>
 </section>
+<section class="section home-events" id="home-events" data-api="https://mindguide-ai.vercel.app" hidden>
+  <div class="wrap">
+    <div class="section-head-row">
+      <div class="section-head" style="margin-bottom:0">
+        <p class="eyebrow">Upcoming events</p>
+        <h2>Join us in person and online</h2>
+      </div>
+      <a class="btn btn-ghost" href="events.html">All events <span class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+    </div>
+    <div class="ev-grid" data-events-home></div>
+  </div>
+</section>
+
 
 <section class="section" style="padding-bottom:0">
   <div class="wrap">
@@ -270,6 +283,8 @@
         <h4>Company</h4>
         <ul>
           <li><a href="about.html">About us</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
           <li><a href="therapists.html">For therapists</a></li>
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -293,5 +308,6 @@
 <div id="mg-assistant" data-api="https://mindguide-ai.vercel.app/api/assistant" data-app="https://mindguide-ai.vercel.app" data-whatsapp="" data-telegram="https://mindguide-ai.vercel.app/community"></div>
 <script src="assets/site.js"></script>
 <script src="assets/assistant.js"></script>
+<script src="assets/events.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ The Privacy Policy must list these. Before launch, sign or accept each provider'
 
 | Provider | What it does for us | Information it receives | Where / notes |
 |---|---|---|---|
-| **Supabase** | Database, sign-in, file storage | Everything stored in the app: accounts, registration answers, assessments, appointments, messages, session notes, licences | Region chosen when the project was created (Supabase → Settings → General). Encrypted at rest. SOC 2 Type 2. |
+| **Supabase** | Database, sign-in, file storage | Everything stored in the app: accounts, event registrations, gallery photos, registration answers, assessments, appointments, messages, session notes, licences | Region chosen when the project was created (Supabase → Settings → General). Encrypted at rest. SOC 2 Type 2. |
 | **Vercel** | Hosts the web app and the website | All web traffic passes through it; server logs include IP addresses | Global network. |
 | **Anthropic** (Claude AI) | 1) Writes the plain-language assessment summary. 2) Answers questions in the MindGuide Assistant (website chat and WhatsApp) | 1) Assessment answers, optional notes the user types, selected concerns and support areas, scores. **Not sent:** name, email, phone, age, location. 2) The text of chat messages | United States. Under Anthropic's commercial terms, API inputs are not used to train models by default. Confirm the current retention period and accept Anthropic's DPA. Crisis messages in the assistant are answered by fixed text and never sent to the AI. |
 | **Paystack** | Card, transfer and USSD payments; monthly renewals | Name, email, amount, plan. Card details go straight to Paystack; we never see or store them | Nigeria. PCI DSS certified. |

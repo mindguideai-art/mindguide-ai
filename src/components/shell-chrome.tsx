@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Bell, CalendarDays, CreditCard, FileBadge2, Gauge, HeartPulse, Home, LifeBuoy, LineChart, LogOut, Menu,
-  MessageCircle, Search, Settings, ShieldAlert, Stethoscope, UserRound, Users, Video, Wallet, X, ClipboardList, Clock,
+  MessageCircle, Search, Settings, ShieldAlert, Stethoscope, UserRound, Users, Video, Wallet, X, ClipboardList, Clock, CalendarHeart, Images,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { Avatar } from "./avatar";
@@ -13,7 +13,7 @@ import { NotificationBell } from "./notification-bell";
 const ICONS = {
   home: Home, search: Search, video: Video, message: MessageCircle, chart: LineChart, pulse: HeartPulse,
   card: CreditCard, help: LifeBuoy, gauge: Gauge, users: Users, calendar: CalendarDays, clock: Clock, wallet: Wallet,
-  user: UserRound, badge: FileBadge2, stethoscope: Stethoscope, alert: ShieldAlert, settings: Settings, list: ClipboardList, bell: Bell,
+  user: UserRound, badge: FileBadge2, stethoscope: Stethoscope, alert: ShieldAlert, settings: Settings, list: ClipboardList, bell: Bell, event: CalendarHeart, gallery: Images,
 } as const;
 
 export type NavItem = { href: string; label: string; icon: keyof typeof ICONS };

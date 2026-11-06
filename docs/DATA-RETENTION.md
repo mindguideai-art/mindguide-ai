@@ -13,6 +13,7 @@ The job `/api/cron/retention` runs daily at 02:30 (vercel.json) and deletes anyt
 | In-app notifications (`notifications`) | 12 months | Convenience only |
 | Usage events: sign-ins, check-in counts, Telegram clicks (`events`) | 24 months | Admin dashboard metrics and security |
 | Call history: start/end times only, never audio or video (`calls`) | 24 months | Disputes about missed sessions |
+| Event registrations: name, email, phone, answers (`event_registrations`) | 24 months | Running the event and follow-up; deleting an event deletes its registrations straight away |
 | Access log: who viewed sensitive records (`record_access_log`) | 36 months ⚖️ | Accountability and breach investigation |
 
 The periods live in `src/lib/retention.ts`. Change them there and update this table.

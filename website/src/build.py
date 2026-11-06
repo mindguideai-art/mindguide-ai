@@ -40,6 +40,13 @@ ICONS = {
     "brain": '<path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M12 5v13"/>',
     "wallet": '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
     "file": '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M9 15l2 2 4-4"/>',
+    "image": '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+    "ticket": '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/>',
+    "monitor": '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
+    "share": '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/>',
+    "x": '<path d="M18 6 6 18M6 6l12 12"/>',
+    "chev-left": '<path d="m15 18-6-6 6-6"/>',
+    "chev-right": '<path d="m9 18 6-6-6-6"/>',
     "sun": '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
 }
 
@@ -50,7 +57,8 @@ def icon(name, size=20):
 
 ARROW = f'<span class="arrow">{icon("arrow", 18)}</span>'
 
-NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.html", "Plans"), ("therapists.html", "For therapists"), ("about.html", "About"), ("faq.html", "FAQ"), ("contact.html", "Contact")]
+NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.html", "Plans"), ("therapists.html", "For therapists"), ("events.html", "Events"), ("gallery.html", "Gallery"), ("about.html", "About"), ("faq.html", "FAQ"), ("contact.html", "Contact")]
+DESKTOP_HIDE = {"index.html", "faq.html"}  # FAQ stays in the mobile menu and footer to keep the top bar uncluttered
 
 PLANS = [
     ("basic", "Basic", "₦10,000", "2 sessions a month", ["Verified, licensed therapists", "AI wellbeing assessment", "Session calendar", "Email and SMS reminders"], ["Private messaging", "Mood and progress tracker"]),
@@ -80,9 +88,9 @@ def plans_html(cta_prefix="Choose"):
     return '<div class="plans">' + "".join(out) + "</div>"
 
 
-def layout(page, title, description, body):
+def layout(page, title, description, body, scripts=()):
     links = "".join(
-        f'<a href="{href}"{" aria-current=\"page\"" if href == page else ""}>{label}</a>' for href, label in NAV if href != "index.html"
+        f'<a href="{href}"{" aria-current=\"page\"" if href == page else ""}>{label}</a>' for href, label in NAV if href not in DESKTOP_HIDE
     )
     mobile = "".join(f'<a href="{href}">{label}</a>' for href, label in NAV)
     return f"""<!doctype html>
@@ -144,6 +152,8 @@ def layout(page, title, description, body):
         <h4>Company</h4>
         <ul>
           <li><a href="about.html">About us</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
           <li><a href="therapists.html">For therapists</a></li>
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -167,6 +177,7 @@ def layout(page, title, description, body):
 <div id="mg-assistant" data-api="{APP_URL}/api/assistant" data-app="{APP_URL}" data-whatsapp="{WHATSAPP}" data-telegram="{TELEGRAM}"></div>
 <script src="assets/site.js"></script>
 <script src="assets/assistant.js"></script>
+{"".join(f'<script src="assets/{js}"></script>' for js in scripts)}
 </body>
 </html>
 """
@@ -394,6 +405,19 @@ HOME = f"""
     <div class="btn-row" style="margin-top:24px"><a href="faq.html" class="btn btn-ghost">All questions {ARROW}</a><button type="button" class="btn btn-primary" data-open-assistant>Ask the MindGuide Assistant</button></div>
   </div>
 </section>
+<section class="section home-events" id="home-events" data-api="{APP_URL}" hidden>
+  <div class="wrap">
+    <div class="section-head-row">
+      <div class="section-head" style="margin-bottom:0">
+        <p class="eyebrow">Upcoming events</p>
+        <h2>Join us in person and online</h2>
+      </div>
+      <a class="btn btn-ghost" href="events.html">All events {ARROW}</a>
+    </div>
+    <div class="ev-grid" data-events-home></div>
+  </div>
+</section>
+
 {cta_block()}
 """
 
@@ -748,12 +772,82 @@ NOT_FOUND = f"""
 </section>
 """
 
+EVENTS = f"""
+<section class="page-hero ev-hero">
+  <div class="wrap">
+    <p class="eyebrow">Events</p>
+    <h1>Talks, workshops and walks for your wellbeing</h1>
+    <p class="lead">Community events hosted by MindGuide AI and our licensed therapists, online and across Nigeria. Registration takes a minute, and we email your confirmation straight away.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" id="events-app" data-api="{APP_URL}" data-telegram="{TELEGRAM}">
+  <div class="wrap">
+    <div data-events-upcoming aria-live="polite">
+      <div class="ev-skeleton"><div></div><div></div><div></div></div>
+    </div>
+    <div class="ev-past" data-events-past hidden>
+      <div class="section-head" style="margin:clamp(64px,8vw,112px) 0 28px">
+        <p class="eyebrow">Past events</p>
+        <h2 style="font-size:var(--step-3)">Recently</h2>
+      </div>
+      <div class="ev-past-list" data-events-past-list></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="ev-host">
+      <div>
+        <p class="eyebrow">Work with us</p>
+        <h2>Want a session for your team, school or church?</h2>
+        <p>Our therapists run talks and workshops on stress, burnout, grief, relationships and more. Tell us what you have in mind.</p>
+      </div>
+      <a class="btn btn-light" href="contact.html">Get in touch {ARROW}</a>
+    </div>
+  </div>
+</section>
+
+<dialog class="ev-modal" id="ev-modal" aria-labelledby="ev-modal-title">
+  <div class="ev-modal-inner" data-modal-body></div>
+</dialog>
+"""
+
+GALLERY = f"""
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Gallery</p>
+    <h1>Moments from our community</h1>
+    <p class="lead">Photos from MindGuide AI events, walks and workshops. Thank you to everyone who showed up for their wellbeing, and for each other.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" id="gallery-app" data-api="{APP_URL}">
+  <div class="wrap">
+    <div data-gallery aria-live="polite">
+      <div class="ev-skeleton gal"><div></div><div></div><div></div></div>
+    </div>
+    <p class="gal-note">We only share photos of people who agreed to be photographed. If you'd like a photo of you removed, email <a href="mailto:{EMAIL}">{EMAIL}</a> and we'll take it down.</p>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-btn lb-close" type="button" aria-label="Close">{icon("x", 22)}</button>
+  <button class="lb-btn lb-prev" type="button" aria-label="Previous photo">{icon("chev-left", 26)}</button>
+  <figure><img alt=""><figcaption></figcaption></figure>
+  <button class="lb-btn lb-next" type="button" aria-label="Next photo">{icon("chev-right", 26)}</button>
+</div>
+"""
+
 PAGES = {
     "index.html": ("MindGuide AI · Online therapy in Nigeria", "Private video and voice therapy with licensed, verified therapists across Nigeria. Guiding minds, empowering lives. Plans from ₦10,000 a month.", HOME),
     "how-it-works.html": ("How it works · MindGuide AI", "Create an account, take a 2-minute assessment, meet a matched therapist and join private video or voice sessions in your browser.", HOW),
     "pricing.html": ("Plans and prices · MindGuide AI", "Monthly therapy plans from ₦10,000: Basic, Standard, Premium and Family. Pay with Paystack and cancel anytime.", PRICING),
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
     "about.html": ("About us · MindGuide AI", "MindGuide AI is a technology-enabled mental health and wellbeing platform making mental healthcare more accessible, affordable, personalised and inclusive.", ABOUT),
+    "events.html": ("Events · MindGuide AI", "Mental health talks, workshops and community walks from MindGuide AI, online and across Nigeria. Register online in a minute.", EVENTS),
+    "gallery.html": ("Gallery · MindGuide AI", "Photos from MindGuide AI community events, walks and workshops.", GALLERY),
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),
     "contact.html": ("Contact · MindGuide AI", "Get in touch with the MindGuide AI team.", CONTACT),
     "404.html": ("Page not found · MindGuide AI", "This page doesn't exist.", NOT_FOUND),
@@ -762,8 +856,9 @@ PAGES = {
 if __name__ == "__main__":
     preview = ROOT / "preview"
     preview.mkdir(exist_ok=True)
+    SCRIPTS = {"index.html": ("events.js",), "events.html": ("events.js",), "gallery.html": ("gallery.js",)}
     for name, (title, desc, body) in PAGES.items():
-        html = layout(name, title, desc, body)
+        html = layout(name, title, desc, body, SCRIPTS.get(name, ()))
         (ROOT / name).write_text(html)
         if name == "index.html":
             # Artifact preview: the platform adds the doctype/html/head/body wrapper itself.
