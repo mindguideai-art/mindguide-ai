@@ -596,6 +596,7 @@ THERAPISTS = f"""
 TEAM_MEMBERS = [
     ("Oluwakorede Atansuyi", "Founder & Chief Executive Officer", "team-oluwakorede-atansuyi.webp"),
     ("Ogbodo Daniel Obumneme", "Chief Medical Officer", "team-ogbodo-daniel.webp"),
+    ("Joshua Ogiriosa", "Chief Technology Officer", "team-joshua-ogiriosa.webp"),
 ]
 
 
@@ -900,7 +901,7 @@ PAGES = {
     "pricing.html": ("Plans and prices · MindGuide AI", "Monthly therapy plans from ₦10,000: Basic, Standard, Premium and Family. Pay with Paystack and cancel anytime.", PRICING),
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
     "about.html": ("About us · MindGuide AI", "MindGuide AI is a technology-enabled mental health and wellbeing platform making mental healthcare more accessible, affordable, personalised and inclusive.", ABOUT),
-    "team.html": ("Our team · MindGuide AI", "Meet the leadership of MindGuide AI: Oluwakorede Atansuyi, Founder and CEO, and Ogbodo Daniel Obumneme, Chief Medical Officer.", TEAM),
+    "team.html": ("Our team · MindGuide AI", "Meet the leadership of MindGuide AI: Oluwakorede Atansuyi, Founder and CEO, Ogbodo Daniel Obumneme, Chief Medical Officer, and Joshua Ogiriosa, Chief Technology Officer.", TEAM),
     "events.html": ("Events · MindGuide AI", "Mental health talks, workshops and community walks from MindGuide AI, online and across Nigeria. Register online in a minute.", EVENTS),
     "gallery.html": ("Gallery · MindGuide AI", "Photos from MindGuide AI community events, walks and workshops.", GALLERY),
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),

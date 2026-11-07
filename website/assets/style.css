@@ -598,7 +598,9 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 @media (max-width: 600px) { .lightbox { grid-template-columns: minmax(0, 1fr); } .lb-prev, .lb-next { position: absolute; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); } .lb-prev { left: 30%; } .lb-next { right: 30%; } .lightbox img { max-height: calc(100dvh - 200px); } }
 
 /* ---------- Team ---------- */
-.team { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 28px; max-width: 900px; }
+.team { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 900px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .team { grid-template-columns: minmax(0, 1fr); } }
 .member { margin: 0; display: grid; gap: 18px; }
 .member-photo { position: relative; aspect-ratio: 4 / 5; border-radius: 28px; overflow: hidden; background: var(--mist); }
 .member-photo::after { content: ""; position: absolute; inset: auto 0 0; height: 6px; background: var(--grad); }
