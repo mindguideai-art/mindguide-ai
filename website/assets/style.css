@@ -113,14 +113,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .brand b { font-weight: 700; color: var(--magenta); }
 .brand .mind { background: linear-gradient(95deg, #0f9a8f, #3b33a6); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .nav-links { display: flex; gap: 4px; margin-left: auto; }
-.nav-links a { padding: 8px 12px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 0.97rem; color: var(--muted); }
+.nav-links a { padding: 8px 10px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 0.97rem; color: var(--muted); }
 .nav-links a:hover { color: var(--ink); background: var(--mist); }
 .nav-links a[aria-current="page"] { color: var(--ink); font-weight: 650; }
 .nav-cta { display: flex; gap: 8px; align-items: center; }
 .nav-cta .btn { padding: 11px 18px; font-size: 0.95rem; }
 .menu-btn { display: none; margin-left: auto; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; align-items: center; justify-content: center; }
 .mobile-menu { display: none; }
-@media (max-width: 1020px) {
+@media (max-width: 1140px) {
   .nav-links, .nav-cta { display: none; }
   .menu-btn { display: inline-flex; }
   .mobile-menu { border-top: 1px solid var(--line); background: var(--paper); padding-block: 12px 20px; }
@@ -598,12 +598,14 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 @media (max-width: 600px) { .lightbox { grid-template-columns: minmax(0, 1fr); } .lb-prev, .lb-next { position: absolute; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); } .lb-prev { left: 30%; } .lb-next { right: 30%; } .lightbox img { max-height: calc(100dvh - 200px); } }
 
 /* ---------- Team ---------- */
-.team { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
-@media (max-width: 900px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .team { grid-template-columns: minmax(0, 1fr); } }
-.member { margin: 0; display: grid; gap: 18px; }
-.member-photo { position: relative; aspect-ratio: 4 / 5; border-radius: 28px; overflow: hidden; background: var(--mist); }
-.member-photo::after { content: ""; position: absolute; inset: auto 0 0; height: 6px; background: var(--grad); }
-.member-photo img { width: 100%; height: 100%; object-fit: cover; }
-.member h3 { font-size: var(--step-2); }
-.member p { margin-top: 6px; font-size: 0.85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); }
+.team { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 250px)); gap: 24px; }
+.member { margin: 0; display: grid; align-content: start; gap: 14px; padding: 10px 10px 18px; border-radius: 22px; background: #fff; border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(19,15,54,.04); transition: transform .25s ease, box-shadow .25s ease; }
+.member:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.member-photo { position: relative; aspect-ratio: 4 / 5; border-radius: 14px; overflow: hidden; background: var(--mist); }
+.member-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.member figcaption { padding-inline: 8px; }
+.member h3 { font-size: 1.12rem; line-height: 1.25; letter-spacing: -0.01em; }
+.member p { margin-top: 6px; padding-top: 8px; border-top: 2px solid; border-image: var(--grad) 1; font-size: 0.74rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--teal); line-height: 1.35; }
+.team-page { display: grid; gap: 32px; }
+.team-head h2 { font-size: var(--step-3); margin-top: 10px; }
+@media (max-width: 560px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } .member:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 7px); } .member { padding: 8px 8px 14px; border-radius: 18px; } .member h3 { font-size: 1rem; } .member p { font-size: 0.68rem; } .member figcaption { padding-inline: 4px; } }

@@ -57,8 +57,8 @@ def icon(name, size=20):
 
 ARROW = f'<span class="arrow">{icon("arrow", 18)}</span>'
 
-NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.html", "Plans"), ("therapists.html", "For therapists"), ("events.html", "Events"), ("gallery.html", "Gallery"), ("about.html", "About"), ("team.html", "Our team"), ("faq.html", "FAQ"), ("contact.html", "Contact")]
-DESKTOP_HIDE = {"index.html", "faq.html", "team.html"}  # FAQ stays in the mobile menu and footer to keep the top bar uncluttered
+NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.html", "Plans"), ("therapists.html", "For therapists"), ("events.html", "Events"), ("gallery.html", "Gallery"), ("about.html", "About"), ("team.html", "Team"), ("faq.html", "FAQ"), ("contact.html", "Contact")]
+DESKTOP_HIDE = {"index.html", "faq.html"}  # FAQ stays in the mobile menu and footer to keep the top bar uncluttered
 
 PLANS = [
     ("basic", "Basic", "₦10,000", "2 sessions a month", ["Verified, licensed therapists", "AI wellbeing assessment", "Session calendar", "Email and SMS reminders"], ["Private messaging", "Mood and progress tracker"]),
@@ -808,8 +808,10 @@ TEAM = f"""
 
 <section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="section-head" style="margin-bottom:32px"><p class="eyebrow">Leadership</p></div>
-    {team_html()}
+    <div class="team-page">
+      <div class="team-head"><p class="eyebrow">Leadership</p><h2>Meet our leadership team</h2></div>
+      {team_html()}
+    </div>
   </div>
 </section>
 
