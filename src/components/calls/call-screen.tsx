@@ -375,10 +375,10 @@ export function CallScreen(props: CallScreenProps) {
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between gap-3 bg-gradient-to-b from-black/40 to-transparent px-5 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))]">
         <div className="flex items-center gap-2 text-xs font-medium text-white/80">
-          <ShieldCheck className="size-4 text-brand-300" /> Private, encrypted call
+          <ShieldCheck className="size-4 text-glow-300" /> Private, encrypted call
         </div>
         <div className="flex items-center gap-2 text-xs font-medium">
-          {phase === "reconnecting" ? <WifiOff className="size-4 text-sun-400" /> : phase === "connected" ? <Wifi className="size-4 text-brand-300" /> : null}
+          {phase === "reconnecting" ? <WifiOff className="size-4 text-sun-400" /> : phase === "connected" ? <Wifi className="size-4 text-glow-300" /> : null}
           {type === "video" && (
             <button onClick={toggleFull} className="rounded-full p-2 hover:bg-white/10" aria-label={full ? "Exit full screen" : "Full screen"}>
               {full ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}

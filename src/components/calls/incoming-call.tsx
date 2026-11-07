@@ -72,7 +72,7 @@ export function IncomingCall({ userId }: { userId: string }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-lg font-bold">{call.caller_name}</p>
-          <p className="flex items-center gap-1.5 text-sm text-brand-200">
+          <p className="flex items-center gap-1.5 text-sm text-glow-200">
             {call.type === "video" ? <Video className="size-4" /> : <Phone className="size-4" />}
             {call.appointment_id ? "Your session is starting" : `Incoming ${call.type === "video" ? "video" : "voice"} call`}
           </p>

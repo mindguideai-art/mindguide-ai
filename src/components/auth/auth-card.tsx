@@ -1,5 +1,6 @@
 import { BadgeCheck, Lock, Video } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function AuthCard({ title, text, children, wide }: { title: string; text?: string; children: React.ReactNode; wide?: boolean }) {
   return (
@@ -10,7 +11,7 @@ export function AuthCard({ title, text, children, wide }: { title: string; text?
         <div className="relative"><Logo light /></div>
         <div className="relative mt-auto">
           <h2 className="font-display text-4xl font-bold leading-tight">Support from people who understand.</h2>
-          <p className="mt-4 max-w-sm text-brand-100/85">Talk to a licensed therapist by video or voice, whenever and wherever suits you.</p>
+          <p className="mt-4 max-w-sm text-glow-100/85">Talk to a licensed therapist by video or voice, whenever and wherever suits you.</p>
           <ul className="mt-10 space-y-4 text-sm">
             {[
               [BadgeCheck, "Every therapist's licence is verified"],
@@ -20,17 +21,17 @@ export function AuthCard({ title, text, children, wide }: { title: string; text?
               const Icon = I as typeof Lock;
               return (
                 <li key={t as string} className="flex items-center gap-3">
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-white/10"><Icon className="size-4 text-sun-300" /></span>
+                  <span className="flex size-9 items-center justify-center rounded-xl bg-white/10"><Icon className="size-4 text-[#e7a3da]" /></span>
                   {t as string}
                 </li>
               );
             })}
           </ul>
         </div>
-        <p className="relative mt-12 text-xs text-brand-200/60">Not for emergencies. If you are in danger, call 112.</p>
+        <p className="relative mt-12 text-xs text-glow-200/60">Not for emergencies. If you are in danger, call 112.</p>
       </aside>
       <div className="flex min-h-screen flex-col px-5 py-8 sm:px-10">
-        <div className="lg:hidden"><Logo /></div>
+        <div className="flex items-center justify-between"><div className="lg:hidden"><Logo /></div><ThemeToggle className="ml-auto" /></div>
         <div className={`mx-auto my-auto w-full ${wide ? "max-w-xl" : "max-w-md"} py-10`}>
           <h1 className="font-display text-3xl font-bold text-ink">{title}</h1>
           {text && <p className="mt-2 text-muted">{text}</p>}

@@ -65,14 +65,14 @@ export default async function PatientHome() {
           <div className="absolute -right-16 -top-16 size-64 rounded-full bg-brand-600/50 blur-3xl" />
           <div className="absolute -bottom-20 right-24 size-48 rounded-full bg-sun-400/35 blur-3xl" />
           <div className="relative">
-            <p className="eyebrow !text-brand-200">Next session</p>
+            <p className="eyebrow !text-glow-200">Next session</p>
             {next ? (
               <div className="mt-4 flex flex-wrap items-end justify-between gap-6">
                 <div className="flex items-center gap-4">
                   <Avatar name={therapistName} url={t?.photo_url} size={64} />
                   <div>
                     <p className="font-display text-2xl font-bold">{formatDateTime(next.starts_at)}</p>
-                    <p className="mt-0.5 text-brand-100">
+                    <p className="mt-0.5 text-glow-100">
                       {next.type === "audio" ? "Voice" : "Video"} session with {therapistName}
                     </p>
                     <div className="mt-2">
@@ -100,7 +100,7 @@ export default async function PatientHome() {
             ) : (
               <div className="mt-4">
                 <p className="font-display text-2xl font-bold">No sessions booked yet</p>
-                <p className="mt-1 max-w-md text-brand-100">Find a therapist who fits what you need and book a time that works for you.</p>
+                <p className="mt-1 max-w-md text-glow-100">Find a therapist who fits what you need and book a time that works for you.</p>
                 <Link href="/patient/therapists" className="btn-accent mt-6 px-5 py-3"><Search className="size-4" /> Find a therapist</Link>
               </div>
             )}

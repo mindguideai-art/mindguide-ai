@@ -9,6 +9,7 @@ import {
 import { Logo } from "./logo";
 import { Avatar } from "./avatar";
 import { NotificationBell } from "./notification-bell";
+import { ThemeToggle } from "./theme-toggle";
 
 const ICONS = {
   home: Home, search: Search, video: Video, message: MessageCircle, chart: LineChart, pulse: HeartPulse,
@@ -36,7 +37,7 @@ function NavList({ nav, onNavigate }: { nav: NavItem[]; onNavigate?: () => void 
               active ? "bg-white/12 text-white shadow-[inset_3px_0_0_var(--color-brand-400)]" : "text-indigo-100/75 hover:bg-white/6 hover:text-white"
             }`}
           >
-            <Icon className={`size-[18px] ${active ? "text-brand-300" : "text-brand-200/60 group-hover:text-brand-100"}`} strokeWidth={2} />
+            <Icon className={`size-[18px] ${active ? "text-glow-300" : "text-glow-200/60 group-hover:text-glow-100"}`} strokeWidth={2} />
             {item.label}
           </Link>
         );
@@ -72,19 +73,19 @@ export function ShellChrome({
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/8 px-5">
         <Logo light href={nav[0].href} />
         {onNavigate && (
-          <button onClick={onNavigate} className="rounded-lg p-1.5 text-brand-100 hover:bg-white/10" aria-label="Close menu">
+          <button onClick={onNavigate} className="rounded-lg p-1.5 text-glow-100 hover:bg-white/10" aria-label="Close menu">
             <X className="size-5" />
           </button>
         )}
       </div>
-      <p className="eyebrow mb-2 mt-6 px-6 !text-brand-300/70">{roleLabel}</p>
+      <p className="eyebrow mb-2 mt-6 px-6 !text-glow-300/70">{roleLabel}</p>
       <div className="flex-1 overflow-y-auto">
         <NavList nav={nav} onNavigate={onNavigate} />
       </div>
       {plan && (
         <Link href="/patient/subscription" onClick={onNavigate} className="mx-3 mt-4 block rounded-2xl bg-[linear-gradient(120deg,rgb(15_154_143/0.35),rgb(59_51_166/0.45)_55%,rgb(192_38_168/0.35))] p-3.5 ring-1 ring-white/10 transition hover:ring-white/25">
           <p className="text-sm font-semibold text-white">{plan.label}</p>
-          <p className="mt-0.5 text-xs text-brand-100/80">{plan.sub}</p>
+          <p className="mt-0.5 text-xs text-glow-100/80">{plan.sub}</p>
           {plan.cta && <p className="mt-2 text-xs font-bold text-white">{plan.cta} →</p>}
         </Link>
       )}
@@ -92,10 +93,10 @@ export function ShellChrome({
         <Avatar name={userName} size={36} dark />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-white">{userName}</p>
-          <p className="text-xs text-brand-300">{roleLabel}</p>
+          <p className="text-xs text-glow-300">{roleLabel}</p>
         </div>
         <form action={signOut}>
-          <button className="rounded-lg p-2 text-brand-200 hover:bg-white/10 hover:text-white" aria-label="Sign out" title="Sign out">
+          <button className="rounded-lg p-2 text-glow-200 hover:bg-white/10 hover:text-white" aria-label="Sign out" title="Sign out">
             <LogOut className="size-4" />
           </button>
         </form>
@@ -127,6 +128,7 @@ export function ShellChrome({
               <Logo href={nav[0].href} />
             </div>
             <div className="flex-1" />
+            <ThemeToggle />
             <NotificationBell key={path} />
             <div className="hidden items-center gap-2.5 sm:flex">
               <Avatar name={userName} size={34} />

@@ -45,7 +45,7 @@ export function SlotPicker({ therapistId, ignoreAppointmentId }: { therapistId: 
               day === d.ymd ? "border-brand-700 bg-primary text-white" : "border-line bg-surface hover:border-brand-300"
             }`}
           >
-            <span className={`text-xs ${day === d.ymd ? "text-brand-100" : "text-muted"}`}>{d.weekday}</span>
+            <span className={`text-xs ${day === d.ymd ? "text-glow-100" : "text-muted"}`}>{d.weekday}</span>
             <span className="font-semibold">{d.label}</span>
           </button>
         ))}

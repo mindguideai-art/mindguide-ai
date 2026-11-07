@@ -52,7 +52,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: Prom
                 <div className="relative aspect-[16/9] bg-gradient-to-br from-brand-100 to-sun-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   {img && <img src={img} alt="" className="size-full object-cover" />}
-                  <span className={`badge absolute left-3 top-3 ${!e.is_published ? "bg-white/90 text-slate-700" : st.open ? "bg-brand-600 text-white" : "bg-ink/80 text-white"}`}>
+                  <span className={`badge absolute left-3 top-3 ${!e.is_published ? "bg-white/90 text-[#334155]" : st.open ? "bg-brand-600 text-white" : "bg-[#16152b]/80 text-white"}`}>
                     {!e.is_published ? "Draft" : st.open ? "Registration open" : st.reason === "full" ? "Full" : st.reason === "past" ? "Ended" : "Registration closed"}
                   </span>
                 </div>

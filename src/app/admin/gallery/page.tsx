@@ -33,8 +33,8 @@ export default async function AdminGallery() {
               <Link key={a.id} href={`/admin/gallery/${a.id}`} className="card group overflow-hidden p-0 transition hover:shadow-[var(--shadow-lift)]">
                 <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-100 to-sun-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {cover ? <img src={cover} alt="" className="size-full object-cover" /> : <Images className="absolute inset-0 m-auto size-10 text-brand-300" />}
-                  <span className={`badge absolute left-3 top-3 ${a.is_published ? "bg-brand-600 text-white" : "bg-white/90 text-slate-700"}`}>{a.is_published ? "On website" : "Hidden"}</span>
+                  {cover ? <img src={cover} alt="" className="size-full object-cover" /> : <Images className="absolute inset-0 m-auto size-10 text-glow-300" />}
+                  <span className={`badge absolute left-3 top-3 ${a.is_published ? "bg-brand-600 text-white" : "bg-white/90 text-[#334155]"}`}>{a.is_published ? "On website" : "Hidden"}</span>
                 </div>
                 <div className="p-4">
                   <h3 className="font-display font-semibold text-ink group-hover:text-brand-700">{a.title}</h3>

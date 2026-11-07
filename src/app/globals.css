@@ -21,6 +21,10 @@
   --color-sun-400: #c026a8;
   --color-sun-500: #a41d8f;
   --color-sun-700: #7f1570;
+  /* Pale text used on the dark hero cards and sidebar: the same in both themes */
+  --color-glow-100: #d0f2ee;
+  --color-glow-200: #a1e3dc;
+  --color-glow-300: #63cdc3;
   --color-mist: #f5f6fb;
   --color-surface: #ffffff;
   --color-primary: #3b33a6;
@@ -58,7 +62,7 @@
   --color-brand-100: #1b3344;
   --color-brand-200: #24485a;
   --color-brand-300: #3aa79c;
-  --color-brand-600: #3ccabd;
+  --color-brand-600: #19998d;
   --color-brand-700: #a9a3f7;
   --color-brand-800: #c6c2fb;
   --color-sun-50: #2a1430;
@@ -70,6 +74,14 @@
   --color-red-600: #ff8193;
   --color-red-700: #ff9dac;
   --color-red-800: #ffc2cb;
+  --color-red-900: #ffd6dc;
+  --color-amber-50: #2e2410;
+  --color-amber-700: #f5c25a;
+  --color-amber-800: #f8d27f;
+  --color-amber-900: #fbe0a6;
+  --color-emerald-50: #10302a;
+  --color-emerald-700: #5fdcb4;
+  --color-slate-500: #9a9bb6;
   --color-slate-100: #26253c;
   --color-slate-200: #353451;
   --color-slate-700: #cfd0e2;

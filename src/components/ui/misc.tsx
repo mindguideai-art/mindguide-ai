@@ -22,8 +22,8 @@ export function StatCard({
     brand: "bg-brand-50 text-brand-700",
     sun: "bg-sun-100 text-sun-700",
     red: "bg-red-50 text-red-600",
-    violet: "bg-[#efedfd] text-[#5b4fc4]",
-    sky: "bg-[#e6f2fd] text-[#1f6aa5]",
+    violet: "bg-[#efedfd] text-[#5b4fc4] dark:bg-[#24214a] dark:text-[#b3adff]",
+    sky: "bg-[#e6f2fd] text-[#1f6aa5] dark:bg-[#132c44] dark:text-[#8cc8f5]",
   };
   const body = (
     <div className="card group flex h-full flex-col gap-3 transition hover:shadow-[var(--shadow-lift)]">

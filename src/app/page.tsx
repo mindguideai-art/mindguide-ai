@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   ArrowRight, BadgeCheck, Bell, BrainCircuit, CalendarCheck, Check, HeartHandshake, LineChart, Lock, MessageCircle, Mic,
   PhoneOff, ShieldCheck, Star, Video, Users,
@@ -39,7 +40,7 @@ function HeroVisual() {
       {/* Call card */}
       <div className="relative overflow-hidden rounded-[32px] bg-[radial-gradient(120%_90%_at_50%_0%,#3b33a6_0%,#130f38_70%)] p-6 text-white shadow-[0_40px_80px_-30px_rgba(10,36,33,0.7)] ring-1 ring-white/10">
         <div className="flex items-center justify-between text-[11px] text-white/70">
-          <span className="flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-brand-300" /> Private, encrypted call</span>
+          <span className="flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-glow-300" /> Private, encrypted call</span>
           <span className="rounded-full bg-white/10 px-2 py-0.5 tabular-nums">24:13</span>
         </div>
         <div className="flex flex-col items-center py-10">
@@ -89,7 +90,7 @@ export default async function Home() {
   return (
     <div className="overflow-x-hidden bg-surface">
       {/* Nav */}
-      <header className="sticky top-0 z-40 border-b border-line/70 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-line/70 bg-surface/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-5">
           <Logo />
           <nav className="hidden items-center gap-7 text-sm font-medium text-muted md:flex">
@@ -99,6 +100,7 @@ export default async function Home() {
             <a href="#faq" className="hover:text-ink">FAQ</a>
           </nav>
           <div className="flex items-center gap-1 sm:gap-2">
+            <ThemeToggle className="mr-1" />
             <Link href="/login" className="btn-ghost btn-sm whitespace-nowrap sm:px-4 sm:py-2 sm:text-sm">Sign in</Link>
             <Link href="/register" className="btn-primary btn-sm whitespace-nowrap sm:px-4 sm:py-2 sm:text-sm">Get started</Link>
           </div>
@@ -155,7 +157,7 @@ export default async function Home() {
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.title} className="card relative p-7">
-                <span className="font-display text-5xl font-bold text-brand-100">{i + 1}</span>
+                <span className="font-display text-5xl font-bold text-glow-100">{i + 1}</span>
                 <p className="font-display mt-3 text-xl font-bold">{s.title}</p>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{s.text}</p>
               </li>
@@ -194,9 +196,9 @@ export default async function Home() {
           <div className="absolute -bottom-24 left-10 size-72 rounded-full bg-sun-500/20 blur-3xl" />
           <div className="relative grid items-center gap-10 lg:grid-cols-2">
             <div>
-              <p className="eyebrow !text-sun-300">For therapists</p>
+              <p className="eyebrow !text-[#e7a3da]">For therapists</p>
               <h2 className="font-display mt-2 text-4xl font-bold">Grow your practice online</h2>
-              <p className="mt-4 max-w-md text-brand-100/90">Set your own hours, see clients from anywhere, and let us handle bookings, reminders and payments.</p>
+              <p className="mt-4 max-w-md text-glow-100/90">Set your own hours, see clients from anywhere, and let us handle bookings, reminders and payments.</p>
               <Link href="/register/therapist" className="btn-accent mt-8">Apply to join <ArrowRight className="size-4" /></Link>
             </div>
             <ul className="grid gap-3 sm:grid-cols-2">
@@ -227,10 +229,10 @@ export default async function Home() {
                   {featured && <span className="badge absolute -top-3 left-6 bg-sun-400 text-white">Most popular</span>}
                   <p className="font-display text-lg font-bold">{p.name}</p>
                   <p className="mt-4 font-display text-4xl font-bold">{naira(p.price)}</p>
-                  <p className={`text-xs ${featured ? "text-brand-200" : "text-muted"}`}>per month</p>
+                  <p className={`text-xs ${featured ? "text-glow-200" : "text-muted"}`}>per month</p>
                   <ul className="mt-6 flex-1 space-y-2.5 text-sm">
                     {describeFeatures(features[p.key], p.key).map((x) => (
-                      <li key={x} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${featured ? "text-sun-300" : "text-brand-600"}`} /> {x}</li>
+                      <li key={x} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${featured ? "text-[#e7a3da]" : "text-brand-600"}`} /> {x}</li>
                     ))}
                   </ul>
                   <Link href={`/register?plan=${p.key}`} className={`mt-7 ${featured ? "btn-accent" : "btn-secondary"}`}>Choose {p.name}</Link>
@@ -278,14 +280,14 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-brand-950 text-brand-100">
+      <footer className="bg-brand-950 text-glow-100">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-2.5">
               <LogoMark light />
               <Wordmark light />
             </div>
-            <p className="mt-4 max-w-sm text-sm text-brand-200/80">Online therapy with licensed, verified professionals. Private, flexible and built for you.</p>
+            <p className="mt-4 max-w-sm text-sm text-glow-200/80">Online therapy with licensed, verified professionals. Private, flexible and built for you.</p>
           </div>
           <div className="space-y-2.5 text-sm">
             <p className="font-semibold text-white">Platform</p>
@@ -300,7 +302,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="border-t border-white/10">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs text-brand-200/70">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs text-glow-200/70">
             <span>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
             <span>Not for emergencies. If you are in danger, call 112 now.</span>
           </div>
