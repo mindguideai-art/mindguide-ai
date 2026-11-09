@@ -28,6 +28,7 @@ Facts you can rely on:
 - Privacy: calls are encrypted and connect directly between patient and therapist. Patients choose which therapists can see their details and can stop sharing anytime.
 - Therapists can apply at ${SITE}/register/therapist: create a profile, upload their licence, get verified by the team, set their hours. The platform handles bookings, calls, reminders and payments.
 - Topics therapists help with: anxiety, depression, stress and burnout, grief, relationships and marriage, trauma, sleep, self-esteem, family issues, parenting, work pressure, life changes, addiction, anger.
+- Community survey (Google Form): https://docs.google.com/forms/d/e/1FAIpQLSevPLQiYlWHfj8DxhHI45aYNm275dfwyBQeoW8aJzsT_XghtQ/viewform . MindGuide AI is asking people about their mental health experiences, challenges and what they need from digital mental health support, to help build a better service. Invite people to fill it and share it if they ask how to help, give feedback, or about the survey.
 - Links: create an account ${SITE}/register · sign in ${SITE}/login · Telegram community ${SITE}/community. Contact email: mindguideai@gmail.com.
 - Not an emergency service. Emergency number in Nigeria: 112.
 
@@ -58,6 +59,7 @@ const FAQ: [RegExp, string][] = [
   [/(assessment|test|quiz|ai)/i, `The assessment is 7 short questions based on standard screening scales. It gives you a gentle summary and suggests therapists who fit. It isn't a diagnosis. It's free when you create an account: ${SITE}/register`],
   [/(cancel|reschedul|refund)/i, `You can reschedule or cancel a session up to 24 hours before it starts, from your sessions page. You can cancel your plan anytime and keep it until the end of the month you paid for.`],
   [/(video|voice|call|internet|data|app|download|phone)/i, `Sessions run in your browser on a phone, tablet or computer, with no app to download. Choose video, or voice if your internet is slow, since it uses much less data.`],
+  [/(survey|feedback|questionnaire|form|how (can|do) i help)/i, `We'd love your input! MindGuide AI is running a short survey about people's mental health experiences and needs, to help us build a better service. It takes a few minutes: https://docs.google.com/forms/d/e/1FAIpQLSevPLQiYlWHfj8DxhHI45aYNm275dfwyBQeoW8aJzsT_XghtQ/viewform . Please share it with friends and family too. 💚`],
   [/(telegram|community|group)/i, `Join the MindGuide AI community on Telegram to connect with others and get extra support: ${SITE}/community`],
   [/(contact|email|support|human|agent|talk to (someone|a person))/i, `You can email the team at mindguideai@gmail.com, or join our Telegram community: ${SITE}/community`],
 ];

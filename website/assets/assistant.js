@@ -21,6 +21,7 @@
     [/(cancel|reschedul|refund)/i, "You can reschedule or cancel a session up to 24 hours before it starts. You can cancel your plan anytime and keep it until the end of the month you paid for."],
     [/(video|voice|call|internet|data|app|download|phone)/i, "Sessions run in your browser on a phone, tablet or computer, with no app to download. Choose video, or voice if your internet is slow, since it uses much less data."],
     [/(talk to someone|talk now|need help|feel|sad|depress|anxious|anxiety|stress|lonely|tired)/i, "Thank you for sharing that. It takes courage. A verified MindGuide therapist can listen and help you work through it, by video or voice, from wherever you are. You can create a free account and see matched therapists in a few minutes: " + APP + "/register"],
+    [/(survey|feedback|questionnaire|how (can|do) i help)/i, "We'd love your input! We're running a short survey about people's mental health experiences and needs, to help us build a better MindGuide AI. It takes a few minutes: https://docs.google.com/forms/d/e/1FAIpQLSevPLQiYlWHfj8DxhHI45aYNm275dfwyBQeoW8aJzsT_XghtQ/viewform . Please share it with friends and family too."],
     [/(telegram|community|group)/i, "Join the MindGuide AI community on Telegram to connect with others and get extra support: " + TG],
     [/(contact|email|support|human|agent)/i, "You can email the team at mindguideai@gmail.com" + (TG ? ", or join our Telegram community: " + TG : ".")]
   ];

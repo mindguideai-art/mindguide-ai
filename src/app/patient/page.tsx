@@ -1,3 +1,4 @@
+import { SurveyBanner } from "@/components/survey-banner";
 import Link from "next/link";
 import { ArrowRight, CalendarPlus, ClipboardCheck, CreditCard, MessageCircle, Phone, Search, Users, Video } from "lucide-react";
 import { requireRole } from "@/lib/auth";
@@ -56,6 +57,8 @@ export default async function PatientHome() {
         <p className="text-sm font-medium text-muted">{greeting()},</p>
         <h1 className="page-title">{name}</h1>
       </div>
+
+      <SurveyBanner />
 
       {assessment?.risk === "high" && <CrisisBanner helplines={settings.helplines} />}
 

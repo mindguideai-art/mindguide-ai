@@ -70,3 +70,8 @@ export const PLANS: { key: PlanKey; name: string; price: number; envCode: string
   { key: "premium", name: "Premium", price: 30000, envCode: "PAYSTACK_PLAN_PREMIUM" },
   { key: "family", name: "Family", price: 50000, envCode: "PAYSTACK_PLAN_FAMILY" },
 ];
+
+/** Community survey (Google Forms). Set NEXT_PUBLIC_SURVEY_URL to "off" to hide the survey banners. */
+const SURVEY_ENV = process.env.NEXT_PUBLIC_SURVEY_URL;
+export const SURVEY_URL =
+  SURVEY_ENV === "off" ? "" : SURVEY_ENV || "https://docs.google.com/forms/d/e/1FAIpQLSevPLQiYlWHfj8DxhHI45aYNm275dfwyBQeoW8aJzsT_XghtQ/viewform";

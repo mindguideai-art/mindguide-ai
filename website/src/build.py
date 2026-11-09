@@ -6,6 +6,7 @@ and a preview copy in /preview for the Claude artifact (the home page without it
 
 Change APP_URL when the web app moves to the client's domain (e.g. https://app.mindguide.ng).
 """
+from urllib.parse import quote
 import pathlib, re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -13,6 +14,8 @@ APP_URL = "https://mindguide-ai.vercel.app"
 EMAIL = "mindguideai@gmail.com"
 # WhatsApp number in international format without + or spaces, e.g. 2348012345678. Leave empty to hide WhatsApp buttons.
 WHATSAPP = ""
+# Community survey (Google Forms). Set to "" to hide the survey bar, page link and home section.
+SURVEY_URL = "https://docs.google.com/forms/d/e/1FAIpQLSevPLQiYlWHfj8DxhHI45aYNm275dfwyBQeoW8aJzsT_XghtQ/viewform"
 TELEGRAM = APP_URL + "/community"  # rules and privacy tips, then the Telegram group (https://t.me/+tdTz3hcagzkyNjQ0)
 SITE_URL = "https://mindguide-website.vercel.app"  # the website's own address, used in sitemap.xml
 
@@ -89,6 +92,15 @@ def plans_html(cta_prefix="Choose"):
     return '<div class="plans">' + "".join(out) + "</div>"
 
 
+def survey_bar(page):
+    if not SURVEY_URL or page == "survey.html":
+        return ""
+    return ('<div class="survey-bar" data-survey-bar hidden><div class="wrap">'
+            '<p><span class="survey-heart" aria-hidden="true">💚</span> <b>Help us build a better MindGuide AI.</b> <span class="sb-more">Share your experience in a short survey.</span></p>'
+            '<a class="sb-link" href="survey.html">Take the survey <span aria-hidden="true">→</span></a>'
+            '<button class="sb-close" type="button" data-survey-close aria-label="Hide this message">' + icon("x", 16) + '</button></div></div>')
+
+
 def layout(page, title, description, body, scripts=()):
     links = "".join(
         f'<a href="{href}"{" aria-current=\"page\"" if href == page else ""}>{label}</a>' for href, label in NAV if href not in DESKTOP_HIDE
@@ -115,7 +127,7 @@ def layout(page, title, description, body, scripts=()):
 </head>
 <body>
 <a class="sr-only" href="#main" style="position:absolute;left:-9999px">Skip to content</a>
-<header class="site-header">
+{survey_bar(page)}<header class="site-header">
   <div class="wrap nav">
     <a class="brand" href="index.html" aria-label="MindGuide AI home"><img src="assets/img/mindguide-mark.png" alt="" width="38" height="38"><span><span class="mind">MindGuide</span> <b>AI</b></span></a>
     <nav class="nav-links" aria-label="Main">{links}</nav>
@@ -158,6 +170,7 @@ def layout(page, title, description, body, scripts=()):
           <li><a href="about.html">About us</a></li>
           <li><a href="team.html">Our team</a></li>
           <li><a href="events.html">Events</a></li>
+          {'<li><a href="survey.html">Take our survey</a></li>' if SURVEY_URL else ""}
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="therapists.html">For therapists</a></li>
           <li><a href="faq.html">FAQ</a></li>
@@ -410,6 +423,22 @@ HOME = f"""
     <div class="btn-row" style="margin-top:24px"><a href="faq.html" class="btn btn-ghost">All questions {ARROW}</a><button type="button" class="btn btn-primary" data-open-assistant>Ask the MindGuide Assistant</button></div>
   </div>
 </section>
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="survey-band">
+      <div>
+        <p class="eyebrow">Your voice matters</p>
+        <h2>Help us build a better MindGuide AI</h2>
+        <p>Tell us about your mental health experiences, challenges and what you'd want from digital support. It only takes a few minutes, and every response shapes what we build.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-light" href="{SURVEY_URL}" target="_blank" rel="noopener">Take the survey {ARROW}</a>
+        <a class="btn btn-ghost-light" href="survey.html">Learn more</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section home-events" id="home-events" data-api="{APP_URL}" hidden>
   <div class="wrap">
     <div class="section-head-row">
@@ -833,6 +862,40 @@ TEAM = f"""
 </section>
 """
 
+SURVEY = f"""
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Community survey</p>
+    <h1>Help us build a better MindGuide AI <span aria-hidden="true">💚</span></h1>
+    <p class="lead">We're committed to making mental health support more accessible, affordable and inclusive for everyone. The best solutions are built by listening to the people they serve. That's why we need your voice.</p>
+    <div class="btn-row" style="margin-top:28px">
+      <a class="btn btn-glow" href="{SURVEY_URL}" target="_blank" rel="noopener">Fill out the survey {ARROW}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap survey-grid">
+    <div class="prose">
+      <h2>Why we're asking</h2>
+      <p>We're running a short survey to better understand people's mental health experiences, challenges, needs and expectations for digital mental health support.</p>
+      <p>Whether you're a student, a working professional, an entrepreneur, a parent or a stay-at-home mum, your feedback matters to us. Please take a few minutes to complete it and help us build a MindGuide AI that truly meets people's needs.</p>
+      <p class="tagline">Your voice. Your experience. A better MindGuide AI.</p>
+      <p>Thank you for being part of this journey.<br><b>Team MindGuide AI</b></p>
+    </div>
+    <aside class="survey-share">
+      <h3>Share the survey</h3>
+      <p>Every response brings us one step closer to making a meaningful impact. Please share it with your friends, family, colleagues and communities.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://wa.me/?text={quote('Help MindGuide AI build better mental health support. Take the short survey: ' + SURVEY_URL)}" target="_blank" rel="noopener">Share on WhatsApp</a>
+        <button class="btn btn-ghost" type="button" data-copy="{SURVEY_URL}">Copy link</button>
+      </div>
+      <p class="survey-note">The survey is a Google Form. It's separate from your MindGuide AI account, so please don't include details that could identify someone else.</p>
+    </aside>
+  </div>
+</section>
+"""
+
 EVENTS = f"""
 <section class="page-hero ev-hero">
   <div class="wrap">
@@ -908,6 +971,7 @@ PAGES = {
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
     "about.html": ("About us · MindGuide AI", "MindGuide AI is a technology-enabled mental health and wellbeing platform making mental healthcare more accessible, affordable, personalised and inclusive.", ABOUT),
     "team.html": ("Our team · MindGuide AI", "Meet the leadership of MindGuide AI: Oluwakorede Atansuyi, Founder and CEO, Ogbodo Daniel Obumneme, Chief Medical Officer, and Joshua Ogiriosa, Chief Technology Officer.", TEAM),
+    "survey.html": ("Community survey · MindGuide AI", "Help us build a better MindGuide AI. Share your mental health experiences and needs in a short survey.", SURVEY),
     "events.html": ("Events · MindGuide AI", "Mental health talks, workshops and community walks from MindGuide AI, online and across Nigeria. Register online in a minute.", EVENTS),
     "gallery.html": ("Gallery · MindGuide AI", "Photos from MindGuide AI community events, walks and workshops.", GALLERY),
     "faq.html": ("FAQ · MindGuide AI", "Answers about getting started, sessions, privacy and plans on MindGuide AI.", FAQ),

@@ -88,3 +88,17 @@
     });
   });
 })();
+
+// Survey announcement bar: shown until the visitor closes it.
+(function () {
+  var bar = document.querySelector("[data-survey-bar]");
+  if (!bar) return;
+  var hidden = false;
+  try { hidden = localStorage.getItem("mg-survey-bar") === "hidden"; } catch (e) {}
+  if (!hidden) bar.hidden = false;
+  var close = bar.querySelector("[data-survey-close]");
+  if (close) close.addEventListener("click", function () {
+    bar.hidden = true;
+    try { localStorage.setItem("mg-survey-bar", "hidden"); } catch (e) {}
+  });
+})();

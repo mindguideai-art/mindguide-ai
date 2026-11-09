@@ -1,3 +1,4 @@
+import { SurveyBanner } from "@/components/survey-banner";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -89,6 +90,7 @@ export default async function Home() {
   const features = await getPlanFeatures();
   return (
     <div className="overflow-x-hidden bg-surface">
+      <SurveyBanner variant="bar" />
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b border-line/70 bg-surface/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-5">
