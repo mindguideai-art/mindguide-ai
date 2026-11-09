@@ -44,31 +44,8 @@ export type Entitlements = {
   sessionsUsed: number;
   sessionsLeft: number;
   noticeHours: number;
-  /** Pay-as-you-go session credits that haven't been used or expired. */
-  credits: number;
-  /** The credit to use next (the one that expires soonest). */
-  nextCreditId: string | null;
-  creditsExpire: string | null;
 };
 
-/** Unused, unexpired session credits (pay-as-you-go). */
-async function getCredits(patientId: string) {
-  const admin = createAdminClient();
-  const { data: credits } = await admin.from("session_credits").select("id, quantity, expires_at").eq("patient_id", patientId).gt("expires_at", new Date().toISOString()).order("expires_at");
-  const list = credits ?? [];
-  if (!list.length) return { credits: 0, nextCreditId: null, creditsExpire: null };
-  const { data: used } = await admin.from("appointments").select("credit_id").in("credit_id", list.map((c) => c.id)).in("status", ["requested", "accepted", "completed"]);
-  const usedBy = new Map<string, number>();
-  for (const u of used ?? []) usedBy.set(u.credit_id, (usedBy.get(u.credit_id) ?? 0) + 1);
-  let total = 0;
-  let next: (typeof list)[number] | null = null;
-  for (const c of list) {
-    const left = Math.max(0, c.quantity - (usedBy.get(c.id) ?? 0));
-    total += left;
-    if (left > 0 && !next) next = c;
-  }
-  return { credits: total, nextCreditId: next?.id ?? null, creditsExpire: next?.expires_at ?? null };
-}
 
 const NONE: PlanFeatures = { sessionsPerMonth: 0, messaging: false, progressTracker: false, chatCalls: false, priorityBooking: false };
 
@@ -79,7 +56,7 @@ const NONE: PlanFeatures = { sessionsPerMonth: 0, messaging: false, progressTrac
 export async function getEntitlements(patientId: string): Promise<Entitlements> {
   const admin = createAdminClient();
   const now = new Date().toISOString();
-  const [{ data: sub }, features, credit] = await Promise.all([
+  const [{ data: sub }, features] = await Promise.all([
     admin
       .from("subscriptions")
       .select("plan, status, current_period_end")
@@ -90,11 +67,10 @@ export async function getEntitlements(patientId: string): Promise<Entitlements> 
       .limit(1)
       .maybeSingle(),
     getPlanFeatures(),
-    getCredits(patientId),
   ]);
 
   if (!sub) {
-    return { plan: null, planName: null, active: false, features: NONE, periodStart: null, periodEnd: null, sessionsUsed: 0, sessionsLeft: 0, noticeHours: NOTICE_HOURS.standard, ...credit };
+    return { plan: null, planName: null, active: false, features: NONE, periodStart: null, periodEnd: null, sessionsUsed: 0, sessionsLeft: 0, noticeHours: NOTICE_HOURS.standard };
   }
   const plan = sub.plan as PlanKey;
   const f = features[plan] ?? NONE;
@@ -107,7 +83,6 @@ export async function getEntitlements(patientId: string): Promise<Entitlements> 
     .select("id", { count: "exact", head: true })
     .eq("patient_id", patientId)
     .in("status", ["requested", "accepted", "completed"])
-    .is("credit_id", null)
     .gte("starts_at", start.toISOString())
     .lt("starts_at", end.toISOString());
 
@@ -122,7 +97,6 @@ export async function getEntitlements(patientId: string): Promise<Entitlements> 
     sessionsUsed: used,
     sessionsLeft: Math.max(0, f.sessionsPerMonth - used),
     noticeHours: f.priorityBooking ? NOTICE_HOURS.priority : NOTICE_HOURS.standard,
-    ...credit,
   };
 }
 
@@ -151,8 +125,8 @@ export const FEATURE_INFO: Record<GatedFeature, { title: string; text: string }>
 };
 
 export function hasFeature(ent: Entitlements, feature: GatedFeature) {
-  if (feature === "booking") return ent.active || ent.credits > 0;
   if (!ent.active) return false;
+  if (feature === "booking") return true;
   return Boolean(ent.features[feature]);
 }
 

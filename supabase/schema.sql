@@ -788,22 +788,6 @@ alter table patient_profiles drop constraint if exists patient_profiles_faith_ch
 alter table patient_profiles add constraint patient_profiles_faith_check check (faith_preference in ('none', 'christian', 'muslim'));
 alter table therapist_profiles add column if not exists faith_integration text[] not null default '{}';
 
--- 5. Single-session credits (pay as you go, gifts, organisation top-ups) ---------------
-create table if not exists session_credits (
-  id uuid primary key default gen_random_uuid(),
-  patient_id uuid not null references profiles(id) on delete cascade,
-  quantity int not null check (quantity between 1 and 50),
-  source text not null default 'purchase' check (source in ('purchase', 'admin', 'organisation')),
-  payment_reference text,
-  expires_at timestamptz not null,
-  created_at timestamptz not null default now()
-);
-create index if not exists session_credits_patient on session_credits (patient_id, expires_at);
-alter table session_credits enable row level security;
-drop policy if exists "credits own read" on session_credits;
-create policy "credits own read" on session_credits for select using (patient_id = auth.uid() or public.is_admin());
-alter table appointments add column if not exists credit_id uuid references session_credits(id) on delete set null;
-
 -- 6. WhatsApp reminders and weekly check-ins ------------------------------------------
 alter table patient_profiles add column if not exists whatsapp_opt_in boolean not null default false;
 alter table patient_profiles add column if not exists whatsapp_number text;

@@ -6,8 +6,6 @@ export type Settings = {
   telegram_link: string;
   cancellation_cutoff_hours: number;
   helplines: Helpline[];
-  /** Price in naira of one pay-as-you-go session. */
-  single_session_price: number;
 };
 
 const DEFAULTS: Settings = {
@@ -21,7 +19,6 @@ const DEFAULTS: Settings = {
     { name: "She Writes Woman (24 hours, free)", phone: "0800 800 2000" },
     { name: "Cece Yara child helpline (children and teens, free)", phone: "0800 800 8001" },
   ],
-  single_session_price: 7500,
 };
 
 export async function getSettings(): Promise<Settings> {

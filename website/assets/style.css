@@ -731,3 +731,4 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 .alt-ico { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 16px; background: var(--mist); color: var(--indigo); }
 .alt-price { font: 700 var(--step-2)/1.1 var(--display) !important; color: var(--ink) !important; }
 .alt-price small { font: 500 0.95rem var(--body); color: var(--muted); }
+.alt-grid.one { grid-template-columns: minmax(0, 1fr); max-width: 760px; }

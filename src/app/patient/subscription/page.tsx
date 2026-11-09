@@ -2,11 +2,10 @@ import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { PLANS } from "@/lib/constants";
 import { naira, formatDate } from "@/lib/format";
-import { startSubscription, cancelSubscription, buySessions } from "@/app/actions/patient";
+import { startSubscription, cancelSubscription } from "@/app/actions/patient";
 import { leaveOrganisation } from "@/app/actions/care";
-import { getSettings } from "@/lib/settings";
 import { OrgJoinForm } from "@/components/org-join-form";
-import { Building2, Ticket } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { describeFeatures, getEntitlements, getPlanFeatures } from "@/lib/plans";
 import { Check, Lock } from "lucide-react";
 import { Notice, PageHeader, StatusBadge } from "@/components/ui/misc";
@@ -22,8 +21,8 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
     supabase.from("subscriptions").select("*").eq("patient_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     supabase.from("payments").select("reference, plan, amount_kobo, status, paid_at, created_at").eq("patient_id", user.id).order("created_at", { ascending: false }).limit(20),
   ]);
-  const [features, ent, settings, { data: membership }] = await Promise.all([
-    getPlanFeatures(), getEntitlements(user.id), getSettings(),
+  const [features, ent, { data: membership }] = await Promise.all([
+    getPlanFeatures(), getEntitlements(user.id),
     supabase.from("organisation_members").select("organisation_id").eq("patient_id", user.id).maybeSingle(),
   ]);
   const sponsored = Boolean(sub?.organisation_id && membership);
@@ -35,7 +34,6 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
     <div className="space-y-8">
       <PageHeader title="Subscription" text="Choose the plan that suits you. Plans renew monthly and you can cancel any time." />
       {sp.paid && <Notice kind="success">Payment received. Thank you!</Notice>}
-      {sp.credits && <Notice kind="success">Your sessions are ready to book.</Notice>}
       {sp.pending && <Notice kind="warning">We&apos;re confirming your payment. This page will update shortly.</Notice>}
       {demo && <Notice kind="info">Demo mode: choosing a plan activates it straight away, without a real payment.</Notice>}
       {sp.error && <Notice kind="error">We couldn&apos;t start the payment. Please try again or contact support.</Notice>}
@@ -118,26 +116,7 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
           );
         })}
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="card flex flex-col">
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-700"><Ticket className="size-5" /></span>
-            <div>
-              <p className="font-display text-lg font-semibold">Pay as you go</p>
-              <p className="text-sm text-muted">Not ready for a monthly plan? Pay for one session at a time. Sessions are valid for 90 days.</p>
-            </div>
-          </div>
-          {ent.credits > 0 && <p className="mt-4 rounded-xl bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-800">You have {ent.credits} session{ent.credits === 1 ? "" : "s"} to use{ent.creditsExpire ? ` (the next expires ${formatDate(ent.creditsExpire)})` : ""}.</p>}
-          <form action={buySessions} className="mt-auto flex flex-wrap items-end gap-3 pt-5">
-            <div>
-              <label className="label" htmlFor="quantity">Sessions</label>
-              <select id="quantity" name="quantity" className="input w-auto" defaultValue="1">
-                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n} × {naira(settings.single_session_price)}</option>)}
-              </select>
-            </div>
-            <SubmitButton className="btn-primary" pendingText="Opening Paystack…">Buy</SubmitButton>
-          </form>
-        </div>
+      <div className="max-w-2xl">
         <div className="card flex flex-col">
           <div className="flex items-start gap-3">
             <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-700"><Building2 className="size-5" /></span>
@@ -160,7 +139,7 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
               {payments.map((p) => (
                 <tr key={p.reference}>
                   <td>{formatDate(p.paid_at ?? p.created_at)}</td>
-                  <td className={p.plan?.startsWith("single") ? "" : "capitalize"}>{p.plan?.startsWith("single") ? `Pay as you go × ${p.plan.split(":")[1] ?? 1}` : p.plan}</td>
+                  <td className="capitalize">{p.plan}</td>
                   <td>{naira(p.amount_kobo / 100)}</td>
                   <td><StatusBadge status={p.status} /></td>
                 </tr>

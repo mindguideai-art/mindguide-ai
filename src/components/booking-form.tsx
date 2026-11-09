@@ -6,28 +6,26 @@ import { SlotPicker } from "./slot-picker";
 import { SubmitButton } from "./ui/submit-button";
 import { Notice } from "./ui/misc";
 
-export type PlanUsage = { active: boolean; planName: string | null; used: number; limit: number; noticeHours: number; credits?: number };
+export type PlanUsage = { active: boolean; planName: string | null; used: number; limit: number; noticeHours: number };
 
 export function BookingForm({ therapistId, preferred, usage }: { therapistId: string; preferred: string; usage: PlanUsage }) {
   const [state, action] = useActionState(bookAppointment, undefined);
-  const credits = usage.credits ?? 0;
-  if (!usage.active && credits === 0) {
+  if (!usage.active) {
     return (
       <div className="rounded-2xl border border-dashed border-line p-6 text-center">
         <p className="font-display text-lg font-semibold">Choose a plan to book</p>
-        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Plans start from ₦10,000 a month, or pay for a single session. Both include sessions with verified therapists like this one.</p>
-        <Link href="/patient/subscription" className="btn-accent mt-5">See plans and prices</Link>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Plans start from ₦10,000 a month and include sessions with verified therapists like this one.</p>
+        <Link href="/patient/subscription" className="btn-accent mt-5">See plans</Link>
       </div>
     );
   }
-  const left = usage.active ? Math.max(0, usage.limit - usage.used) : 0;
-  const payg = left === 0 && credits > 0;
-  if (left === 0 && credits === 0) {
+  const left = Math.max(0, usage.limit - usage.used);
+  if (left === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-line p-6 text-center">
         <p className="font-display text-lg font-semibold">You&apos;ve used all your sessions</p>
         <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Your {usage.planName} plan includes {usage.limit} sessions per billing period. Upgrade for more, or book again when your plan renews.</p>
-        <Link href="/patient/subscription" className="btn-accent mt-5">Upgrade or buy a session</Link>
+        <Link href="/patient/subscription" className="btn-accent mt-5">Upgrade plan</Link>
       </div>
     );
   }
@@ -35,12 +33,6 @@ export function BookingForm({ therapistId, preferred, usage }: { therapistId: st
     <form action={action} className="space-y-5">
       {state?.error && <Notice kind="error">{state.error}</Notice>}
       <input type="hidden" name="therapist_id" value={therapistId} />
-      {payg ? (
-        <div className="rounded-2xl bg-mist p-4 text-sm">
-          <div className="flex items-center justify-between"><span className="font-semibold">Pay as you go</span><span className="tabular-nums text-muted">{credits} session{credits === 1 ? "" : "s"} available</span></div>
-          <p className="mt-2 text-xs text-muted">This booking uses one of your sessions. Book at least {usage.noticeHours} hours ahead.</p>
-        </div>
-      ) : (
       <div className="rounded-2xl bg-mist p-4">
         <div className="flex items-center justify-between text-sm">
           <span className="font-semibold">{usage.planName} plan</span>
@@ -51,7 +43,6 @@ export function BookingForm({ therapistId, preferred, usage }: { therapistId: st
         </div>
         <p className="mt-2 text-xs text-muted">Book at least {usage.noticeHours} hours ahead{usage.noticeHours <= 2 ? " (priority booking)" : ""}.</p>
       </div>
-      )}
       <SlotPicker therapistId={therapistId} />
       <div>
         <p className="label">Session type</p>

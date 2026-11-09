@@ -70,8 +70,6 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
     })
     .filter(Boolean);
   if (!helplines.length) return { error: "Add at least one helpline, one per line, as Name: number" };
-  const single = Math.round(Number(form.get("single_session_price")));
-  if (!(single >= 500 && single <= 500000)) return { error: "Enter a pay-as-you-go price of at least ₦500." };
 
   const admin = createAdminClient();
   const now = new Date().toISOString();
@@ -79,7 +77,6 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
     { key: "telegram_link", value: telegram, updated_at: now },
     { key: "cancellation_cutoff_hours", value: cutoff, updated_at: now },
     { key: "helplines", value: helplines, updated_at: now },
-    { key: "single_session_price", value: single, updated_at: now },
   ]);
   revalidatePath("/", "layout");
   return { message: "Settings saved." };
