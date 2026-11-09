@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import { NextResponse, after, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
-import { assistantReply, type ChatMessage } from "@/lib/assistant";
+import { assistantReply, isCrisis, type ChatMessage } from "@/lib/assistant";
+import { getSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,7 @@ async function handleMessage(m: WaMessage) {
 
   await markRead(m.id);
   if (!text.trim()) return send(m.from, WELCOME_ONLY);
+  if (!isCrisis(text) && (await handlePatientReply(m.from, text))) return;
 
   const { data: rows } = await db
     .from("assistant_messages")
@@ -90,6 +92,44 @@ async function handleMessage(m: WaMessage) {
   const reply = (await assistantReply(history)).replace(/\*\*(.+?)\*\*/g, "*$1*"); // WhatsApp uses *single* asterisks for bold
   await db.from("assistant_messages").insert({ contact: m.from, role: "assistant", content: reply });
   await send(m.from, reply);
+}
+
+/** Weekly check-in answers ("7") and STOP/START from patients who opted in to WhatsApp. Returns true if handled. */
+async function handlePatientReply(from: string, text: string) {
+  const db = createAdminClient();
+  const t = text.trim();
+  const { data: matches } = await db.from("patient_profiles").select("id, whatsapp_opt_in, whatsapp_number").not("whatsapp_number", "is", null).limit(5000);
+  const patient = (matches ?? []).find((p) => (p.whatsapp_number ?? "").replace(/\D/g, "") === from);
+  if (!patient) return false;
+
+  if (/^(stop|unsubscribe|stop all)$/i.test(t)) {
+    await db.from("patient_profiles").update({ whatsapp_opt_in: false }).eq("id", patient.id);
+    await send(from, "You won't get MindGuide reminders or check-ins on WhatsApp any more. You can turn them back on in Settings, or reply START.");
+    return true;
+  }
+  if (/^start$/i.test(t)) {
+    await db.from("patient_profiles").update({ whatsapp_opt_in: true }).eq("id", patient.id);
+    await send(from, "Welcome back 💚 You'll get session reminders and a weekly check-in on Mondays. Reply STOP anytime.");
+    return true;
+  }
+  const n = /^(10|[1-9])(\s*\/\s*10)?[.!]?$/.exec(t);
+  if (!n || !patient.whatsapp_opt_in) return false;
+  const { data: open } = await db.from("whatsapp_checkins").select("id").eq("patient_id", patient.id).is("answered_at", null)
+    .gte("sent_at", new Date(Date.now() - 3 * 86400000).toISOString()).order("sent_at", { ascending: false }).limit(1).maybeSingle();
+  if (!open) return false;
+  const mood = Number(n[1]);
+  await db.from("whatsapp_checkins").update({ answered_at: new Date().toISOString(), mood }).eq("id", open.id);
+  await db.from("mood_checkins").insert({ patient_id: patient.id, mood, note: "WhatsApp check-in" });
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://mindguide-ai.vercel.app";
+  if (mood <= 3) {
+    const { helplines } = await getSettings();
+    await send(from, `Thank you for telling us. I'm sorry this week feels hard 💚 You don't have to carry it alone. You can book a session with your therapist here: ${site}/patient/therapists\n\nIf you feel unsafe or might hurt yourself, please call 112 now, or:\n${helplines.slice(1, 4).map((h) => `• ${h.name}: ${h.phone}`).join("\n")}`);
+  } else if (mood <= 6) {
+    await send(from, `Thanks for checking in (${mood}/10). Some weeks are in-between, and that's okay. A 2-minute breathing exercise might help: ${site}/patient/library/breathing 💚`);
+  } else {
+    await send(from, `Thanks for checking in (${mood}/10) 😊 Glad to hear it. Keep doing what's helping. See your progress: ${site}/patient/progress`);
+  }
+  return true;
 }
 
 function graph(path: string, body: unknown) {

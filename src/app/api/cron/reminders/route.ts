@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { sendEmail, sendSms, emailLayout } from "@/lib/notify";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, firstName } from "@/lib/format";
+import { sendWhatsAppTemplate, TEMPLATE_CHECKIN, TEMPLATE_REMINDER, waNumber, whatsappReady } from "@/lib/whatsapp";
 
 /**
  * Sends appointment reminders 24 hours and 1 hour before each confirmed session.
@@ -56,6 +57,11 @@ export async function GET(request: NextRequest) {
           );
         }
         await sendSms(person.phone, `Reminder: your ${a.type} session is ${w.label}, ${when}. Join at ${link}`);
+        if (person === patient && whatsappReady()) {
+          const { data: pp } = await admin.from("patient_profiles").select("whatsapp_opt_in, whatsapp_number").eq("id", person.id).maybeSingle();
+          const to = pp?.whatsapp_opt_in ? waNumber(pp.whatsapp_number) : null;
+          if (to) await sendWhatsAppTemplate(to, TEMPLATE_REMINDER(), [firstName(person.full_name) || "there", other?.full_name ?? "your therapist", when]);
+        }
         await admin.from("notifications").insert({
           user_id: person.id,
           kind: "reminder",
@@ -68,5 +74,23 @@ export async function GET(request: NextRequest) {
       sent++;
     }
   }
-  return NextResponse.json({ ok: true, reminders: sent });
+  // Weekly WhatsApp check-in, sent on Mondays (Lagos time) to patients who opted in.
+  let checkins = 0;
+  const weekday = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Lagos", weekday: "short" }).format(new Date());
+  if (whatsappReady() && (weekday === "Mon" || request.nextUrl.searchParams.get("checkins") === "now")) {
+    const { data: people } = await admin.from("patient_profiles").select("id, whatsapp_number, profiles!patient_profiles_id_fkey(full_name, is_active)").eq("whatsapp_opt_in", true).limit(2000);
+    const since = new Date(now - 6 * 86400000).toISOString();
+    for (const p of people ?? []) {
+      const prof = p.profiles as unknown as { full_name: string; is_active: boolean } | null;
+      const to = waNumber(p.whatsapp_number);
+      if (!to || prof?.is_active === false) continue;
+      const { count } = await admin.from("whatsapp_checkins").select("id", { count: "exact", head: true }).eq("patient_id", p.id).gte("sent_at", since);
+      if (count) continue;
+      if (await sendWhatsAppTemplate(to, TEMPLATE_CHECKIN(), [firstName(prof?.full_name ?? "") || "there"])) {
+        await admin.from("whatsapp_checkins").insert({ patient_id: p.id });
+        checkins++;
+      }
+    }
+  }
+  return NextResponse.json({ ok: true, reminders: sent, checkins });
 }

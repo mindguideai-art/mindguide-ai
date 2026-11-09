@@ -720,3 +720,14 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 .survey-share p { color: var(--muted); }
 .survey-note { font-size: 0.88rem; padding-top: 12px; border-top: 1px solid var(--line); }
 .survey-grid .prose h2 { font-size: var(--step-3); }
+
+/* ---------- Pricing alternatives ---------- */
+.alt-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 760px) { .alt-grid { grid-template-columns: minmax(0, 1fr); } }
+.alt-card { display: grid; gap: 12px; align-content: start; padding: clamp(24px, 3vw, 36px); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.alt-card h3 { font-size: var(--step-2); }
+.alt-card p { color: var(--muted); }
+.alt-card .btn { justify-self: start; margin-top: 6px; }
+.alt-ico { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 16px; background: var(--mist); color: var(--indigo); }
+.alt-price { font: 700 var(--step-2)/1.1 var(--display) !important; color: var(--ink) !important; }
+.alt-price small { font: 500 0.95rem var(--body); color: var(--muted); }

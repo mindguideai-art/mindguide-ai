@@ -33,8 +33,13 @@ export default async function PatientAppointments({ searchParams }: { searchPara
     .eq("patient_id", user.id)
     .order("starts_at", { ascending: false });
   const { cancellation_cutoff_hours } = await getSettings();
-  const { data: myReviews } = await supabase.from("reviews").select("appointment_id").eq("patient_id", user.id);
-  const reviewed = new Set((myReviews ?? []).map((r) => r.appointment_id));
+  const [{ data: myReviews }, { data: myFeedback }, { data: summaries }] = await Promise.all([
+    supabase.from("reviews").select("appointment_id").eq("patient_id", user.id),
+    supabase.from("session_feedback").select("appointment_id").eq("patient_id", user.id),
+    supabase.from("session_summaries").select("appointment_id").eq("patient_id", user.id).not("shared_at", "is", null),
+  ]);
+  const reviewed = new Set([...(myReviews ?? []), ...(myFeedback ?? [])].map((r) => r.appointment_id));
+  const withSummary = new Set((summaries ?? []).map((r) => r.appointment_id));
   const all = (data ?? []) as unknown as Appt[];
   const now = nowMs();
   const upcoming = all.filter((a) => ["requested", "accepted"].includes(a.status) && new Date(a.ends_at).getTime() > now).reverse();
@@ -42,10 +47,10 @@ export default async function PatientAppointments({ searchParams }: { searchPara
 
   return (
     <div className="space-y-8">
-      <PageHeader title="My sessions" action={<Link href="/patient/therapists" className="btn-primary">Book a session</Link>} />
+      <PageHeader title="My sessions" action={<div className="flex flex-wrap gap-2"><Link href="/patient/connection-test" className="btn-secondary">Test my connection</Link><Link href="/patient/therapists" className="btn-primary">Book a session</Link></div>} />
       {sp.booked && <Notice kind="success">Session requested. We&apos;ll email you when your therapist confirms.</Notice>}
       {sp.rescheduled && <Notice kind="success">New time requested. Your therapist will confirm it.</Notice>}
-      {sp.reviewed && <Notice kind="success">Thank you for your review.</Notice>}
+      {sp.reviewed && <Notice kind="success">Thank you for your feedback. It helps us keep every session at its best.</Notice>}
       {sp.error === "cutoff" && (
         <Notice kind="error">Confirmed sessions can only be cancelled more than {cancellation_cutoff_hours} hours before they start.</Notice>
       )}
@@ -119,10 +124,13 @@ export default async function PatientAppointments({ searchParams }: { searchPara
                       {a.status_reason && <p className="mt-1 text-xs text-muted">{a.status_reason}</p>}
                     </td>
                     <td className="text-right">
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                      {withSummary.has(a.id) && <Link href={`/patient/appointments/${a.id}`} className="btn-secondary btn-sm">Session notes</Link>}
                       {a.status === "completed" && !reviewed.has(a.id) && (
                         <Link href={`/patient/appointments/${a.id}/review`} className="btn-secondary btn-sm"><Star className="size-3.5 text-sun-500" fill="currentColor" strokeWidth={0} /> Rate session</Link>
                       )}
-                      {reviewed.has(a.id) && <span className="text-xs text-muted">Reviewed</span>}
+                      {reviewed.has(a.id) && <span className="text-xs text-muted">Rated</span>}
+                      </div>
                     </td>
                   </tr>
                 ))}

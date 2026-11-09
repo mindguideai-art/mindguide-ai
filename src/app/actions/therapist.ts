@@ -14,11 +14,11 @@ export async function updateTherapistProfile(_: ActionState, form: FormData): Pr
   const fullName = String(form.get("full_name") ?? "").trim();
   const phone = String(form.get("phone") ?? "").trim();
   const specialties = form.getAll("specialties").map(String).filter((s) => SPECIALTIES.includes(s));
-  const languages = String(form.get("languages") ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 8);
+  const languages = [
+    ...form.getAll("language").map(String),
+    ...String(form.get("languages_other") ?? form.get("languages") ?? "").split(",").map((s) => s.trim()),
+  ].filter((v, i, a) => v && a.indexOf(v) === i).slice(0, 10);
+  const faith = form.getAll("faith_integration").map(String).filter((v) => v === "christian" || v === "muslim");
   const years = Math.max(0, Math.min(60, Number(form.get("years_experience")) || 0));
   const price = Math.max(0, Math.round(Number(form.get("session_price")) || 0));
   const minutes = [30, 45, 50, 60].includes(Number(form.get("session_minutes"))) ? Number(form.get("session_minutes")) : 50;
@@ -33,6 +33,7 @@ export async function updateTherapistProfile(_: ActionState, form: FormData): Pr
       bio: String(form.get("bio") ?? "").slice(0, 3000) || null,
       specialties,
       languages: languages.length ? languages : ["English"],
+      faith_integration: faith,
       years_experience: years,
       session_price: price,
       session_minutes: minutes,

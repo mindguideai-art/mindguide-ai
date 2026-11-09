@@ -13,7 +13,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   const { id } = await params;
   const user = await requireRole("patient");
   const supabase = await createClient();
-  const [{ data: a }, { data: existing }] = await Promise.all([
+  const [{ data: a }, { data: existing }, { data: fb }] = await Promise.all([
     supabase
       .from("appointments")
       .select("id, starts_at, status, therapist:therapist_profiles(photo_url, title, profiles!therapist_profiles_id_fkey(full_name))")
@@ -21,6 +21,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
       .eq("patient_id", user.id)
       .single(),
     supabase.from("reviews").select("id").eq("appointment_id", id).maybeSingle(),
+    supabase.from("session_feedback").select("appointment_id").eq("appointment_id", id).maybeSingle(),
   ]);
   if (!a) notFound();
   const t = a.therapist as unknown as { photo_url: string | null; title: string | null; profiles: { full_name: string } | null };
@@ -36,8 +37,8 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
         <div className="mt-6">
-          {existing ? (
-            <Notice kind="success">Thanks, you&apos;ve already reviewed this session.</Notice>
+          {existing || fb ? (
+            <Notice kind="success">Thanks, you&apos;ve already rated this session.</Notice>
           ) : a.status !== "completed" ? (
             <Notice>You can rate this session once your therapist marks it as completed.</Notice>
           ) : (

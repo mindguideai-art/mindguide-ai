@@ -29,7 +29,7 @@ export default async function TherapistAppointments() {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Appointments" />
+      <PageHeader title="Appointments" action={<Link href="/therapist/connection-test" className="btn-secondary">Test my connection</Link>} />
       <section>
         <h2 className="font-display mb-3 text-lg font-bold">Requests ({requests.length})</h2>
         {requests.length ? <div className="grid gap-3 lg:grid-cols-2">{requests.map((r) => <BookingRequest key={r.id} r={r} />)}</div> : <EmptyState title="No pending requests" />}

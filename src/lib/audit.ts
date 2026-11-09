@@ -12,7 +12,8 @@ export type AccessRecord =
   | "user_list"
   | "payments"
   | "appointments"
-  | "event_registrations";
+  | "event_registrations"
+  | "session_feedback";
 
 export const RECORD_LABELS: Record<AccessRecord, string> = {
   patient_details: "Patient details (registration, assessment, mood)",
@@ -24,6 +25,7 @@ export const RECORD_LABELS: Record<AccessRecord, string> = {
   payments: "Payments",
   appointments: "All appointments",
   event_registrations: "Event registrations",
+  session_feedback: "Session feedback",
 };
 
 /**

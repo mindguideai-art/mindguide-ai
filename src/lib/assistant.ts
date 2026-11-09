@@ -24,6 +24,11 @@ Facts you can rely on:
   Standard ₦20,000: 4 sessions, plus private messaging with your therapist and a mood/progress tracker.
   Premium ₦30,000: 8 sessions, plus voice/video calls with the therapist outside booked sessions and priority booking (as little as 2 hours ahead; normally 24 hours).
   Family ₦50,000: 12 sessions a month shared across a household, with everything in Premium.
+- Pay as you go: people who don't want a monthly plan can buy single sessions (₦7,500 each, valid 90 days) on the Subscription page.
+- Employers, universities, schools, churches/mosques and NGOs can sponsor sessions for their people with a join code; the organisation only sees anonymous totals. Organisations can email mindguideai@gmail.com to set this up.
+- Patients can choose therapists who speak Yoruba, Igbo, Hausa, Nigerian Pidgin or French, and can ask for faith-sensitive (Christian or Islamic) therapy.
+- Between sessions: free self-help tools (breathing, grounding, sleep wind-down, thought records, a private journal), guided week-by-week programmes, therapist session summaries with practice tasks, and optional WhatsApp reminders and weekly mood check-ins.
+- A "Get help now" button on every patient page lists crisis helplines. There's a "Test my connection" page and a low-data mode for slow internet.
 - Reschedule or cancel up to 24 hours before a confirmed session.
 - Privacy: calls are encrypted and connect directly between patient and therapist. Patients choose which therapists can see their details and can stop sharing anytime.
 - Therapists can apply at ${SITE}/register/therapist: create a profile, upload their licence, get verified by the team, set their hours. The platform handles bookings, calls, reminders and payments.
@@ -52,7 +57,7 @@ export function isCrisis(text: string) {
 /** Simple answers used when no AI key is set or the AI is unavailable. */
 const FAQ: [RegExp, string][] = [
   [/\b(hi|hello|hey|good (morning|afternoon|evening)|how far|bawo|ndewo|sannu)\b/i, `Hello, and welcome to MindGuide AI. I can tell you how it works, the plans, privacy, or how therapists can join. What would you like to know?`],
-  [/(price|cost|how much|plan|subscription|naira|₦|pay)/i, `Plans are monthly and paid securely with Paystack:\n• Basic ₦10,000: 2 sessions\n• Standard ₦20,000: 4 sessions, messaging and progress tracker\n• Premium ₦30,000: 8 sessions, calls outside sessions, priority booking\n• Family ₦50,000: 12 sessions shared by your household\nYou can cancel anytime. Start with the free assessment: ${SITE}/register`],
+  [/(price|cost|how much|plan|subscription|naira|₦|pay)/i, `Plans are monthly and paid securely with Paystack:\n• Basic ₦10,000: 2 sessions\n• Standard ₦20,000: 4 sessions, messaging and progress tracker\n• Premium ₦30,000: 8 sessions, calls outside sessions, priority booking\n• Family ₦50,000: 12 sessions shared by your household\nOr pay as you go: ₦7,500 per session. You can cancel anytime. Start with the free assessment: ${SITE}/register`],
   [/(therapist|join|apply|counsel+or|psycholog)/i, `Licensed therapists can apply at ${SITE}/register/therapist. You create a profile, upload your licence, our team verifies it, then you set your hours and start accepting bookings.`],
   [/(private|privacy|confidential|secure|safe|data)/i, `Your sessions are private. Calls are encrypted and connect directly between you and your therapist, and you choose which therapists can see your details. You can stop sharing anytime.`],
   [/(how (does|do) (it|this) work|start|sign ?up|register|begin|book)/i, `It's three steps: create a free account, take the 2-minute wellbeing assessment to see matched therapists, then choose a plan and book a video or voice session. Start here: ${SITE}/register`],

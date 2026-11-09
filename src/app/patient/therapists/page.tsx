@@ -5,7 +5,8 @@ import { SPECIALTIES } from "@/lib/constants";
 import { EmptyState, PageHeader } from "@/components/ui/misc";
 import { Avatar } from "@/components/avatar";
 import { RatingSummary } from "@/components/stars";
-import { BadgeCheck, Languages, Search, Sparkles } from "lucide-react";
+import { BadgeCheck, HandHeart, Languages, Search, Settings2, Sparkles } from "lucide-react";
+import { LANGUAGE_OPTIONS } from "@/lib/care";
 
 export const metadata = { title: "Find a therapist" };
 
@@ -16,6 +17,7 @@ type Row = {
   photo_url: string | null;
   specialties: string[];
   languages: string[];
+  faith_integration: string[];
   years_experience: number;
   rating_avg: number;
   rating_count: number;
@@ -23,7 +25,7 @@ type Row = {
   profiles: { full_name: string } | null;
 };
 
-export default async function TherapistsPage({ searchParams }: { searchParams: Promise<{ specialty?: string; q?: string }> }) {
+export default async function TherapistsPage({ searchParams }: { searchParams: Promise<{ specialty?: string; q?: string; language?: string; faith?: string }> }) {
   const user = await requireRole("patient");
   const sp = await searchParams;
   const supabase = await createClient();
@@ -36,20 +38,29 @@ export default async function TherapistsPage({ searchParams }: { searchParams: P
     .limit(1)
     .maybeSingle();
   const recommended: string[] = latest?.recommended_specialties ?? [];
+  const { data: prefs } = await supabase.from("patient_profiles").select("preferred_languages, faith_preference").eq("id", user.id).maybeSingle();
+  const myLanguages: string[] = (prefs?.preferred_languages ?? []).filter((l: string) => l !== "English");
+  const myFaith: string = prefs?.faith_preference ?? "none";
+  const language = LANGUAGE_OPTIONS.includes(sp.language ?? "") ? sp.language! : "";
+  const faith = sp.faith === "christian" || sp.faith === "muslim" ? sp.faith : "";
 
   let query = supabase
     .from("therapist_profiles")
-    .select("id, title, bio, photo_url, specialties, languages, years_experience, rating_avg, rating_count, session_minutes, profiles!therapist_profiles_id_fkey(full_name)")
+    .select("id, title, bio, photo_url, specialties, languages, faith_integration, years_experience, rating_avg, rating_count, session_minutes, profiles!therapist_profiles_id_fkey(full_name)")
     .eq("status", "approved")
     .order("years_experience", { ascending: false });
   if (sp.specialty) query = query.contains("specialties", [sp.specialty]);
+  if (language) query = query.contains("languages", [language]);
+  if (faith) query = query.contains("faith_integration", [faith]);
   const { data } = await query;
   let rows = (data ?? []) as unknown as Row[];
   if (sp.q) {
     const q = sp.q.toLowerCase();
     rows = rows.filter((r) => r.profiles?.full_name.toLowerCase().includes(q) || r.bio?.toLowerCase().includes(q));
   }
-  const score = (r: Row) => r.specialties.filter((s) => recommended.includes(s)).length;
+  const speaksMine = (r: Row) => myLanguages.some((l) => r.languages.includes(l));
+  const faithMatch = (r: Row) => myFaith !== "none" && (r.faith_integration ?? []).includes(myFaith);
+  const score = (r: Row) => r.specialties.filter((s) => recommended.includes(s)).length + (speaksMine(r) ? 2 : 0) + (faithMatch(r) ? 2 : 0);
   rows.sort((a, b) => score(b) - score(a));
 
   return (
@@ -66,8 +77,23 @@ export default async function TherapistsPage({ searchParams }: { searchParams: P
             <option key={s}>{s}</option>
           ))}
         </select>
+        <select name="language" defaultValue={language} className="input w-auto min-w-[160px] border-0 bg-mist" aria-label="Language">
+          <option value="">Any language</option>
+          {LANGUAGE_OPTIONS.map((l) => <option key={l}>{l}</option>)}
+        </select>
+        <select name="faith" defaultValue={faith} className="input w-auto min-w-[180px] border-0 bg-mist" aria-label="Faith-sensitive">
+          <option value="">Faith: no preference</option>
+          <option value="christian">Includes Christian faith</option>
+          <option value="muslim">Includes Islamic faith</option>
+        </select>
         <button className="btn-primary">Search</button>
       </form>
+      {!prefs?.preferred_languages?.length && myFaith === "none" && (
+        <p className="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
+          <Settings2 className="size-4" /> Prefer sessions in Yoruba, Igbo, Hausa or Pidgin, or faith-sensitive therapy?
+          <Link href="/patient/settings#preferences" className="font-semibold text-brand-700">Set your preferences</Link>
+        </p>
+      )}
       {recommended.length > 0 && !sp.specialty && (
         <p className="mb-4 flex items-center gap-2 text-sm text-muted">
           <Sparkles className="size-4 text-sun-500" /> Sorted by your assessment: {recommended.join(", ")}
@@ -97,9 +123,12 @@ export default async function TherapistsPage({ searchParams }: { searchParams: P
                 {t.specialties.slice(0, 4).map((s) => (
                   <span key={s} className={`badge ${recommended.includes(s) ? "bg-brand-100 text-brand-800" : "bg-mist text-ink"}`}>{s}</span>
                 ))}
+                {(t.faith_integration ?? []).length > 0 && (
+                  <span className={`badge ${faithMatch(t) ? "bg-sun-100 text-sun-700" : "bg-mist text-ink"}`}><HandHeart className="size-3" /> Faith-sensitive{t.faith_integration.length === 1 ? ` (${t.faith_integration[0] === "christian" ? "Christian" : "Islamic"})` : ""}</span>
+                )}
               </div>
               <div className="mt-5 flex items-center justify-between gap-3 border-t border-line pt-4">
-                <span className="flex items-center gap-1.5 text-xs text-muted"><Languages className="size-3.5" /> {t.languages.join(", ")} · {t.session_minutes} min</span>
+                <span className="flex items-center gap-1.5 text-xs text-muted"><Languages className="size-3.5" /> <span className={speaksMine(t) ? "font-semibold text-brand-700" : ""}>{t.languages.join(", ")}</span> · {t.session_minutes} min</span>
                 <Link href={`/patient/therapists/${t.id}`} className="btn-primary btn-sm">View & book</Link>
               </div>
             </div>

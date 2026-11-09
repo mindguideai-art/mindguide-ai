@@ -20,9 +20,14 @@ export function SettingsForm({ s }: { s: Settings }) {
         <input id="cancellation_cutoff_hours" name="cancellation_cutoff_hours" type="number" min={0} max={168} className="input w-32" defaultValue={s.cancellation_cutoff_hours} />
       </div>
       <div>
+        <label className="label" htmlFor="single_session_price">Pay-as-you-go price per session (₦)</label>
+        <input id="single_session_price" name="single_session_price" type="number" min={500} step={500} className="input w-40" defaultValue={s.single_session_price} />
+        <p className="hint">What patients pay for one session without a monthly plan.</p>
+      </div>
+      <div>
         <label className="label" htmlFor="helplines">Crisis helplines shown to patients</label>
-        <textarea id="helplines" name="helplines" rows={4} className="input font-mono text-sm" defaultValue={s.helplines.map((h) => `${h.name}: ${h.phone}`).join("\n")} />
-        <p className="hint">One per line, written as Name: number. Shown when an assessment is flagged as high-risk.</p>
+        <textarea id="helplines" name="helplines" rows={7} className="input font-mono text-sm" defaultValue={s.helplines.map((h) => `${h.name}: ${h.phone}`).join("\n")} />
+        <p className="hint">One per line, written as Name: number. Shown in the &ldquo;Get help now&rdquo; panel on every patient page, and when an assessment is flagged as high-risk. Please check these numbers with your clinical lead from time to time.</p>
       </div>
       <SubmitButton>Save settings</SubmitButton>
     </form>

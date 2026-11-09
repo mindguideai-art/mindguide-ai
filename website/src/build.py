@@ -570,6 +570,25 @@ PRICING = f"""
 </section>
 <section class="section" style="padding-top:0">
   <div class="wrap">
+    <div class="alt-grid">
+      <div class="alt-card">
+        <span class="alt-ico">{icon("ticket", 22)}</span>
+        <h3>Pay as you go</h3>
+        <p class="alt-price">₦7,500 <small>per session</small></p>
+        <p>Not ready for a monthly plan? Buy one session at a time, or a few together. Sessions are valid for 90 days.</p>
+        <a class="btn btn-ghost" href="{APP_URL}/register">Create a free account {ARROW}</a>
+      </div>
+      <div class="alt-card">
+        <span class="alt-ico">{icon("users", 22)}</span>
+        <h3>For employers, universities and communities</h3>
+        <p>Give your staff, students or members private access to verified therapists. You choose the plan and number of seats; people join with a code, and you only ever see anonymous totals.</p>
+        <a class="btn btn-ghost" href="contact.html">Talk to us {ARROW}</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" style="padding-top:0">
+  <div class="wrap">
     {faq_html({"Billing questions": FAQS["Plans and payments"]})}
   </div>
 </section>

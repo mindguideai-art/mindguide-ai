@@ -4,17 +4,19 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Bell, CalendarDays, CreditCard, FileBadge2, Gauge, HeartPulse, Home, LifeBuoy, LineChart, LogOut, Menu,
-  MessageCircle, Search, Settings, ShieldAlert, Stethoscope, UserRound, Users, Video, Wallet, X, ClipboardList, Clock, CalendarHeart, Images,
+  MessageCircle, Search, Settings, ShieldAlert, Stethoscope, UserRound, Users, Video, Wallet, X, ClipboardList, Clock, CalendarHeart, Images, Star, BookOpen, Route, Building2, Wifi,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { Avatar } from "./avatar";
 import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
+import { HelpNow } from "./help-now";
+import type { Helpline } from "@/lib/settings";
 
 const ICONS = {
   home: Home, search: Search, video: Video, message: MessageCircle, chart: LineChart, pulse: HeartPulse,
   card: CreditCard, help: LifeBuoy, gauge: Gauge, users: Users, calendar: CalendarDays, clock: Clock, wallet: Wallet,
-  user: UserRound, badge: FileBadge2, stethoscope: Stethoscope, alert: ShieldAlert, settings: Settings, list: ClipboardList, bell: Bell, event: CalendarHeart, gallery: Images,
+  user: UserRound, badge: FileBadge2, stethoscope: Stethoscope, alert: ShieldAlert, settings: Settings, list: ClipboardList, bell: Bell, event: CalendarHeart, gallery: Images, star: Star, book: BookOpen, route: Route, building: Building2, wifi: Wifi,
 } as const;
 
 export type NavItem = { href: string; label: string; icon: keyof typeof ICONS };
@@ -52,6 +54,7 @@ export function ShellChrome({
   roleLabel,
   signOut,
   plan,
+  helplines,
   children,
 }: {
   nav: NavItem[];
@@ -59,6 +62,7 @@ export function ShellChrome({
   roleLabel: string;
   signOut: () => Promise<void>;
   plan?: PlanChip;
+  helplines?: Helpline[];
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -124,10 +128,11 @@ export function ShellChrome({
             <button onClick={() => setOpen(true)} className="rounded-xl p-2 text-ink hover:bg-ink/5 lg:hidden" aria-label="Open menu">
               <Menu className="size-5" />
             </button>
-            <div className="lg:hidden">
+            <div className="min-w-0 lg:hidden">
               <Logo href={nav[0].href} />
             </div>
             <div className="flex-1" />
+            {helplines && <HelpNow helplines={helplines} compact />}
             <ThemeToggle />
             <NotificationBell key={path} />
             <div className="hidden items-center gap-2.5 sm:flex">

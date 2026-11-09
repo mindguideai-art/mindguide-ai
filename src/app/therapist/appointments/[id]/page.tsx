@@ -11,6 +11,7 @@ import { StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { Avatar } from "@/components/avatar";
 import { NotesForm } from "@/components/notes-form";
+import { SummaryForm } from "@/components/summary-form";
 import { logAccess } from "@/lib/audit";
 
 export const metadata = { title: "Session" };
@@ -19,7 +20,7 @@ export default async function TherapistAppointment({ params }: { params: Promise
   const { id } = await params;
   const user = await requireRole("therapist");
   const supabase = await createClient();
-  const [{ data: a }, { data: note }, { data: calls }] = await Promise.all([
+  const [{ data: a }, { data: note }, { data: calls }, { data: summary }] = await Promise.all([
     supabase
       .from("appointments")
       .select("id, patient_id, starts_at, ends_at, type, status, status_reason, patient_note, patient:profiles!appointments_patient_id_fkey(full_name)")
@@ -28,6 +29,7 @@ export default async function TherapistAppointment({ params }: { params: Promise
       .single(),
     supabase.from("session_notes").select("body, updated_at").eq("appointment_id", id).maybeSingle(),
     supabase.from("calls").select("answered_at, ended_at, status").eq("appointment_id", id).order("created_at", { ascending: false }).limit(5),
+    supabase.from("session_summaries").select("summary, homework, shared_at").eq("appointment_id", id).maybeSingle(),
   ]);
   if (!a) notFound();
   logAccess(user, "session_notes", a.patient_id, a.id);
@@ -73,9 +75,16 @@ export default async function TherapistAppointment({ params }: { params: Promise
             </div>
           </div>
         </div>
-        <div className="card lg:col-span-2">
-          <NotesForm appointmentId={a.id} body={note?.body ?? ""} />
-          {note?.updated_at && <p className="mt-2 text-xs text-muted">Last saved {formatDateTime(note.updated_at)}</p>}
+        <div className="space-y-6 lg:col-span-2">
+          <div className="card">
+            <NotesForm appointmentId={a.id} body={note?.body ?? ""} />
+            {note?.updated_at && <p className="mt-2 text-xs text-muted">Last saved {formatDateTime(note.updated_at)}</p>}
+          </div>
+          {a.status !== "requested" && a.status !== "declined" && a.status !== "cancelled" && (
+            <div className="card">
+              <SummaryForm appointmentId={a.id} summary={summary?.summary ?? ""} homework={summary?.homework ?? []} sharedAt={summary?.shared_at ?? null} />
+            </div>
+          )}
         </div>
       </div>
     </div>

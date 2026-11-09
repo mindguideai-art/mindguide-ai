@@ -36,6 +36,11 @@ function fmt(sec: number) {
   return (h ? `${h}:${String(m).padStart(2, "0")}` : `${m}`) + `:${String(s).padStart(2, "0")}`;
 }
 
+/** Set on the "Test my connection" page. Smaller, slower video for poor networks. */
+function lowDataMode() {
+  try { return localStorage.getItem("mg-low-data") === "on"; } catch { return false; }
+}
+
 export function CallScreen(props: CallScreenProps) {
   const { callId, type, isCaller, initiator, iceServers, other } = props;
   const router = useRouter();
@@ -106,6 +111,14 @@ export function CallScreen(props: CallScreenProps) {
       const conn = new RTCPeerConnection({ iceServers });
       pc.current = conn;
       stream.current?.getTracks().forEach((t) => conn.addTrack(t, stream.current!));
+      if (lowDataMode()) {
+        // Low-data mode: cap outgoing video at about 150 kbps so calls hold up on slow networks.
+        conn.getSenders().filter((sd) => sd.track?.kind === "video").forEach((sd) => {
+          const p = sd.getParameters();
+          p.encodings = (p.encodings?.length ? p.encodings : [{}]).map((e) => ({ ...e, maxBitrate: 150_000, maxFramerate: 15 }));
+          sd.setParameters(p).catch(() => undefined);
+        });
+      }
 
       conn.onicecandidate = (e) => {
         if (e.candidate) send("ice", e.candidate.toJSON(), peer);
@@ -223,7 +236,11 @@ export function CallScreen(props: CallScreenProps) {
       try {
         const constraints: MediaStreamConstraints = {
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-          video: type === "video" ? { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } } : false,
+          video: type === "video"
+            ? lowDataMode()
+              ? { facingMode: "user", width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { max: 15 } }
+              : { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } }
+            : false,
         };
         try {
           stream.current = await navigator.mediaDevices.getUserMedia(constraints);

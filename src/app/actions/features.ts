@@ -15,28 +15,45 @@ export async function submitReview(_: FormState, form: FormData): Promise<FormSt
   const user = await requireRole("patient");
   const appointmentId = String(form.get("appointment_id"));
   const rating = Number(form.get("rating"));
+  const heard = Number(form.get("felt_heard")) || null;
+  const connection = ["good", "some_issues", "poor"].includes(String(form.get("connection"))) ? String(form.get("connection")) : null;
+  const cont = ["yes", "not_sure", "no"].includes(String(form.get("would_continue"))) ? String(form.get("would_continue")) : null;
+  const privateComment = String(form.get("private_comment") ?? "").trim().slice(0, 2000);
   const comment = String(form.get("comment") ?? "").trim().slice(0, 1500);
-  if (!(rating >= 1 && rating <= 5)) return { error: "Choose a rating from 1 to 5 stars." };
+  const isPublic = form.get("public") === "on";
+  if (!(rating >= 1 && rating <= 5)) return { error: "Choose an overall rating from 1 to 5 stars." };
   const supabase = await createClient();
   const { data: appt } = await supabase.from("appointments").select("therapist_id, status").eq("id", appointmentId).eq("patient_id", user.id).single();
-  if (!appt || appt.status !== "completed") return { error: "You can review a session once it has been completed." };
-  const parts = user.fullName.trim().split(/\s+/);
-  const display = form.get("anonymous") === "on" ? "Anonymous" : `${firstName(user.fullName) || "Patient"}${parts.length > 1 ? " " + parts[parts.length - 1][0] + "." : ""}`;
-  const { error } = await supabase.from("reviews").insert({
-    appointment_id: appointmentId,
-    patient_id: user.id,
-    therapist_id: appt.therapist_id,
-    display_name: display,
-    rating,
-    comment: comment || null,
+  if (!appt || appt.status !== "completed") return { error: "You can rate a session once it has been completed." };
+
+  // Private feedback for the MindGuide team
+  const { error: fbError } = await supabase.from("session_feedback").insert({
+    appointment_id: appointmentId, patient_id: user.id, therapist_id: appt.therapist_id, overall: rating,
+    felt_heard: heard && heard >= 1 && heard <= 5 ? heard : null, connection, would_continue: cont, private_comment: privateComment || null,
   });
-  if (error) return { error: error.code === "23505" ? "You've already reviewed this session." : "Could not save your review." };
-  await notify(appt.therapist_id, {
-    kind: "review",
-    title: `New ${rating}-star review`,
-    body: comment ? comment.slice(0, 120) : "A patient rated their session with you.",
-    link: "/therapist",
-  });
+  if (fbError && fbError.code === "23505") return { error: "You've already rated this session." };
+  if (fbError) return { error: "Could not save your feedback." };
+
+  // Optional public review on the therapist's profile
+  if (isPublic) {
+    const parts = user.fullName.trim().split(/\s+/);
+    const display = form.get("anonymous") === "on" ? "Anonymous" : `${firstName(user.fullName) || "Patient"}${parts.length > 1 ? " " + parts[parts.length - 1][0] + "." : ""}`;
+    const { error } = await supabase.from("reviews").insert({
+      appointment_id: appointmentId, patient_id: user.id, therapist_id: appt.therapist_id, display_name: display, rating, comment: comment || null,
+    });
+    if (!error) {
+      await notify(appt.therapist_id, {
+        kind: "review",
+        title: `New ${rating}-star review`,
+        body: comment ? comment.slice(0, 120) : "A patient rated their session with you.",
+        link: "/therapist",
+      });
+    }
+  }
+  if (cont === "no" || rating <= 2 || connection === "poor") {
+    const { notifyAdmins } = await import("@/lib/notifications");
+    await notifyAdmins({ kind: "feedback", title: "Session feedback needs attention", body: `A patient gave ${rating}/5${cont === "no" ? " and would like a different therapist" : ""}${connection === "poor" ? " (poor call quality)" : ""}.`, link: "/admin/quality" });
+  }
   redirect("/patient/appointments?reviewed=1");
 }
 

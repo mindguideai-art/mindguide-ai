@@ -8,6 +8,8 @@ import { EMOTIONAL_STATES } from "@/lib/constants";
 import { Notice, PageHeader, StatusBadge } from "@/components/ui/misc";
 import { LineChart } from "@/components/line-chart";
 import { logAccess } from "@/lib/audit";
+import { RiskFlagForm } from "@/components/risk-flag-form";
+import { RISK_LABEL } from "@/lib/care";
 
 export const metadata = { title: "Patient" };
 
@@ -17,10 +19,11 @@ export default async function TherapistPatient({ params }: { params: Promise<{ i
   logAccess(user, "patient_details", id);
   const canMessage = (await getEntitlements(id)).features.messaging;
   const supabase = await createClient();
-  const [{ data: profile }, { data: consent }, { data: appts }] = await Promise.all([
+  const [{ data: profile }, { data: consent }, { data: appts }, { data: flags }] = await Promise.all([
     supabase.from("profiles").select("full_name").eq("id", id).single(),
     supabase.from("consents").select("granted").eq("patient_id", id).eq("therapist_id", user.id).maybeSingle(),
     supabase.from("appointments").select("id, starts_at, type, status, patient_note").eq("therapist_id", user.id).eq("patient_id", id).order("starts_at", { ascending: false }),
+    supabase.from("reports").select("id, risk_level, details, status, created_at, resolution_note").eq("reporter_id", user.id).eq("subject_id", id).eq("source", "therapist").order("created_at", { ascending: false }).limit(10),
   ]);
   if (!profile) notFound();
   const allowed = Boolean(consent?.granted);
@@ -88,6 +91,26 @@ export default async function TherapistPatient({ params }: { params: Promise<{ i
           )}
         </>
       )}
+
+      <div className="card">
+        <p className="font-semibold">Safety</p>
+        <p className="mb-4 mt-1 text-sm text-muted">If you&apos;re worried about this client&apos;s safety, flag it here so the MindGuide team can follow up.</p>
+        {(flags ?? []).length > 0 && (
+          <ul className="mb-4 space-y-2">
+            {(flags ?? []).map((f) => (
+              <li key={f.id} className="rounded-xl border border-line p-3 text-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`badge ${f.risk_level === "high" || f.risk_level === "immediate" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-800"}`}>{RISK_LABEL[f.risk_level ?? "low"]}</span>
+                  <StatusBadge status={f.status} /><span className="text-xs text-muted">{formatDateTime(f.created_at)}</span>
+                </div>
+                <p className="mt-1.5 text-muted">{f.details}</p>
+                {f.resolution_note && <p className="mt-1.5 text-xs"><b>Team follow-up:</b> {f.resolution_note}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+        <RiskFlagForm patientId={id} />
+      </div>
 
       <div className="card overflow-x-auto p-0">
         <p className="px-5 pt-4 font-semibold">Sessions together</p>

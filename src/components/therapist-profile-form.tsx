@@ -3,6 +3,7 @@ import { useActionState, useState } from "react";
 import { updateTherapistProfile } from "@/app/actions/therapist";
 import { createClient } from "@/lib/supabase/client";
 import { SPECIALTIES } from "@/lib/constants";
+import { FAITH_OPTIONS, LANGUAGE_OPTIONS } from "@/lib/care";
 import { SubmitButton } from "./ui/submit-button";
 import { Notice } from "./ui/misc";
 import { Avatar } from "./avatar";
@@ -16,6 +17,7 @@ type Profile = {
   photo_url: string | null;
   specialties: string[];
   languages: string[];
+  faith_integration?: string[];
   years_experience: number;
   session_price: number;
   session_minutes: number;
@@ -92,10 +94,27 @@ export function TherapistProfileForm({ p }: { p: Profile }) {
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="sm:col-span-2">
-          <label className="label" htmlFor="languages">Languages</label>
-          <input className="input" id="languages" name="languages" defaultValue={p.languages.join(", ")} placeholder="English, Yoruba, Igbo, Hausa" />
-          <p className="hint">Separate with commas.</p>
+        <div className="sm:col-span-2 lg:col-span-4">
+          <span className="label">Languages you can hold sessions in</span>
+          <div className="flex flex-wrap gap-2">
+            {LANGUAGE_OPTIONS.map((l) => (
+              <label key={l} className="chip">
+                <input type="checkbox" name="language" value={l} defaultChecked={p.languages.includes(l)} className="sr-only" />{l}
+              </label>
+            ))}
+          </div>
+          <input className="input mt-2" id="languages" name="languages_other" defaultValue={p.languages.filter((l) => !LANGUAGE_OPTIONS.includes(l)).join(", ")} placeholder="Other languages, separated by commas (optional)" aria-label="Other languages" />
+        </div>
+        <div className="sm:col-span-2 lg:col-span-4">
+          <span className="label">Faith-sensitive therapy <span className="font-normal text-muted">(optional)</span></span>
+          <p className="hint !mt-0 mb-2">Tick if you&apos;re comfortable bringing a client&apos;s faith into therapy when they ask for it. Clients can filter for this.</p>
+          <div className="flex flex-wrap gap-2">
+            {FAITH_OPTIONS.map((f) => (
+              <label key={f.value} className="chip">
+                <input type="checkbox" name="faith_integration" value={f.value} defaultChecked={(p.faith_integration ?? []).includes(f.value)} className="sr-only" />{f.label}
+              </label>
+            ))}
+          </div>
         </div>
         <div>
           <label className="label" htmlFor="years_experience">Years of experience</label>

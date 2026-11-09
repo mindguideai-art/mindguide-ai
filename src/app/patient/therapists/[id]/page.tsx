@@ -19,7 +19,7 @@ export default async function TherapistDetail({ params }: { params: Promise<{ id
   const [{ data: t }, { data: hours }, { data: pp }] = await Promise.all([
     supabase
       .from("therapist_profiles")
-      .select("id, title, bio, photo_url, specialties, languages, years_experience, session_minutes, rating_avg, rating_count, profiles!therapist_profiles_id_fkey(full_name)")
+      .select("id, title, bio, photo_url, specialties, languages, faith_integration, years_experience, session_minutes, rating_avg, rating_count, profiles!therapist_profiles_id_fkey(full_name)")
       .eq("id", id)
       .eq("status", "approved")
       .single(),
@@ -51,6 +51,7 @@ export default async function TherapistDetail({ params }: { params: Promise<{ id
                 <div><dt className="eyebrow">Experience</dt><dd className="mt-1 font-semibold">{t.years_experience} years</dd></div>
                 <div><dt className="eyebrow">Session</dt><dd className="mt-1 font-semibold">{t.session_minutes} minutes</dd></div>
                 <div className="col-span-2"><dt className="eyebrow">Languages</dt><dd className="mt-1 font-semibold">{t.languages.join(", ")}</dd></div>
+                {(t.faith_integration ?? []).length > 0 && <div className="col-span-2"><dt className="eyebrow">Faith-sensitive therapy</dt><dd className="mt-1 font-semibold">Can include {(t.faith_integration as string[]).map((f) => (f === "christian" ? "Christian" : "Islamic")).join(" or ")} faith when you ask</dd></div>}
               </dl>
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {t.specialties.map((s: string) => <span key={s} className="badge bg-brand-50 text-brand-800">{s}</span>)}
@@ -89,7 +90,7 @@ export default async function TherapistDetail({ params }: { params: Promise<{ id
         </div>
         <div className="card h-fit p-6 sm:p-7 lg:sticky lg:top-24 lg:col-span-3">
           <PageHeader title="Book a session" text="Choose a time that suits you. Your therapist will confirm it." />
-          <BookingForm therapistId={t.id} preferred={pp?.preferred_support ?? "either"} usage={{ active: ent.active, planName: ent.planName, used: ent.sessionsUsed, limit: ent.features.sessionsPerMonth, noticeHours: ent.noticeHours }} />
+          <BookingForm therapistId={t.id} preferred={pp?.preferred_support ?? "either"} usage={{ active: ent.active, planName: ent.planName, used: ent.sessionsUsed, limit: ent.features.sessionsPerMonth, noticeHours: ent.noticeHours, credits: ent.credits }} />
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { purgeExpired } from "@/lib/retention";
+import { renewSponsored } from "@/lib/organisations";
 
 /**
  * Deletes data that has passed its retention period (see src/lib/retention.ts).
@@ -12,5 +13,5 @@ export async function GET(request: NextRequest) {
   if (!secret || (auth !== `Bearer ${secret}` && qs !== secret)) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
-  return NextResponse.json({ ok: true, results: await purgeExpired() });
+  return NextResponse.json({ ok: true, results: await purgeExpired(), organisations: await renewSponsored() });
 }

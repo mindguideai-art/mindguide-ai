@@ -6,11 +6,12 @@ import { resolveReport } from "@/app/actions/admin";
 import { EmptyState, PageHeader, StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { logAccess } from "@/lib/audit";
+import { RISK_LABEL } from "@/lib/care";
 
 export const metadata = { title: "Reports & flags" };
 
 type Row = {
-  id: string; source: string; reason: string; details: string | null; status: string; created_at: string; resolution_note: string | null;
+  id: string; source: string; risk_level: string | null; action_taken: string | null; reason: string; details: string | null; status: string; created_at: string; resolution_note: string | null;
   reporter: { full_name: string; email: string } | null; subject: { full_name: string; email: string; phone: string | null; role: string } | null;
 };
 
@@ -22,11 +23,11 @@ export default async function AdminReports({ searchParams }: { searchParams: Pro
   const db = createAdminClient();
   let q = db
     .from("reports")
-    .select("id, source, reason, details, status, created_at, resolution_note, reporter:profiles!reports_reporter_id_fkey(full_name, email), subject:profiles!reports_subject_id_fkey(full_name, email, phone, role)")
+    .select("id, source, risk_level, action_taken, reason, details, status, created_at, resolution_note, reporter:profiles!reports_reporter_id_fkey(full_name, email), subject:profiles!reports_subject_id_fkey(full_name, email, phone, role)")
     .eq("status", status)
     .order("created_at", { ascending: false })
     .limit(200);
-  if (sp.source === "ai" || sp.source === "user") q = q.eq("source", sp.source);
+  if (sp.source === "ai" || sp.source === "user" || sp.source === "therapist") q = q.eq("source", sp.source);
   const { data } = await q;
   const rows = (data ?? []) as unknown as Row[];
 
@@ -34,8 +35,8 @@ export default async function AdminReports({ searchParams }: { searchParams: Pro
     <div>
       <PageHeader title="Reports & flagged concerns" text="User reports and assessments the system flagged as high-risk. Handle high-risk flags first." />
       <div className="mb-4 flex flex-wrap gap-2">
-        {[["open", ""], ["open", "ai"], ["resolved", ""]].map(([st, src]) => {
-          const label = src === "ai" ? "High-risk flags" : st === "open" ? "Open" : "Resolved";
+        {[["open", ""], ["open", "therapist"], ["open", "ai"], ["resolved", ""]].map(([st, src]) => {
+          const label = src === "ai" ? "High-risk assessments" : src === "therapist" ? "Therapist flags" : st === "open" ? "Open" : "Resolved";
           const active = st === status && (src || "") === (sp.source ?? "");
           return (
             <Link key={label} href={`/admin/reports?status=${st}${src ? `&source=${src}` : ""}`} className={`rounded-full px-4 py-1.5 text-sm font-medium ${active ? "bg-brand-600 text-white" : "bg-surface text-muted shadow-sm"}`}>{label}</Link>
@@ -47,15 +48,16 @@ export default async function AdminReports({ searchParams }: { searchParams: Pro
       ) : (
         <div className="space-y-3">
           {rows.map((r) => (
-            <div key={r.id} className={`card ${r.source === "ai" && r.status === "open" ? "border-red-200" : ""}`}>
+            <div key={r.id} className={`card ${(r.source === "ai" || r.risk_level === "high" || r.risk_level === "immediate") && r.status === "open" ? "border-red-200" : ""}`}>
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <div className="flex items-center gap-2">
-                    {r.source === "ai" ? <span className="badge bg-red-50 text-red-700">High-risk assessment</span> : <span className="badge bg-ink/5">User report</span>}
+                    {r.source === "ai" ? <span className="badge bg-red-50 text-red-700">High-risk assessment</span> : r.source === "therapist" ? <span className={`badge ${r.risk_level === "high" || r.risk_level === "immediate" ? "bg-red-600 text-white" : "bg-amber-50 text-amber-800"}`}>Therapist flag · {RISK_LABEL[r.risk_level ?? "low"]}</span> : <span className="badge bg-ink/5">User report</span>}
                     <StatusBadge status={r.status} />
                   </div>
                   <p className="mt-2 font-semibold">{r.reason}</p>
                   {r.details && <p className="mt-1 whitespace-pre-line text-sm text-muted">{r.details}</p>}
+                  {r.action_taken && <p className="mt-1 text-sm"><span className="text-muted">Therapist action so far:</span> {r.action_taken}</p>}
                 </div>
                 <p className="text-xs text-muted">{formatDateTime(r.created_at)}</p>
               </div>
@@ -63,7 +65,7 @@ export default async function AdminReports({ searchParams }: { searchParams: Pro
                 {r.reporter && <p><span className="text-muted">Reported by:</span> {r.reporter.full_name} ({r.reporter.email})</p>}
                 {r.subject && (
                   <p>
-                    <span className="text-muted">{r.source === "ai" ? "Patient" : "About"}:</span> {r.subject.full_name} · {r.subject.email}
+                    <span className="text-muted">{r.source === "user" ? "About" : "Patient"}:</span> {r.subject.full_name} · {r.subject.email}
                     {r.subject.phone && <> · <a href={`tel:${r.subject.phone}`} className="text-brand-700">{r.subject.phone}</a></>}
                   </p>
                 )}

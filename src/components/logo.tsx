@@ -4,7 +4,7 @@ import Link from "next/link";
 /** The MindGuide AI head mark. On dark backgrounds it sits on a white tile so the gradient stays readable. */
 export function LogoMark({ size = 34, light = false }: { size?: number; light?: boolean }) {
   const img = <img src="/brand/mindguide-mark.png" alt="" width={size} height={size} className="block" style={{ width: size, height: size }} />;
-  if (!light) return <span className="inline-flex dark:rounded-xl dark:bg-white dark:p-0.5">{img}</span>;
+  if (!light) return <span className="inline-flex shrink-0 dark:rounded-xl dark:bg-white dark:p-0.5">{img}</span>;
   return (
     <span className="inline-flex items-center justify-center rounded-xl bg-white p-1 shadow-sm" style={{ width: size + 8, height: size + 8 }}>
       <img src="/brand/mindguide-mark.png" alt="" width={size} height={size} style={{ width: size, height: size }} />
