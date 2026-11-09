@@ -610,7 +610,7 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 .ev-consent input { width: 18px !important; height: 18px; margin: 2px 0 0; padding: 0 !important; accent-color: var(--indigo); }
 .hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .ev-error { padding: 12px 14px; border-radius: 12px; background: var(--err-bg); color: var(--err-fg); font-size: 0.93rem; }
-.ev-closed, .ev-done { display: grid; gap: 14px; align-content: center; min-height: 100%; }
+.ev-closed, .ev-done { display: grid; gap: 14px; align-content: start; position: sticky; top: 0; padding-top: 8px; }
 .ev-closed p, .ev-done p { color: var(--muted); }
 .ev-done { text-align: left; }
 .ev-tick { width: 60px; height: 60px; border-radius: 20px; background: var(--grad); color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 16px 34px -14px rgba(180,35,157,.65); }
@@ -685,3 +685,11 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 /* Logo mark keeps a light tile in dark mode */
 :root[data-theme="dark"] .site-header .brand img { background: #fff; border-radius: 10px; padding: 3px; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .site-header .brand img { background: #fff; border-radius: 10px; padding: 3px; } }
+
+/* Portrait flyers: shown whole on a blurred copy of the flyer */
+.ev-media.fit::before { content: ""; position: absolute; inset: -30px; background: var(--img) center / cover no-repeat; filter: blur(28px) saturate(1.2) brightness(.75); }
+.ev-media.fit img { position: relative; object-fit: contain; }
+.ev-card:hover .ev-media.fit img, .ev-feature:hover .ev-media.fit img { transform: none; }
+.ev-media.modal.fit { aspect-ratio: 1 / 1; }
+.ev-feature .ev-media.fit { min-height: 420px; }
+.ev-cal-link { justify-self: start; font-weight: 600; font-size: 0.93rem; color: var(--indigo); }

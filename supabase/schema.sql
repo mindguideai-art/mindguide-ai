@@ -648,6 +648,7 @@ create table if not exists community_events (
   capacity int check (capacity is null or capacity > 0),
   registration_deadline timestamptz,
   registration_open boolean not null default true,
+  registration_url text,                          -- optional outside form (e.g. Google Forms) instead of our own
   custom_question text,                           -- optional extra question on the form
   custom_required boolean not null default false,
   is_published boolean not null default false,

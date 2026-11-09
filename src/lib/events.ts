@@ -11,7 +11,7 @@ export type EventRow = {
   starts_at: string; ends_at: string | null; location_type: "online" | "in_person" | "hybrid";
   venue: string | null; online_link: string | null; image_path: string | null; capacity: number | null;
   registration_deadline: string | null; registration_open: boolean; custom_question: string | null;
-  custom_required: boolean; is_published: boolean; created_at: string;
+  custom_required: boolean; is_published: boolean; created_at: string; registration_url?: string | null;
 };
 
 export function publicImageUrl(bucket: "event-images" | "gallery", path: string | null | undefined) {
@@ -54,6 +54,7 @@ export function toPublicEvent(e: EventRow, registered: number) {
     image: publicImageUrl("event-images", e.image_path), capacity: e.capacity, spots_left: state.spotsLeft,
     registration_deadline: e.registration_deadline, open: state.open, closed_reason: state.reason,
     is_past: state.reason === "past", custom_question: e.custom_question, custom_required: e.custom_required,
+    registration_url: e.registration_url ?? null,
   };
 }
 

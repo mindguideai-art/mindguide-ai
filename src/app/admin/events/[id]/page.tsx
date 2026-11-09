@@ -69,6 +69,9 @@ export default async function AdminEvent({ params, searchParams }: { params: Pro
         <StatCard label="Registration" value={st.open ? "Open" : "Closed"} sub={st.open ? (e.registration_deadline ? `Closes ${formatDateTime(e.registration_deadline)}` : "Until the event ends") : st.reason === "full" ? "Fully booked" : st.reason === "past" ? "The event has ended" : st.reason === "deadline" ? "Deadline passed" : "Closed by an admin"} icon={CalendarClock} tone="sun" />
       </div>
 
+      {e.registration_url && (
+        <div className="mb-6"><Notice kind="info">People register for this event on your external form: <a href={e.registration_url} target="_blank" rel="noreferrer" className="font-semibold underline">{e.registration_url}</a>. Check that form for the list of registrations.</Notice></div>
+      )}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-display text-lg font-bold">Registrations</h2>
         <div className="flex flex-wrap gap-2">

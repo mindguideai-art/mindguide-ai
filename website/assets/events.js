@@ -18,7 +18,7 @@
   function month(iso) { return fmt(iso, { month: "short" }); }
   function weekday(iso) { return fmt(iso, { weekday: "long" }); }
   function longDate(iso) { return fmt(iso, { weekday: "long", day: "numeric", month: "long", year: "numeric" }); }
-  function time(iso) { return fmt(iso, { hour: "numeric", minute: "2-digit" }).toLowerCase().replace(/\s/g, ""); }
+  function time(iso) { return fmt(iso, { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase().replace(/\s/g, ""); }
   function timeRange(e) { return time(e.starts_at) + (e.ends_at ? " – " + time(e.ends_at) : "") + " WAT"; }
   var ICON = {
     clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
@@ -32,7 +32,7 @@
   };
 
   function where(e) {
-    if (e.location_type === "online") return { icon: ICON.monitor, text: "Online · link sent when you register" };
+    if (e.location_type === "online") return { icon: ICON.monitor, text: "Online · joining details shared when you register" };
     if (e.location_type === "hybrid") return { icon: ICON.pin, text: (e.venue || "In person") + " · or join online" };
     return { icon: ICON.pin, text: e.venue || "In person" };
   }
@@ -46,8 +46,9 @@
     return { cls: "shut", text: "Registration closed" };
   }
   function media(e, cls) {
-    return '<div class="ev-media ' + (cls || "") + '">' +
-      (e.image ? '<img src="' + esc(e.image) + '" alt="" decoding="async">' : '<div class="ev-ph" aria-hidden="true"></div>') +
+    // Portrait flyers are shown whole, on a soft blurred copy of themselves, instead of being cropped.
+    return '<div class="ev-media ' + (cls || "") + '"' + (e.image ? ' style="--img:url(\'' + esc(e.image) + '\')"' : "") + ">" +
+      (e.image ? '<img src="' + esc(e.image) + '" alt="' + esc(e.title) + ' flyer" decoding="async" onload="this.parentNode.classList.toggle(\'fit\', this.naturalWidth / this.naturalHeight < 1.45)">' : '<div class="ev-ph" aria-hidden="true"></div>') +
       '<div class="ev-date" aria-hidden="true"><span>' + esc(month(e.starts_at)) + "</span><b>" + esc(day(e.starts_at)) + "</b></div></div>";
   }
   function card(e) {
@@ -119,10 +120,10 @@
         '<div class="ev-modal-copy"><span class="ev-pill ' + st.cls + '">' + esc(st.text) + "</span>" +
         '<h2 id="ev-modal-title">' + esc(e.title) + "</h2>" +
         '<ul class="ev-meta"><li>' + ICON.clock + "<span>" + esc(longDate(e.starts_at)) + "<br>" + esc(timeRange(e)) + "</span></li><li>" + w.icon + "<span>" + esc(w.text) + "</span></li>" +
-        (e.capacity ? "<li>" + ICON.users + "<span>" + (e.spots_left != null ? esc(e.spots_left) + " of " + esc(e.capacity) + " places left" : esc(e.capacity) + " places") + "</span></li>" : "") + "</ul>" +
+        (e.capacity && !e.registration_url ? "<li>" + ICON.users + "<span>" + (e.spots_left != null ? esc(e.spots_left) + " of " + esc(e.capacity) + " places left" : esc(e.capacity) + " places") + "</span></li>" : "") + "</ul>" +
         (desc ? '<div class="ev-desc">' + desc + "</div>" : "") +
         '<button class="ev-share" type="button" data-share>' + ICON.share + " Share this event</button></div></div>" +
-      '<div class="ev-modal-form">' + (e.open ? formHtml(e) : '<div class="ev-closed"><h3>' + esc(closedMsg) + '</h3><p>Join the community to hear about the next one.</p><a class="btn btn-primary" href="' + esc((page || home).getAttribute("data-telegram") || "contact.html") + '">Stay in the loop ' + ICON.arrow + "</a></div>") + "</div></div>";
+      '<div class="ev-modal-form">' + (e.open ? (e.registration_url ? externalHtml(e) : formHtml(e)) : '<div class="ev-closed"><h3>' + esc(closedMsg) + '</h3><p>Join the community to hear about the next one.</p><a class="btn btn-primary" href="' + esc((page || home).getAttribute("data-telegram") || "contact.html") + '">Stay in the loop ' + ICON.arrow + "</a></div>") + "</div></div>";
     var form = modal.querySelector("form");
     if (form) {
       form.addEventListener("submit", function (ev) { submit(ev, e); });
@@ -132,6 +133,13 @@
     if (!modal.open) modal.showModal();
     modal.scrollTop = 0;
     if (push !== false && location.hash !== "#" + slug) history.replaceState(null, "", "#" + slug);
+  }
+
+  function externalHtml(e) {
+    return '<div class="ev-closed"><p class="eyebrow">Register</p><h3>Save your place</h3><p>Registration for this event is on a short form. It opens in a new tab' +
+      (e.location_type !== "in_person" ? ", and the joining details are shared with everyone who registers." : ".") + "</p>" +
+      '<a class="btn btn-glow" href="' + esc(e.registration_url) + '" target="_blank" rel="noopener">Open the registration form ' + ICON.arrow + "</a>" +
+      '<a class="ev-cal-link" href="' + esc(calendarUrl(e)) + '" target="_blank" rel="noopener">Add to Google Calendar</a></div>';
   }
 
   function formHtml(e) {

@@ -10,7 +10,7 @@ export type EventFormValues = {
   id?: string; title?: string; summary?: string | null; description?: string | null;
   starts_at?: string; ends_at?: string | null; location_type?: string; venue?: string | null; online_link?: string | null;
   image_path?: string | null; image_url?: string | null; capacity?: number | null; registration_deadline?: string | null;
-  registration_open?: boolean; custom_question?: string | null; custom_required?: boolean; is_published?: boolean;
+  registration_open?: boolean; registration_url?: string | null; custom_question?: string | null; custom_required?: boolean; is_published?: boolean;
 };
 
 /** ISO → value for <input type="datetime-local"> in Lagos time. */
@@ -26,6 +26,7 @@ export function EventForm({ e = {} }: { e?: EventFormValues }) {
   const [uploadError, setUploadError] = useState("");
   const [loc, setLoc] = useState(e.location_type ?? "online");
   const [summary, setSummary] = useState(e.summary ?? "");
+  const [regMode, setRegMode] = useState(e.registration_url ? "external" : "site");
 
   async function onImage(ev: React.ChangeEvent<HTMLInputElement>) {
     const file = ev.target.files?.[0];
@@ -131,29 +132,46 @@ export function EventForm({ e = {} }: { e?: EventFormValues }) {
 
       <section className="card space-y-5">
         <h2 className="font-display text-lg font-semibold">Registration</h2>
+        <fieldset>
+          <legend className="label">Where do people register?</legend>
+          <div className="flex flex-wrap gap-2">
+            {[["site", "On our website (recommended)"], ["external", "On another form, e.g. Google Forms"]].map(([v, l]) => (
+              <label key={v} className="chip">
+                <input type="radio" name="registration_mode" value={v} checked={regMode === v} onChange={() => setRegMode(v)} className="sr-only" />{l}
+              </label>
+            ))}
+          </div>
+          <p className="hint">{regMode === "site" ? "Registrations come straight into this app, with confirmation emails, places and a download." : "The Register button sends people to your form. Registrations are collected there, not in this app."}</p>
+        </fieldset>
+        {regMode === "external" && (
+          <div>
+            <label className="label" htmlFor="registration_url">Registration form link</label>
+            <input id="registration_url" name="registration_url" type="url" required className="input" maxLength={500} defaultValue={e.registration_url ?? ""} placeholder="https://forms.gle/…" />
+          </div>
+        )}
         <label className="flex items-start gap-3">
           <input type="checkbox" name="registration_open" defaultChecked={e.registration_open ?? true} className="mt-1 size-4 accent-brand-600" />
           <span><span className="font-semibold">Accept registrations</span><span className="block text-sm text-muted">Untick to close the form without hiding the event.</span></span>
         </label>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div>
+          {regMode === "site" && <div>
             <label className="label" htmlFor="capacity">Places available</label>
             <input id="capacity" name="capacity" type="number" min={1} className="input" defaultValue={e.capacity ?? ""} placeholder="No limit" />
             <p className="hint">The form closes automatically when it&apos;s full.</p>
-          </div>
+          </div>}
           <div>
             <label className="label" htmlFor="registration_deadline">Registration closes <span className="font-normal text-muted">(optional)</span></label>
             <input id="registration_deadline" name="registration_deadline" type="datetime-local" className="input" defaultValue={toLocal(e.registration_deadline)} />
           </div>
         </div>
-        <div>
+        {regMode === "site" && <><div>
           <label className="label" htmlFor="custom_question">Extra question on the form <span className="font-normal text-muted">(optional)</span></label>
           <input id="custom_question" name="custom_question" className="input" maxLength={200} defaultValue={e.custom_question ?? ""} placeholder="e.g. Any accessibility needs we should know about?" />
           <label className="mt-2 flex items-center gap-2 text-sm">
             <input type="checkbox" name="custom_required" defaultChecked={e.custom_required} className="size-4 accent-brand-600" /> Make this question required
           </label>
         </div>
-        <p className="text-sm text-muted">The form always asks for full name, email, phone (optional), organisation (optional), how they heard about the event, and their agreement to how their details are used.</p>
+        <p className="text-sm text-muted">The form always asks for full name, email, phone (optional), organisation (optional), how they heard about the event, and their agreement to how their details are used.</p></>}
       </section>
 
       <section className="card flex flex-wrap items-center justify-between gap-4">

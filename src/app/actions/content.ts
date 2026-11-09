@@ -22,7 +22,9 @@ export async function saveEvent(_: ActionState, form: FormData): Promise<ActionS
   const location_type = ["online", "in_person", "hybrid"].includes(str(form, "location_type")) ? str(form, "location_type") : "online";
   const venue = str(form, "venue", 300);
   const online_link = str(form, "online_link", 500);
-  const capacityRaw = str(form, "capacity", 10);
+  const external = form.get("registration_mode") === "external";
+  const registration_url = external ? str(form, "registration_url", 500) : "";
+  const capacityRaw = external ? "" : str(form, "capacity", 10);
   const capacity = capacityRaw ? Number(capacityRaw) : null;
 
   if (title.length < 3) return { error: "Please give the event a title." };
@@ -31,6 +33,7 @@ export async function saveEvent(_: ActionState, form: FormData): Promise<ActionS
   if (deadline && deadline > (endsAt ?? startsAt)) return { error: "The registration deadline must be before the event ends." };
   if (location_type !== "online" && !venue) return { error: "Please add the venue address for an in-person event." };
   if (online_link && !/^https:\/\//.test(online_link)) return { error: "The online link must start with https://" };
+  if (external && !/^https:\/\/\S+\.\S+/.test(registration_url)) return { error: "Please paste the full registration form link, starting with https://" };
   if (capacity !== null && (!Number.isInteger(capacity) || capacity < 1)) return { error: "Capacity must be a whole number, or leave it empty for no limit." };
 
   const row = {
@@ -46,7 +49,8 @@ export async function saveEvent(_: ActionState, form: FormData): Promise<ActionS
     capacity,
     registration_deadline: deadline?.toISOString() ?? null,
     registration_open: form.get("registration_open") === "on",
-    custom_question: str(form, "custom_question", 200) || null,
+    registration_url: registration_url || null,
+    custom_question: external ? null : str(form, "custom_question", 200) || null,
     custom_required: form.get("custom_required") === "on" && !!str(form, "custom_question"),
     is_published: form.get("is_published") === "on",
     updated_at: new Date().toISOString(),

@@ -45,6 +45,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const { data } = await db.from("community_events").select("*").eq("slug", slug).eq("is_published", true).maybeSingle();
   const event = data as EventRow | null;
   if (!event) return fail("We couldn't find this event.", 404);
+  if (event.registration_url) return fail("Registration for this event is on a separate form.", 409);
   if (event.custom_question && event.custom_required && !custom_answer) return fail(`Please answer: ${event.custom_question}`);
 
   const counts = await registrationCounts([event.id]);
