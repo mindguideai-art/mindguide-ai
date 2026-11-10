@@ -175,14 +175,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .brand b { font-weight: 700; color: var(--magenta); }
 .brand .mind { background: var(--grad-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .nav-links { display: flex; gap: 4px; margin-left: auto; }
-.nav-links a { padding: 8px 10px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 0.97rem; color: var(--muted); }
+.nav-links a { white-space: nowrap; padding: 8px 9px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 0.97rem; color: var(--muted); }
 .nav-links a:hover { color: var(--ink); background: var(--mist); }
 .nav-links a[aria-current="page"] { color: var(--ink); font-weight: 650; }
 .nav-cta { display: flex; gap: 8px; align-items: center; }
 .nav-cta .btn { padding: 11px 18px; font-size: 0.95rem; }
 .menu-btn { display: none; margin-left: auto; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; align-items: center; justify-content: center; }
 .mobile-menu { display: none; }
-@media (max-width: 1140px) {
+@media (max-width: 1400px) {
   .nav-links, .nav-cta { display: none; }
   .menu-btn { display: inline-flex; }
   .mobile-menu { border-top: 1px solid var(--line); background: var(--paper); padding-block: 12px 20px; }
@@ -681,7 +681,7 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 :root[data-theme="dark"] .theme-btn .moon { display: inline; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn .sun { display: none; } :root:not([data-theme="light"]) .theme-btn .moon { display: inline; } }
 .menu-btn { margin-left: 8px; }
-@media (max-width: 1140px) { .lang-btn { margin-left: auto; } }
+@media (max-width: 1400px) { .lang-btn { margin-left: auto; } }
 /* Language picker */
 .lang-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 12px; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; font-size: .9rem; cursor: pointer; margin-right: 8px; }
 .lang-btn:hover, .lang-btn:focus-within { border-color: var(--indigo); }

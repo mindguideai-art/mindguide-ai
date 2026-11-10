@@ -132,7 +132,7 @@ export function ShellChrome({
               <Menu className="size-5" />
             </button>
             <div className="min-w-0 lg:hidden">
-              <Logo href={nav[0].href} />
+              <Logo href={nav[0].href} compact />
             </div>
             <div className="flex-1" />
             {helplines && <HelpNow helplines={helplines} compact />}

@@ -22,11 +22,12 @@ export function Wordmark({ light = false, className = "text-xl" }: { light?: boo
   );
 }
 
-export function Logo({ light = false, href = "/" }: { light?: boolean; href?: string }) {
+/** `compact` drops the wordmark on very narrow phones, where the top bar is full. */
+export function Logo({ light = false, href = "/", compact = false }: { light?: boolean; href?: string; compact?: boolean }) {
   return (
     <Link href={href} className="inline-flex shrink-0 items-center gap-2" aria-label="MindGuide AI home">
       <LogoMark light={light} size={light ? 28 : 36} />
-      <Wordmark light={light} />
+      <Wordmark light={light} className={compact ? "text-xl max-[419px]:hidden" : "text-xl"} />
     </Link>
   );
 }
