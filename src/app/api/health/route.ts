@@ -1,3 +1,4 @@
+import { turnReady } from "@/lib/calls";
 import { NextResponse } from "next/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
@@ -24,6 +25,7 @@ export async function GET() {
     WHATSAPP_VERIFY_TOKEN: Boolean(process.env.WHATSAPP_VERIFY_TOKEN),
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY),
     VAPID_PRIVATE_KEY: Boolean(process.env.VAPID_PRIVATE_KEY),
+    CALL_RELAY_TURN: turnReady(),
   };
 
   let database = "not checked: Supabase settings missing";

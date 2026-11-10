@@ -83,8 +83,46 @@ export async function joinAppointmentCall(user: CurrentUser, appt: { id: string;
   return { call, created: true };
 }
 
-export function iceServers() {
-  const servers: RTCIceServer[] = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }];
+const STUN: RTCIceServer = { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] };
+
+/** True when a relay (TURN) server is configured, either Cloudflare or a fixed one. */
+export function turnReady() {
+  return Boolean(
+    (process.env.CLOUDFLARE_TURN_KEY_ID && process.env.CLOUDFLARE_TURN_API_TOKEN) || process.env.TURN_URLS,
+  );
+}
+
+/**
+ * Servers that help two devices find each other. STUN is always included. With Cloudflare TURN set up,
+ * short-lived relay credentials are created for each call (valid 4 hours), so calls still connect on
+ * mobile networks that block direct connections. If Cloudflare can't be reached, the call falls back to STUN.
+ */
+export async function iceServers(): Promise<RTCIceServer[]> {
+  const keyId = process.env.CLOUDFLARE_TURN_KEY_ID;
+  const token = process.env.CLOUDFLARE_TURN_API_TOKEN;
+  if (keyId && token) {
+    try {
+      const res = await fetch(`https://rtc.live.cloudflare.com/v1/turn/keys/${encodeURIComponent(keyId)}/credentials/generate-ice-servers`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ ttl: 4 * 60 * 60 }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(4000),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { iceServers?: RTCIceServer[] };
+        const servers = (data.iceServers ?? [])
+          .map((s) => ({ ...s, urls: (Array.isArray(s.urls) ? s.urls : [s.urls]).filter((u) => !/:53(\?|$)/.test(u)) }))
+          .filter((s) => s.urls.length);
+        if (servers.length) return [STUN, ...servers];
+      } else {
+        console.error("Cloudflare TURN credentials failed", res.status);
+      }
+    } catch (e) {
+      console.error("Cloudflare TURN credentials failed", e);
+    }
+  }
+  const servers: RTCIceServer[] = [STUN];
   const urls = (process.env.TURN_URLS || "").split(",").map((s) => s.trim()).filter(Boolean);
   if (urls.length) servers.push({ urls, username: process.env.TURN_USERNAME, credential: process.env.TURN_CREDENTIAL });
   return servers;

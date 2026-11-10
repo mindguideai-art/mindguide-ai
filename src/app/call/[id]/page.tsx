@@ -42,7 +42,7 @@ export default async function CallPage({ params }: { params: Promise<{ id: strin
         photo: otherIsTherapist ? tp?.photo_url ?? null : null,
         role: otherIsTherapist ? tp?.title ?? "Therapist" : "Patient",
       }}
-      iceServers={iceServers()}
+      iceServers={await iceServers()}
       backHref={base}
       messagesHref={`${base}/messages/${otherId}`}
       appointmentId={call.appointment_id}
