@@ -66,7 +66,7 @@ NAV = [("index.html", "Home"), ("how-it-works.html", "How it works"), ("pricing.
 DESKTOP_HIDE = {"index.html", "faq.html"}  # FAQ stays in the mobile menu and footer to keep the top bar uncluttered
 
 PLANS = [
-    ("basic", "Basic", "₦10,000", "2 sessions a month", ["Verified, licensed therapists", "AI wellbeing assessment", "Session calendar", "Email and SMS reminders"], ["Private messaging", "Mood and progress tracker"]),
+    ("basic", "Basic", "₦10,000", "2 sessions a month", ["Verified, licensed therapists", "AI wellbeing assessment", "Session calendar", "Email and phone reminders"], ["Private messaging", "Mood and progress tracker"]),
     ("standard", "Standard", "₦20,000", "4 sessions a month", ["Everything in Basic", "Private messaging with your therapist", "Mood and progress tracker"], ["Calls outside booked sessions"]),
     ("premium", "Premium", "₦30,000", "8 sessions a month", ["Everything in Standard", "Voice and video calls outside booked sessions", "Priority booking, as little as 2 hours ahead"], []),
     ("family", "Family", "₦50,000", "12 sessions a month, shared", ["Everything in Premium", "Sessions shared across your household", "One plan for the people you care about"], []),
@@ -239,7 +239,7 @@ FAQS = {
     "Sessions": [
         ("Who are the therapists?", "Licensed mental health professionals: clinical and counselling psychologists, psychotherapists and counsellors. Our team checks every therapist’s licence and qualifications before they can see patients."),
         ("Can I choose a video or voice session?", "Yes. Choose video to see your therapist face to face, or voice if you prefer, or if your internet is slow. Voice uses far less data."),
-        ("Can I cancel or reschedule?", "Yes, from your sessions page, up to 24 hours before a confirmed session. You’ll get email and SMS reminders before every session."),
+        ("Can I cancel or reschedule?", "Yes, from your sessions page, up to 24 hours before a confirmed session. You’ll get an email and a phone alert before every session."),
         ("Can I message my therapist between sessions?", "Private messaging is included from the Standard plan. Premium and Family plans can also call their therapist by voice or video outside booked sessions."),
     ],
     "Privacy and safety": [
@@ -348,7 +348,7 @@ HOME = f"""
         <p>Join with one tap from your sessions page. No extra apps or links to copy. If your network is slow, switch to voice and keep talking.</p>
         <ul class="ticks">
           <li>{icon("check", 18)}<span>Private, encrypted calls between you and your therapist</span></li>
-          <li>{icon("check", 18)}<span>Reminders by email and SMS before every session</span></li>
+          <li>{icon("check", 18)}<span>Reminders by email and phone alert before every session</span></li>
           <li>{icon("check", 18)}<span>Reschedule or cancel up to 24 hours before</span></li>
         </ul>
       </div>
@@ -565,7 +565,7 @@ PRICING = f"""
           <tr><th scope="row">Video or voice sessions</th><td>2</td><td>4</td><td>8</td><td>12, shared</td></tr>
           <tr><th scope="row">Verified, licensed therapists</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
           <tr><th scope="row">AI wellbeing assessment</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-          <tr><th scope="row">Calendar, email and SMS reminders</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th scope="row">Calendar, email and phone reminders</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
           <tr><th scope="row">Private messaging with your therapist</th><td>—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
           <tr><th scope="row">Mood and progress tracker</th><td>—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
           <tr><th scope="row">Calls outside booked sessions</th><td>—</td><td>—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
