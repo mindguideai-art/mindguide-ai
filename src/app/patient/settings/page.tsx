@@ -20,7 +20,7 @@ export default async function PatientSettings() {
     <div className="max-w-3xl space-y-6">
       <PageHeader title="Settings" text="Manage your details, support needs and how we contact you." />
       <div className="card p-6 sm:p-8">
-        <AccountForm email={user.email ?? ""} fullName={p?.full_name ?? ""} phone={p?.phone ?? null} notifyEmail={p?.notify_email ?? true} notifySms={p?.notify_sms ?? true} patient={pp} />
+        <AccountForm email={user.email ?? ""} fullName={p?.full_name ?? ""} phone={p?.phone ?? null} notifyEmail={p?.notify_email ?? true} notifySms={p?.notify_sms ?? true} smsAvailable={Boolean(process.env.TERMII_API_KEY)} patient={pp} />
       </div>
       <PushSettings />
       <div className="card p-6 sm:p-8" id="preferences">

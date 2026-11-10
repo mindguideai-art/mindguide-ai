@@ -13,6 +13,7 @@ export function AccountForm({
   phone,
   notifyEmail,
   notifySms,
+  smsAvailable = false,
   patient,
 }: {
   email: string;
@@ -20,6 +21,8 @@ export function AccountForm({
   phone: string | null;
   notifyEmail: boolean;
   notifySms: boolean;
+  /** SMS is only offered once a text-message provider is set up. */
+  smsAvailable?: boolean;
   patient?: Patient;
 }) {
   const [state, action] = useActionState(updateAccount, undefined);
@@ -95,10 +98,14 @@ export function AccountForm({
           <span><span className="block text-sm font-semibold">Email</span><span className="text-xs text-muted">Booking updates, reminders and receipts</span></span>
           <input type="checkbox" name="notify_email" defaultChecked={notifyEmail} className="size-5 accent-brand-600" />
         </label>
-        <label className="flex items-center justify-between gap-4 rounded-xl border border-line p-4">
-          <span><span className="block text-sm font-semibold">SMS</span><span className="text-xs text-muted">Session reminders and confirmations</span></span>
-          <input type="checkbox" name="notify_sms" defaultChecked={notifySms} className="size-5 accent-brand-600" />
-        </label>
+        {smsAvailable ? (
+          <label className="flex items-center justify-between gap-4 rounded-xl border border-line p-4">
+            <span><span className="block text-sm font-semibold">SMS</span><span className="text-xs text-muted">Session reminders and confirmations</span></span>
+            <input type="checkbox" name="notify_sms" defaultChecked={notifySms} className="size-5 accent-brand-600" />
+          </label>
+        ) : (
+          notifySms && <input type="hidden" name="notify_sms" value="on" />
+        )}
       </section>
       <SubmitButton>Save settings</SubmitButton>
     </form>

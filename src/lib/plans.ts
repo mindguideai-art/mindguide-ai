@@ -106,7 +106,7 @@ export function describeFeatures(f: PlanFeatures, key: PlanKey) {
     `${f.sessionsPerMonth} video or voice sessions a month${key === "family" ? ", shared by your household" : ""}`,
     "Verified, licensed therapists",
     "AI wellbeing assessment",
-    "Session calendar and reminders by email and SMS",
+    "Session calendar and reminders by email and phone alert",
   ];
   if (f.messaging) list.push("Private messaging with your therapist");
   if (f.progressTracker) list.push("Mood check-ins and progress tracker");

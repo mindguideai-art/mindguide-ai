@@ -60,6 +60,8 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
   const cutoff = Number(form.get("cancellation_cutoff_hours"));
   if (!/^https:\/\/(t\.me|telegram\.me)\//.test(telegram)) return { error: "Enter a Telegram link starting with https://t.me/" };
   if (!(cutoff >= 0 && cutoff <= 168)) return { error: "Cut-off must be between 0 and 168 hours." };
+  const payout = Number(form.get("therapist_payout") || 0);
+  if (!(Number.isInteger(payout) && payout >= 0 && payout <= 200000)) return { error: "Therapist pay must be a whole number of naira (0 to use each therapist's own fee)." };
   const helplines = String(form.get("helplines") ?? "")
     .split("\n")
     .map((l) => l.trim())
@@ -77,6 +79,7 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
     { key: "telegram_link", value: telegram, updated_at: now },
     { key: "cancellation_cutoff_hours", value: cutoff, updated_at: now },
     { key: "helplines", value: helplines, updated_at: now },
+    { key: "therapist_payout", value: payout, updated_at: now },
   ]);
   revalidatePath("/", "layout");
   return { message: "Settings saved." };

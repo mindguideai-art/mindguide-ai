@@ -14,7 +14,7 @@ export default async function TherapistSettings() {
     <div className="max-w-3xl space-y-6">
       <PageHeader title="Settings" text="Manage your account and how we contact you. Your public profile is under My profile." />
       <div className="card p-6 sm:p-8">
-        <AccountForm email={user.email ?? ""} fullName={p?.full_name ?? ""} phone={p?.phone ?? null} notifyEmail={p?.notify_email ?? true} notifySms={p?.notify_sms ?? true} />
+        <AccountForm email={user.email ?? ""} fullName={p?.full_name ?? ""} phone={p?.phone ?? null} notifyEmail={p?.notify_email ?? true} notifySms={p?.notify_sms ?? true} smsAvailable={Boolean(process.env.TERMII_API_KEY)} />
       </div>
       <PushSettings />
       <div className="card p-6 sm:p-8"><PasswordForm /></div>

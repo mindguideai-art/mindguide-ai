@@ -131,7 +131,10 @@ export async function bookAppointment(_: ActionState, form: FormData): Promise<A
   if (!slot) return { error: "That time is no longer available. Please pick another slot." };
 
   const admin = createAdminClient();
-  const { data: therapist } = await admin.from("therapist_profiles").select("session_price").eq("id", therapistId).single();
+  const [{ data: therapist }, { therapist_payout }] = await Promise.all([
+    admin.from("therapist_profiles").select("session_price").eq("id", therapistId).single(),
+    getSettings(),
+  ]);
 
   const supabase = await createClient();
   const { error } = await supabase.from("appointments").insert({
@@ -141,7 +144,7 @@ export async function bookAppointment(_: ActionState, form: FormData): Promise<A
     ends_at: slot.endsAt,
     type,
     patient_note: note || null,
-    therapist_fee: therapist?.session_price ?? 0,
+    therapist_fee: therapist_payout > 0 ? therapist_payout : (therapist?.session_price ?? 0),
   });
   if (error) return { error: error.code === "23505" ? "Someone just booked that slot. Please pick another." : "Could not book. Please try again." };
 

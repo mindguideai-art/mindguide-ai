@@ -251,7 +251,7 @@ export function PatientRegisterForm({ plans, initialPlan }: { plans: PlanOption[
           <div>
             <label className="label" htmlFor="phone">Phone number</label>
             <input className="input" id="phone" name="phone" type="tel" placeholder="e.g. 08012345678" />
-            <p className="hint">Used for appointment reminders by SMS.</p>
+            <p className="hint">Optional. Used only to reach you about your sessions.</p>
           </div>
           <div>
             <label className="label" htmlFor="password">Password</label>

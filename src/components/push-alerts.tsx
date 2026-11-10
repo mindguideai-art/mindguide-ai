@@ -116,7 +116,7 @@ export function PushSettings() {
         {state === "off" && <button type="button" onClick={turnOn} disabled={busy} className="btn-primary"><BellRing className="size-4" /> Turn on alerts</button>}
         {state === "denied" && <p className="text-sm text-amber-800">Alerts are blocked for this site in your browser. Open your browser&apos;s site settings, allow notifications for MindGuide AI, then reload this page.</p>}
         {state === "ios-install" && <IosSteps />}
-        {state === "unsupported" && <p className="text-sm text-muted">This browser can&apos;t show alerts. Try Chrome on Android or a computer, or add MindGuide AI to your home screen on iPhone. You&apos;ll still get email and SMS reminders.</p>}
+        {state === "unsupported" && <p className="text-sm text-muted">This browser can&apos;t show alerts. Try Chrome on Android or a computer, or add MindGuide AI to your home screen on iPhone. You&apos;ll still get email reminders.</p>}
         {note && <p className="mt-3 text-sm text-muted" role="status">{note}</p>}
       </div>
     </section>

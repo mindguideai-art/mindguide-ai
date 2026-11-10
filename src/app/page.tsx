@@ -17,7 +17,7 @@ const FEATURES = [
   { icon: BrainCircuit, title: "Smart first assessment", text: "A short, private check-in helps us suggest therapists who specialise in what you're going through." },
   { icon: LineChart, title: "Track your progress", text: "Log how you feel in seconds and watch your mood and wellbeing scores change over time." },
   { icon: MessageCircle, title: "Private messaging", text: "Message your therapist between sessions, or start a call straight from the chat." },
-  { icon: Bell, title: "Reminders that help", text: "Email and SMS reminders before every session, so you never miss the time you set aside for yourself." },
+  { icon: Bell, title: "Reminders that help", text: "Email reminders and phone alerts before every session, so you never miss the time you set aside for yourself." },
 ];
 
 const STEPS = [

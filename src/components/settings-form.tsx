@@ -20,6 +20,11 @@ export function SettingsForm({ s }: { s: Settings }) {
         <input id="cancellation_cutoff_hours" name="cancellation_cutoff_hours" type="number" min={0} max={168} className="input w-32" defaultValue={s.cancellation_cutoff_hours} />
       </div>
       <div>
+        <label className="label" htmlFor="therapist_payout">Therapist pay per completed session (₦)</label>
+        <input id="therapist_payout" name="therapist_payout" type="number" min={0} max={200000} step={100} className="input w-40" defaultValue={s.therapist_payout} />
+        <p className="hint">One amount for every therapist, used for sessions booked from now on. Leave at 0 to pay each therapist the fee on their own profile. Each plan brings in about ₦3,700–₦4,900 per session after Paystack&apos;s fee, so keep this below that.</p>
+      </div>
+      <div>
         <label className="label" htmlFor="helplines">Crisis helplines shown to patients</label>
         <textarea id="helplines" name="helplines" rows={7} className="input font-mono text-sm" defaultValue={s.helplines.map((h) => `${h.name}: ${h.phone}`).join("\n")} />
         <p className="hint">One per line, written as Name: number. Shown in the &ldquo;Get help now&rdquo; panel on every patient page, and when an assessment is flagged as high-risk. Please check these numbers with your clinical lead from time to time.</p>

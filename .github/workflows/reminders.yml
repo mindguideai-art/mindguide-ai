@@ -1,0 +1,32 @@
+# Sends session reminders (24 hours and 1 hour before) by calling the app every 15 minutes.
+# Vercel's free plan only allows a once-a-day schedule, so GitHub runs this one instead (free for public repos).
+# Setup: GitHub → this repo → Settings → Secrets and variables → Actions → New repository secret
+#   Name: CRON_SECRET   Value: the same CRON_SECRET you set in Vercel.
+# GitHub can start scheduled runs a few minutes late; the reminder windows allow for that.
+name: Session reminders
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Call the reminders endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL || 'https://mindguide-ai.vercel.app' }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::warning::CRON_SECRET is not set in this repo's Actions secrets, so no reminders were sent."
+            exit 0
+          fi
+          code=$(curl -sS -o body.json -w "%{http_code}" --max-time 60 \
+            -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/reminders")
+          echo "HTTP $code"; cat body.json; echo
+          [ "$code" = "200" ]

@@ -24,7 +24,7 @@ type Profile = {
   licence_number: string | null;
 };
 
-export function TherapistProfileForm({ p }: { p: Profile }) {
+export function TherapistProfileForm({ p, fixedPayout = 0 }: { p: Profile; fixedPayout?: number }) {
   const [state, action] = useActionState(updateTherapistProfile, undefined);
   const [photo, setPhoto] = useState(p.photo_url ?? "");
   const [uploading, setUploading] = useState(false);
@@ -128,11 +128,20 @@ export function TherapistProfileForm({ p }: { p: Profile }) {
             ))}
           </select>
         </div>
-        <div>
-          <label className="label" htmlFor="session_price">Fee per session (₦)</label>
-          <input className="input" id="session_price" name="session_price" type="number" min={0} step={500} defaultValue={p.session_price} />
-          <p className="hint">What you earn per completed session.</p>
-        </div>
+        {fixedPayout > 0 ? (
+          <div>
+            <p className="label">Pay per session</p>
+            <p className="font-semibold">₦{fixedPayout.toLocaleString("en-NG")}</p>
+            <input type="hidden" name="session_price" value={p.session_price} />
+            <p className="hint">MindGuide AI pays this for every completed session. Payouts are listed on your Earnings page.</p>
+          </div>
+        ) : (
+          <div>
+            <label className="label" htmlFor="session_price">Fee per session (₦)</label>
+            <input className="input" id="session_price" name="session_price" type="number" min={0} step={500} defaultValue={p.session_price} />
+            <p className="hint">What you earn per completed session.</p>
+          </div>
+        )}
       </div>
       <SubmitButton>Save profile</SubmitButton>
     </form>
