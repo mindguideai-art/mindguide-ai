@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { sendEmail, sendSms, emailLayout } from "@/lib/notify";
+import { sendPush } from "@/lib/push";
 import { formatDateTime, firstName } from "@/lib/format";
 import { sendWhatsAppTemplate, TEMPLATE_CHECKIN, TEMPLATE_REMINDER, waNumber, whatsappReady } from "@/lib/whatsapp";
 
@@ -62,6 +63,7 @@ export async function GET(request: NextRequest) {
           const to = pp?.whatsapp_opt_in ? waNumber(pp.whatsapp_number) : null;
           if (to) await sendWhatsAppTemplate(to, TEMPLATE_REMINDER(), [firstName(person.full_name) || "there", other?.full_name ?? "your therapist", when]);
         }
+        await sendPush(person.id, { body: `Your session is ${w.label}. Tap to open the session room.`, url: `/session/${a.id}`, tag: `reminder-${a.id}` });
         await admin.from("notifications").insert({
           user_id: person.id,
           kind: "reminder",

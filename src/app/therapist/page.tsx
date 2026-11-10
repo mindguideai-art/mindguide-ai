@@ -8,6 +8,7 @@ import { Stars } from "@/components/stars";
 import { CalendarDays, Inbox, Phone, Star, Video, Wallet } from "lucide-react";
 import { TherapistStatus } from "@/components/therapist-status";
 import { BookingRequest, type RequestRow } from "@/components/booking-request";
+import { PushPrompt } from "@/components/push-alerts";
 
 export const metadata = { title: "Dashboard" };
 
@@ -45,6 +46,7 @@ export default async function TherapistHome() {
       <PageHeader title={`Welcome, ${firstName(user.fullName) || "back"}`} />
       {tp && <TherapistStatus status={tp.status} reason={tp.rejection_reason} hasLicence={(docCount ?? 0) > 0} profileDone={Boolean(tp.bio && tp.specialties?.length)} />}
 
+      <PushPrompt />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="New requests" value={requests?.length ?? 0} href="/therapist/appointments" icon={Inbox} tone="sun" />
         <StatCard label="Upcoming sessions" value={upcoming?.length ?? 0} href="/therapist/calendar" icon={CalendarDays} />

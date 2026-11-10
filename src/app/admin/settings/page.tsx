@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/misc";
 import { SettingsForm } from "@/components/settings-form";
 import { PlanFeaturesForm } from "@/components/plan-features-form";
 import { getPlanFeatures } from "@/lib/plans";
+import { PushSettings } from "@/components/push-alerts";
 
 export const metadata = { title: "Settings" };
 
@@ -13,6 +14,7 @@ export default async function AdminSettings() {
   return (
     <div className="max-w-3xl">
       <PageHeader title="Settings" />
+      <div className="mb-6"><PushSettings /></div>
       <div className="card"><SettingsForm s={s} /></div>
       <div className="card mt-6">
         <h2 className="font-display text-lg font-semibold">Plan features</h2>

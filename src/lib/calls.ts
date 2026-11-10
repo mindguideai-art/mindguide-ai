@@ -2,6 +2,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/server";
 import type { CurrentUser } from "@/lib/auth";
 import { getEntitlements } from "@/lib/plans";
+import { sendPush } from "@/lib/push";
 
 export type CallRow = {
   id: string;
@@ -51,6 +52,17 @@ export async function createCall(user: CurrentUser, otherId: string, type: "vide
     .insert({ patient_id: patientId, therapist_id: therapistId, caller_id: user.id, callee_id: otherId, type, appointment_id: appointmentId ?? null })
     .select("*")
     .single();
+  if (data && !appointmentId) {
+    // Wakes the other person's phone so they can answer even if the app is closed.
+    // (Booked sessions send their own "your session has started" alert instead.)
+    const { data: callee } = await admin.from("profiles").select("role").eq("id", otherId).single();
+    await sendPush(otherId, {
+      body: `Incoming ${type === "audio" ? "voice" : "video"} call. Tap to answer.`,
+      url: callee?.role === "therapist" ? "/therapist" : "/patient",
+      tag: `call-${data.id}`,
+      urgent: true,
+    });
+  }
   return data as CallRow | null;
 }
 

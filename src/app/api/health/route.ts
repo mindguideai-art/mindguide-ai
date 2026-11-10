@@ -22,6 +22,8 @@ export async function GET() {
     WHATSAPP_PHONE_NUMBER_ID: Boolean(process.env.WHATSAPP_PHONE_NUMBER_ID),
     WHATSAPP_APP_SECRET: Boolean(process.env.WHATSAPP_APP_SECRET),
     WHATSAPP_VERIFY_TOKEN: Boolean(process.env.WHATSAPP_VERIFY_TOKEN),
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY),
+    VAPID_PRIVATE_KEY: Boolean(process.env.VAPID_PRIVATE_KEY),
   };
 
   let database = "not checked: Supabase settings missing";

@@ -22,3 +22,7 @@ The official website loads its fonts from its own files, so visitors' browsers d
 - Don't send names, contact details or session notes to the AI provider. The code sends only what's listed above; keep it that way when adding features.
 - Add any new provider to this table before it receives user data.
 - Review this list at least once a year and whenever a provider changes.
+
+## Phone alerts (web push)
+
+Alerts are delivered by the push service built into each person's browser (Google for Chrome/Android, Apple for Safari/iPhone, Mozilla for Firefox). The alert is encrypted so the push service can't read it, and it contains no names or message text in any case. Only the device address and its encryption keys are stored, in `push_subscriptions`; they're deleted when the person turns alerts off, when the browser reports the device is gone, or when the account is deleted.

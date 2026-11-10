@@ -13,6 +13,7 @@ import { MoodCheckin } from "@/components/mood-checkin";
 import { getEntitlements, hasFeature } from "@/lib/plans";
 import { CrisisBanner } from "@/components/crisis-banner";
 import { Avatar } from "@/components/avatar";
+import { PushPrompt } from "@/components/push-alerts";
 
 export const metadata = { title: "Home" };
 
@@ -59,6 +60,7 @@ export default async function PatientHome() {
       </div>
 
       <SurveyBanner />
+      <PushPrompt />
 
       {assessment?.risk === "high" && <CrisisBanner helplines={settings.helplines} />}
 

@@ -55,6 +55,7 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
       body: `Your ${a.type === "audio" ? "voice" : "video"} session has started.`,
       link: `/session/${a.id}`,
       sms: `${user.fullName} is waiting for you in your session room now.`,
+      push: { body: "Your session has started. Tap to join.", urgent: true },
     });
   }
   await createAdminClient().from("events").insert({ user_id: user.id, kind: "session_join" });

@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/ui/misc";
 import { AccountForm, PasswordForm } from "@/components/settings-forms";
+import { PushSettings } from "@/components/push-alerts";
 
 export const metadata = { title: "Settings" };
 
@@ -15,6 +16,7 @@ export default async function TherapistSettings() {
       <div className="card p-6 sm:p-8">
         <AccountForm email={user.email ?? ""} fullName={p?.full_name ?? ""} phone={p?.phone ?? null} notifyEmail={p?.notify_email ?? true} notifySms={p?.notify_sms ?? true} />
       </div>
+      <PushSettings />
       <div className="card p-6 sm:p-8"><PasswordForm /></div>
     </div>
   );

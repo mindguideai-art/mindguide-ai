@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/misc";
 import { AccountForm, PasswordForm } from "@/components/settings-forms";
 import { PreferencesForm } from "@/components/preferences-form";
 import { whatsappReady } from "@/lib/whatsapp";
+import { PushSettings } from "@/components/push-alerts";
 
 export const metadata = { title: "Settings" };
 
@@ -21,6 +22,7 @@ export default async function PatientSettings() {
       <div className="card p-6 sm:p-8">
         <AccountForm email={user.email ?? ""} fullName={p?.full_name ?? ""} phone={p?.phone ?? null} notifyEmail={p?.notify_email ?? true} notifySms={p?.notify_sms ?? true} patient={pp} />
       </div>
+      <PushSettings />
       <div className="card p-6 sm:p-8" id="preferences">
         <PreferencesForm languages={prefs?.preferred_languages ?? []} faith={prefs?.faith_preference ?? "none"} whatsappOptIn={prefs?.whatsapp_opt_in ?? false} whatsappNumber={prefs?.whatsapp_number ?? null} phone={p?.phone ?? null} whatsappReady={whatsappReady()} />
       </div>
