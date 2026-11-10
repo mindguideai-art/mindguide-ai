@@ -10,6 +10,7 @@ import { Logo } from "./logo";
 import { Avatar } from "./avatar";
 import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
+import { LanguageSwitcher } from "./language-switcher";
 import { HelpNow } from "./help-now";
 import type { Helpline } from "@/lib/settings";
 
@@ -93,6 +94,8 @@ export function ShellChrome({
           {plan.cta && <p className="mt-2 text-xs font-bold text-white">{plan.cta} →</p>}
         </Link>
       )}
+      {/* On phones the top bar is full, so the language picker lives in the menu */}
+      {path.startsWith("/patient") && <div className="mx-3 mt-3 sm:hidden"><LanguageSwitcher tone="dark" full className="w-full" /></div>}
       <div className="mx-3 mb-4 mt-3 flex items-center gap-3 rounded-2xl bg-white/6 p-3">
         <Avatar name={userName} size={36} dark />
         <div className="min-w-0 flex-1">
@@ -133,6 +136,7 @@ export function ShellChrome({
             </div>
             <div className="flex-1" />
             {helplines && <HelpNow helplines={helplines} compact />}
+            {path.startsWith("/patient") && <div className="hidden sm:block"><LanguageSwitcher /></div>}
             <ThemeToggle />
             <NotificationBell key={path} />
             <div className="hidden items-center gap-2.5 sm:flex">

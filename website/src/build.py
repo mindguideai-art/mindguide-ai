@@ -51,6 +51,7 @@ ICONS = {
     "x": '<path d="M18 6 6 18M6 6l12 12"/>',
     "chev-left": '<path d="m15 18-6-6 6-6"/>',
     "chev-right": '<path d="m9 18 6-6-6-6"/>',
+    "globe": '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
     "sun": '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
 }
 
@@ -101,6 +102,10 @@ def survey_bar(page):
             '<button class="sb-close" type="button" data-survey-close aria-label="Hide this message">' + icon("x", 16) + '</button></div></div>')
 
 
+LANGS = [("en", "English"), ("pcm", "Pidgin"), ("yo", "Yorùbá"), ("ig", "Igbo"), ("ha", "Hausa")]
+LANG_OPTIONS = "".join(f'<option value="{c}">{n}</option>' for c, n in LANGS)
+
+
 def layout(page, title, description, body, scripts=()):
     links = "".join(
         f'<a href="{href}"{" aria-current=\"page\"" if href == page else ""}>{label}</a>' for href, label in NAV if href not in DESKTOP_HIDE
@@ -131,6 +136,7 @@ def layout(page, title, description, body, scripts=()):
   <div class="wrap nav">
     <a class="brand" href="index.html" aria-label="MindGuide AI home"><img src="assets/img/mindguide-mark.png" alt="" width="38" height="38"><span><span class="mind">MindGuide</span> <b>AI</b></span></a>
     <nav class="nav-links" aria-label="Main">{links}</nav>
+    <label class="lang-btn" data-no-translate title="Language">{icon("globe", 17)}<span class="lang-name">English</span><select data-lang-select aria-label="Language">{LANG_OPTIONS}</select></label>
     <button class="theme-btn" type="button" data-theme-toggle aria-label="Switch between light and dark mode" title="Light or dark mode"><span class="sun">{icon("sun", 19)}</span><span class="moon">{icon("moon", 19)}</span></button>
     <div class="nav-cta">
       <a class="btn btn-ghost" href="{APP_URL}/login">Sign in</a>
@@ -193,6 +199,8 @@ def layout(page, title, description, body, scripts=()):
   </div>
 </footer>
 <div id="mg-assistant" data-api="{APP_URL}/api/assistant" data-app="{APP_URL}" data-whatsapp="{WHATSAPP}" data-telegram="{TELEGRAM}"></div>
+<script>window.MG_I18N_BASE="assets/i18n/";window.MG_APP_URL="{APP_URL}";</script>
+<script src="assets/i18n/engine.js"></script>
 <script src="assets/site.js"></script>
 <script src="assets/assistant.js"></script>
 {"".join(f'<script src="assets/{js}"></script>' for js in scripts)}

@@ -80,6 +80,18 @@
     if (t) return t;
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
+  // Language picker (the translation engine is assets/i18n/engine.js)
+  document.querySelectorAll("[data-lang-select]").forEach(function (sel) {
+    var label = sel.parentElement.querySelector(".lang-name");
+    function show(code) {
+      sel.value = code;
+      var opt = sel.querySelector('option[value="' + code + '"]');
+      if (label && opt) label.textContent = opt.textContent;
+    }
+    if (window.MGi18n) show(window.MGi18n.current());
+    window.addEventListener("mg-lang", function (e) { show(e.detail); });
+    sel.addEventListener("change", function () { if (window.MGi18n) window.MGi18n.set(sel.value); });
+  });
   document.querySelectorAll("[data-theme-toggle]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var next = current() === "dark" ? "light" : "dark";

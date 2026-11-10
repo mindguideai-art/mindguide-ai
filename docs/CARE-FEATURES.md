@@ -30,6 +30,6 @@ WhatsApp only lets businesses start a conversation with an approved template.
 2. Wait for Meta to approve them (usually minutes to a day).
 3. Make sure `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` and `WHATSAPP_APP_SECRET` are set in Vercel. Check-ins go out on Monday mornings with the daily reminder job.
 
-## Not included yet
+## Languages
 
-- **The whole app in Nigerian Pidgin.** Patients can already choose Pidgin-speaking therapists, and the assistant replies in Pidgin. Translating every screen needs a native speaker to review the wording, so it's a separate step.
+The website and the patient app can now be switched to Pidgin, Yoruba, Igbo or Hausa. See `docs/TRANSLATIONS.md`.

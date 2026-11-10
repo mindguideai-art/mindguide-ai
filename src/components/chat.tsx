@@ -125,7 +125,7 @@ export function Chat({
           return (
             <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-surface ring-1 ring-line"}`}>
-                <p className="whitespace-pre-wrap leading-relaxed">{m.body}</p>
+                <p data-no-translate className="whitespace-pre-wrap leading-relaxed">{m.body}</p>
                 <p className={`mt-1 text-right text-[10px] ${mine ? "text-glow-100" : "text-muted"}`}>{time(m.created_at)}</p>
               </div>
             </div>

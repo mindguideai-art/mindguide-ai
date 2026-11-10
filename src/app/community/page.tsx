@@ -2,6 +2,7 @@ import Link from "next/link";
 import { EyeOff, HeartHandshake, Phone, ShieldAlert, UserRound } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const metadata = { title: "Community" };
 
@@ -20,7 +21,7 @@ export default function Community() {
       <header className="border-b border-line bg-surface">
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-5">
           <Logo />
-          <div className="flex items-center gap-3"><ThemeToggle /><Link href="/login" className="text-sm font-semibold text-brand-700">Sign in</Link></div>
+          <div className="flex items-center gap-3"><LanguageSwitcher /><ThemeToggle /><Link href="/login" className="text-sm font-semibold text-brand-700">Sign in</Link></div>
         </div>
       </header>
       <div className="mx-auto max-w-3xl px-5 py-12">

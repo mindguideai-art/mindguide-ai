@@ -1,6 +1,7 @@
 import { BadgeCheck, Lock, Video } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function AuthCard({ title, text, children, wide }: { title: string; text?: string; children: React.ReactNode; wide?: boolean }) {
   return (
@@ -31,7 +32,7 @@ export function AuthCard({ title, text, children, wide }: { title: string; text?
         <p className="relative mt-12 text-xs text-glow-200/60">Not for emergencies. If you are in danger, call 112.</p>
       </aside>
       <div className="flex min-h-screen flex-col px-5 py-8 sm:px-10">
-        <div className="flex items-center justify-between"><div className="lg:hidden"><Logo /></div><ThemeToggle className="ml-auto" /></div>
+        <div className="flex items-center justify-between"><div className="lg:hidden"><Logo /></div><div className="ml-auto flex items-center gap-2"><LanguageSwitcher /><ThemeToggle /></div></div>
         <div className={`mx-auto my-auto w-full ${wide ? "max-w-xl" : "max-w-md"} py-10`}>
           <h1 className="font-display text-3xl font-bold text-ink">{title}</h1>
           {text && <p className="mt-2 text-muted">{text}</p>}

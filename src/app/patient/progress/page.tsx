@@ -35,7 +35,7 @@ export default async function ProgressPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="card lg:col-span-2">
+        <div className="card min-w-0 lg:col-span-2">
           <p className="font-semibold">Mood check-ins</p>
           <p className="text-xs text-muted">1 = very low, 10 = very good</p>
           {moods && moods.length > 0 ? (
@@ -60,7 +60,7 @@ export default async function ProgressPage() {
             {assessments.length > 1 && (
               <div className="mt-4"><LineChart points={assessments.map((a) => ({ x: short(a.created_at), y: a.total_score }))} min={0} max={12} color="#b45309" /></div>
             )}
-            <table className="table mt-4">
+            <div className="mt-4 overflow-x-auto"><table className="table">
               <thead><tr><th>Date</th><th>Mood</th><th>Anxiety</th><th>Total</th><th>Level</th></tr></thead>
               <tbody>
                 {[...assessments].reverse().map((a) => (
@@ -71,7 +71,7 @@ export default async function ProgressPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </>
         ) : (
           <div className="mt-4"><EmptyState title="No assessments yet" action={<Link href="/patient/assessment" className="btn-primary">Take assessment</Link>} /></div>

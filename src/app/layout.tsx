@@ -4,6 +4,7 @@ import "@fontsource-variable/bricolage-grotesque";
 import "./globals.css";
 import { APP_NAME } from "@/lib/constants";
 import { THEME_SCRIPT } from "@/components/theme-toggle";
+import { I18nLoader } from "@/components/language-switcher";
 
 export const metadata: Metadata = {
   title: { default: `${APP_NAME} – Talk to a licensed therapist online`, template: `%s · ${APP_NAME}` },
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">{children}<I18nLoader /></body>
     </html>
   );
 }

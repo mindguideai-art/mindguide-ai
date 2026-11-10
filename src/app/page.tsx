@@ -1,6 +1,7 @@
 import { SurveyBanner } from "@/components/survey-banner";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import {
   ArrowRight, BadgeCheck, Bell, BrainCircuit, CalendarCheck, Check, HeartHandshake, LineChart, Lock, MessageCircle, Mic,
   PhoneOff, ShieldCheck, Star, Video, Users,
@@ -102,6 +103,7 @@ export default async function Home() {
             <a href="#faq" className="hover:text-ink">FAQ</a>
           </nav>
           <div className="flex items-center gap-1 sm:gap-2">
+            <LanguageSwitcher />
             <ThemeToggle className="mr-1" />
             <Link href="/login" className="btn-ghost btn-sm whitespace-nowrap sm:px-4 sm:py-2 sm:text-sm">Sign in</Link>
             <Link href="/register" className="btn-primary btn-sm whitespace-nowrap sm:px-4 sm:py-2 sm:text-sm">Get started</Link>

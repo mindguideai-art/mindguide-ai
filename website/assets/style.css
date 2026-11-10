@@ -681,7 +681,13 @@ table.compare { width: 100%; min-width: 640px; border-collapse: collapse; font-s
 :root[data-theme="dark"] .theme-btn .moon { display: inline; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn .sun { display: none; } :root:not([data-theme="light"]) .theme-btn .moon { display: inline; } }
 .menu-btn { margin-left: 8px; }
-@media (max-width: 1140px) { .theme-btn { margin-left: auto; } }
+@media (max-width: 1140px) { .lang-btn { margin-left: auto; } }
+/* Language picker */
+.lang-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 12px; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; font-size: .9rem; cursor: pointer; margin-right: 8px; }
+.lang-btn:hover, .lang-btn:focus-within { border-color: var(--indigo); }
+.lang-btn svg { opacity: .7; }
+.lang-btn select { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; font-size: 16px; }
+@media (max-width: 560px) { .nav { gap: 8px; } .lang-btn .lang-name { display: none; } .lang-btn { padding: 0; width: 40px; height: 40px; justify-content: center; margin-right: 0; } .theme-btn { width: 40px; height: 40px; } .menu-btn { margin-left: 0; } .brand { gap: 8px; } .brand img { width: 34px; height: 34px; } .brand span { font-size: 1.15rem; } }
 /* Logo mark keeps a light tile in dark mode */
 :root[data-theme="dark"] .site-header .brand img { background: #fff; border-radius: 10px; padding: 3px; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .site-header .brand img { background: #fff; border-radius: 10px; padding: 3px; } }
