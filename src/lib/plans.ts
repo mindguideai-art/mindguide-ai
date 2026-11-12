@@ -167,9 +167,10 @@ export async function cheapestPlanWith(feature: GatedFeature) {
 export async function firstSessionEligible(patientId: string, price: number) {
   if (!(price > 0)) return false;
   const admin = createAdminClient();
-  const [{ count: subs }, { count: credits }] = await Promise.all([
+  const [{ count: subs, error: e1 }, { count: credits, error: e2 }] = await Promise.all([
     admin.from("subscriptions").select("id", { count: "exact", head: true }).eq("patient_id", patientId),
     admin.from("session_credits").select("id", { count: "exact", head: true }).eq("patient_id", patientId),
   ]);
+  if (e1 || e2) return false; // e.g. the first-session database update hasn't been run yet
   return (subs ?? 0) === 0 && (credits ?? 0) === 0;
 }

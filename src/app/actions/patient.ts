@@ -146,7 +146,7 @@ export async function bookAppointment(_: ActionState, form: FormData): Promise<A
     type,
     patient_note: note || null,
     therapist_fee: therapist_payout > 0 ? therapist_payout : (therapist?.session_price ?? 0),
-    credit_id: usePlan ? null : ent.nextCreditId,
+    ...(usePlan ? {} : { credit_id: ent.nextCreditId }),
   });
   if (error) return { error: error.code === "23505" ? "Someone just booked that slot. Please pick another." : "Could not book. Please try again." };
 
