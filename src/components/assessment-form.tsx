@@ -5,7 +5,7 @@ import { QUESTIONS, SCALE } from "@/lib/assessment";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { Notice } from "@/components/ui/misc";
 
-export function AssessmentForm() {
+export function AssessmentForm({ initial }: { initial?: Record<string, number> }) {
   const [state, action] = useActionState(submitAssessment, undefined);
   return (
     <form action={action} className="space-y-5">
@@ -20,7 +20,7 @@ export function AssessmentForm() {
           <div className="mt-3 grid gap-2 sm:grid-cols-4">
             {SCALE.map((label, v) => (
               <label key={label} className="chip justify-center rounded-lg text-center">
-                <input type="radio" name={q.id} value={v} required className="sr-only" />
+                <input type="radio" name={q.id} value={v} required className="sr-only" defaultChecked={initial?.[q.id] === v} />
                 {label}
               </label>
             ))}

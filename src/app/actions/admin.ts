@@ -72,6 +72,8 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
     })
     .filter(Boolean);
   if (!helplines.length) return { error: "Add at least one helpline, one per line, as Name: number" };
+  const single = Math.round(Number(form.get("first_session_price")) || 0);
+  if (!(single === 0 || (single >= 500 && single <= 500000))) return { error: "Enter a first-session price of at least ₦500, or 0 to switch it off." };
 
   const admin = createAdminClient();
   const now = new Date().toISOString();
@@ -80,6 +82,7 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
     { key: "cancellation_cutoff_hours", value: cutoff, updated_at: now },
     { key: "helplines", value: helplines, updated_at: now },
     { key: "therapist_payout", value: payout, updated_at: now },
+    { key: "first_session_price", value: single, updated_at: now },
   ]);
   revalidatePath("/", "layout");
   return { message: "Settings saved." };

@@ -12,7 +12,7 @@ export type PlanOption = { key: string; name: string; price: string; features: s
 
 const STEPS = ["About you", "How you feel", "Your support", "Your plan", "Account"];
 
-export function PatientRegisterForm({ plans, initialPlan }: { plans: PlanOption[]; initialPlan: string }) {
+export function PatientRegisterForm({ plans, initialPlan, checkin }: { plans: PlanOption[]; initialPlan: string; checkin?: string }) {
   const [state, action] = useActionState(registerPatient, undefined);
   const [step, setStep] = useState(0);
   const [age, setAge] = useState("");
@@ -63,6 +63,12 @@ export function PatientRegisterForm({ plans, initialPlan }: { plans: PlanOption[
 
       <form action={action} className="space-y-6">
         {state?.error && <Notice kind="error">{state.error}</Notice>}
+        {checkin && (
+          <>
+            <input type="hidden" name="checkin" value={checkin} />
+            <Notice kind="info">Your free check-in answers will be saved to your new account, so you won&apos;t need to answer them again.</Notice>
+          </>
+        )}
 
         {/* Step 1 – About you */}
         <fieldset className={step === 0 ? "space-y-4" : "hidden"}>

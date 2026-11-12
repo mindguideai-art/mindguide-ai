@@ -7,7 +7,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { QUESTIONS, scoreAnswers, type Answers } from "@/lib/assessment";
 import { summariseAssessment } from "@/lib/ai";
 import { getSlots, type Slot } from "@/lib/slots";
-import { getEntitlements, hasFeature } from "@/lib/plans";
+import { firstSessionEligible, getEntitlements, hasFeature } from "@/lib/plans";
 import { getSettings } from "@/lib/settings";
 import { notify, notifyAdmins } from "@/lib/notifications";
 import { formatDateTime } from "@/lib/format";
@@ -119,8 +119,9 @@ export async function bookAppointment(_: ActionState, form: FormData): Promise<A
   const shareDetails = form.get("share") === "on";
 
   const ent = await getEntitlements(user.id);
-  if (!ent.active) return { error: "You need an active plan to book a session. Choose a plan on the Subscription page." };
-  if (ent.sessionsLeft <= 0) {
+  const usePlan = ent.active && ent.sessionsLeft > 0;
+  if (!usePlan && !ent.nextCreditId) {
+    if (!ent.active) return { error: "You need a plan or a first session to book. You can get either on the Subscription page." };
     return {
       error: `You've used all ${ent.features.sessionsPerMonth} sessions in your ${ent.planName} plan for this billing period. Upgrade your plan or wait until it renews.`,
     };
@@ -145,6 +146,7 @@ export async function bookAppointment(_: ActionState, form: FormData): Promise<A
     type,
     patient_note: note || null,
     therapist_fee: therapist_payout > 0 ? therapist_payout : (therapist?.session_price ?? 0),
+    credit_id: usePlan ? null : ent.nextCreditId,
   });
   if (error) return { error: error.code === "23505" ? "Someone just booked that slot. Please pick another." : "Could not book. Please try again." };
 
@@ -289,6 +291,44 @@ export async function startSubscription(form: FormData) {
       reference,
       callbackUrl: `${await siteUrl()}/patient/subscription/callback`,
       metadata: { patient_id: user.id, plan: plan.key },
+    });
+    url = tx.authorization_url;
+  } catch (e) {
+    console.error(e);
+    redirect("/patient/subscription?error=paystack");
+  }
+  redirect(url);
+}
+
+/** One-off first session (valid 90 days) for people who haven't had a plan yet. */
+export async function buyFirstSession() {
+  const user = await requireRole("patient");
+  const quantity = 1;
+  if (!user.email) redirect("/patient/subscription?error=plan");
+  const { first_session_price } = await getSettings();
+  if (!(await firstSessionEligible(user.id, first_session_price))) redirect("/patient/subscription");
+  const amountKobo = first_session_price * quantity * 100;
+  const reference = `ses_${crypto.randomUUID().replace(/-/g, "")}`;
+  const admin = createAdminClient();
+  await admin.from("payments").insert({ patient_id: user.id, reference, plan: `single:${quantity}`, amount_kobo: amountKobo });
+
+  if (demoPayments()) {
+    await recordSuccessfulPayment({
+      reference, amount: amountKobo, status: "success", channel: "demo", paid_at: new Date().toISOString(),
+      metadata: { patient_id: user.id, plan: `single:${quantity}` }, customer: { customer_code: null },
+    } as unknown as PaystackTransaction);
+    revalidatePath("/patient", "layout");
+    redirect("/patient/subscription?credits=1");
+  }
+
+  let url: string;
+  try {
+    const tx = await initializeTransaction({
+      email: user.email,
+      amountKobo,
+      reference,
+      callbackUrl: `${await siteUrl()}/patient/subscription/callback`,
+      metadata: { patient_id: user.id, plan: `single:${quantity}` },
     });
     url = tx.authorization_url;
   } catch (e) {

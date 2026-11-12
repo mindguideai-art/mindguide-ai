@@ -275,8 +275,8 @@ HOME = f"""
       <h1>Guiding minds, <em class="grad-text">empowering lives.</em></h1>
       <p class="lead">Private video and voice sessions with licensed, verified therapists, from wherever you are. Book in minutes, track how you’re doing, and get support that fits your life.</p>
       <div class="btn-row">
-        <a class="btn btn-glow" href="{APP_URL}/register">Find your therapist {ARROW}</a>
-        <a class="btn btn-ghost" href="how-it-works.html">See how it works</a>
+        <a class="btn btn-glow" href="check-in.html">Take the free check-in {ARROW}</a>
+        <a class="btn btn-ghost" href="{APP_URL}/register">Find your therapist</a>
       </div>
       <ul class="assurances">
         <li>{icon("badge", 18)} Every licence verified</li>
@@ -417,7 +417,7 @@ HOME = f"""
       <p class="lead">Every plan includes verified therapists, the AI wellbeing assessment and session reminders. Pay securely with Paystack and cancel anytime.</p>
     </div>
     {plans_html()}
-    <p class="plans-note">Not sure which to pick? Start with your free assessment first. You choose and pay for a plan after you’ve seen your matched therapists. <a href="pricing.html">Compare plans in detail</a>.</p>
+    <p class="plans-note">Not sure which to pick? <a href="check-in.html">Take the free check-in</a> first, or try a single first session for ₦5,000. You choose and pay for a plan after you’ve seen your matched therapists. <a href="pricing.html">Compare plans in detail</a>.</p>
   </div>
 </section>
 
@@ -546,11 +546,35 @@ PRICING = f"""
   <div class="wrap">
     <p class="eyebrow">Plans and prices</p>
     <h1>Care that fits your month</h1>
-    <p class="lead">Choose how many sessions you need. Every plan renews monthly, is paid securely with Paystack, and can be cancelled anytime.</p>
+    <p class="lead">Start free, try one session, or choose a monthly plan. Payments are made securely with Paystack, and plans can be cancelled anytime.</p>
   </div>
 </section>
 <section class="section" style="padding-top:0">
   <div class="wrap">
+    <div class="start-grid">
+      <article class="start-card">
+        <p class="eyebrow">Start free</p>
+        <h3>Free <span class="start-price">₦0</span></h3>
+        <ul>
+          <li>{icon('check', 16)}<span>The 2-minute wellbeing check-in, with results</span></li>
+          <li>{icon('check', 16)}<span>Self-help tools: breathing, grounding, sleep and a private journal</span></li>
+          <li>{icon('check', 16)}<span>Our Telegram community and free events</span></li>
+          <li>{icon('check', 16)}<span>See therapists matched to you</span></li>
+        </ul>
+        <a class="btn btn-ghost" href="check-in.html">Take the free check-in {ARROW}</a>
+      </article>
+      <article class="start-card hl">
+        <p class="eyebrow">Not ready for a monthly plan?</p>
+        <h3>First session <span class="start-price">₦5,000</span></h3>
+        <ul>
+          <li>{icon('check', 16)}<span>One video or voice session with a verified therapist</span></li>
+          <li>{icon('check', 16)}<span>No monthly plan; use it within 90 days</span></li>
+          <li>{icon('check', 16)}<span>One per person, for people who haven’t had a plan yet</span></li>
+        </ul>
+        <a class="btn btn-glow" href="{APP_URL}/register">Book your first session {ARROW}</a>
+      </article>
+    </div>
+    <div class="section-head" style="margin-top:56px"><h2>Monthly plans</h2></div>
     {plans_html()}
   </div>
 </section>
@@ -984,10 +1008,76 @@ GALLERY = f"""
 </div>
 """
 
+
+CHECKIN_QUESTIONS = [('interest', 'Little interest or pleasure in doing things'), ('down', 'Feeling down, depressed, or hopeless'), ('nervous', 'Feeling nervous, anxious, or on edge'), ('worry', 'Not being able to stop or control worrying'), ('sleep', 'Trouble falling or staying asleep, or sleeping too much'), ('stress', 'Feeling overwhelmed by stress at work, school or home'), ('selfharm', 'Thoughts that you would be better off dead, or of hurting yourself')]
+CHECKIN_SCALE = ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+HELPLINES = [("Emergency services (police, fire, ambulance)", "112"), ("Lagos State emergency line", "767"), ("SURPIN suicide prevention line (24 hours, free)", "0800 078 7746"), ("Mentally Aware Nigeria Initiative (MANI)", "0809 111 6264"), ("She Writes Woman (24 hours, free)", "0800 800 2000")]
+
+
+def checkin_html():
+    qs = "".join(f"""
+        <fieldset class="ck-q" data-q="{qid}">
+          <legend><span class="ck-n">{i + 1}</span>{text}</legend>
+          <div class="ck-opts">{"".join(f'<label><input type="radio" name="{qid}" value="{v}" required><span>{lab}</span></label>' for v, lab in enumerate(CHECKIN_SCALE))}</div>
+        </fieldset>""" for i, (qid, text) in enumerate(CHECKIN_QUESTIONS))
+    lines = "".join(f'<li><span>{n}</span><a href="tel:{p.replace(" ", "")}" data-no-translate>{p}</a></li>' for n, p in HELPLINES)
+    return f"""
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">Free check-in · 2 minutes</p>
+    <h1>How have you been feeling lately?</h1>
+    <p class="lead">Seven private questions about the last two weeks. You’ll see your results straight away, with ideas you can try this week. No account needed, and your answers stay on your phone.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:0">
+  <div class="wrap ck-wrap">
+    <form id="checkin" class="ck-form" novalidate>
+      <p class="ck-intro">Over the last 2 weeks, how often have you been bothered by the following?</p>
+      {qs}
+      <p class="ck-error" hidden>Please answer every question to see your results.</p>
+      <div class="btn-row"><button type="submit" class="btn btn-glow">See my results {ARROW}</button></div>
+      <p class="ck-small">This check-in uses the PHQ-2 and GAD-2 screening questions, which doctors use worldwide. It isn’t a diagnosis.</p>
+    </form>
+
+    <div id="ck-result" class="ck-result" hidden>
+      <div class="ck-crisis" hidden>
+        <h2>You don’t have to face this alone</h2>
+        <p>You said you’ve had thoughts of being better off dead or of hurting yourself. Please talk to someone today. If you’re in danger right now, call 112.</p>
+        <ul class="ck-lines">{lines}</ul>
+      </div>
+      <div class="ck-head">
+        <p class="eyebrow">Your results</p>
+        <h2 class="ck-title"></h2>
+        <p class="ck-summary"></p>
+      </div>
+      <div class="ck-bars"></div>
+      <div class="ck-tips">
+        <h3>Things to try this week</h3>
+        <ul></ul>
+      </div>
+      <div class="cta ck-cta">
+        <h2>Talk it through with a verified therapist</h2>
+        <p class="ck-cta-text"></p>
+        <div class="btn-row">
+          <a class="btn btn-glow ck-save" href="{APP_URL}/register">Save my results and see therapists {ARROW}</a>
+          <button type="button" class="btn btn-outline-light ck-again">Take it again</button>
+        </div>
+        <p class="ck-cta-note">Free account. Your first session is ₦5,000, with no monthly plan needed. Plans from ₦10,000 a month.</p>
+      </div>
+      <p class="ck-small">This check-in uses the PHQ-2 and GAD-2 screening questions. It isn’t a diagnosis; a therapist can help you understand what you’re going through.</p>
+    </div>
+  </div>
+</section>"""
+
+
+CHECKIN = checkin_html()
+
+
 PAGES = {
     "index.html": ("MindGuide AI · Online therapy in Nigeria", "Private video and voice therapy with licensed, verified therapists across Nigeria. Guiding minds, empowering lives. Plans from ₦10,000 a month.", HOME),
     "how-it-works.html": ("How it works · MindGuide AI", "Create an account, take a 2-minute assessment, meet a matched therapist and join private video or voice sessions in your browser.", HOW),
-    "pricing.html": ("Plans and prices · MindGuide AI", "Monthly therapy plans from ₦10,000: Basic, Standard, Premium and Family. Pay with Paystack and cancel anytime.", PRICING),
+    "check-in.html": ("Free mental health check-in · MindGuide AI", "A free, private 2-minute check-in on your mood, anxiety, sleep and stress, with results straight away. No account needed.", CHECKIN),
+    "pricing.html": ("Plans and prices · MindGuide AI", "Start free with a 2-minute check-in, try a first session for ₦5,000, or choose a monthly plan from ₦10,000. Pay with Paystack and cancel anytime.", PRICING),
     "therapists.html": ("For therapists · MindGuide AI", "Licensed therapists: set your own hours and see clients across Nigeria. MindGuide AI handles bookings, calls, reminders and payments.", THERAPISTS),
     "about.html": ("About us · MindGuide AI", "MindGuide AI is a technology-enabled mental health and wellbeing platform making mental healthcare more accessible, affordable, personalised and inclusive.", ABOUT),
     "team.html": ("Our team · MindGuide AI", "Meet the leadership of MindGuide AI: Oluwakorede Atansuyi, Founder and CEO, Ogbodo Daniel Obumneme, Chief Medical Officer, and Joshua Ogiriosa, Chief Technology Officer.", TEAM),
@@ -1002,7 +1092,7 @@ PAGES = {
 if __name__ == "__main__":
     preview = ROOT / "preview"
     preview.mkdir(exist_ok=True)
-    SCRIPTS = {"index.html": ("events.js",), "events.html": ("events.js",), "gallery.html": ("gallery.js",)}
+    SCRIPTS = {"check-in.html": ("checkin.js",), "index.html": ("events.js",), "events.html": ("events.js",), "gallery.html": ("gallery.js",)}
     for name, (title, desc, body) in PAGES.items():
         html = layout(name, title, desc, body, SCRIPTS.get(name, ()))
         (ROOT / name).write_text(html)

@@ -90,6 +90,9 @@ export async function registerPatient(_: FormState, form: FormData): Promise<For
   const preferred = String(form.get("preferred_support") ?? "either");
   const planRaw = String(form.get("plan") ?? "");
   const chosenPlan = ["basic", "standard", "premium", "family"].includes(planRaw) ? planRaw : null;
+  // Answers from the free check-in on the website (7 digits, 0–3), carried over so the assessment is pre-filled.
+  const checkinRaw = String(form.get("checkin") ?? "");
+  const afterSignup = `/patient/assessment${/^[0-3]{7}$/.test(checkinRaw) ? `?a=${checkinRaw}` : ""}`;
 
   if (!fullName || !email) return { error: "Enter your name and email." };
   if (passwordProblem(password)) return { error: passwordProblem(password)! };
@@ -110,7 +113,7 @@ export async function registerPatient(_: FormState, form: FormData): Promise<For
     password,
     options: {
       data: { role: "patient", full_name: fullName, phone, chosen_plan: chosenPlan },
-      emailRedirectTo: `${await siteUrl()}/auth/confirm?next=/patient/assessment`,
+      emailRedirectTo: `${await siteUrl()}/auth/confirm?next=${encodeURIComponent(afterSignup)}`,
     },
   });
   if (error || !data.user) return { error: friendlyAuthError(error?.message) };
@@ -132,7 +135,7 @@ export async function registerPatient(_: FormState, form: FormData): Promise<For
   });
   if (pErr) return { error: "Your account was created but we couldn't save your details. Please contact support." };
 
-  if (data.session) redirect("/patient/assessment");
+  if (data.session) redirect(afterSignup);
   return { message: `Almost done! We sent a confirmation link to ${email}. Open it to start your assessment.` };
 }
 

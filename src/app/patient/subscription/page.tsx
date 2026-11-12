@@ -1,12 +1,14 @@
+import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { PLANS } from "@/lib/constants";
 import { naira, formatDate } from "@/lib/format";
-import { startSubscription, cancelSubscription } from "@/app/actions/patient";
+import { startSubscription, cancelSubscription, buyFirstSession } from "@/app/actions/patient";
 import { leaveOrganisation } from "@/app/actions/care";
+import { getSettings } from "@/lib/settings";
 import { OrgJoinForm } from "@/components/org-join-form";
-import { Building2 } from "lucide-react";
-import { describeFeatures, getEntitlements, getPlanFeatures } from "@/lib/plans";
+import { Building2, Ticket } from "lucide-react";
+import { describeFeatures, firstSessionEligible, getEntitlements, getPlanFeatures } from "@/lib/plans";
 import { Check, Lock } from "lucide-react";
 import { Notice, PageHeader, StatusBadge } from "@/components/ui/misc";
 import { SubmitButton } from "@/components/ui/submit-button";
@@ -21,11 +23,12 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
     supabase.from("subscriptions").select("*").eq("patient_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     supabase.from("payments").select("reference, plan, amount_kobo, status, paid_at, created_at").eq("patient_id", user.id).order("created_at", { ascending: false }).limit(20),
   ]);
-  const [features, ent, { data: membership }] = await Promise.all([
-    getPlanFeatures(), getEntitlements(user.id),
+  const [features, ent, settings, { data: membership }] = await Promise.all([
+    getPlanFeatures(), getEntitlements(user.id), getSettings(),
     supabase.from("organisation_members").select("organisation_id").eq("patient_id", user.id).maybeSingle(),
   ]);
   const sponsored = Boolean(sub?.organisation_id && membership);
+  const showFirst = ent.credits > 0 || (!ent.active && (await firstSessionEligible(user.id, settings.first_session_price)));
   const picked = !sp.plan ? user.chosenPlan : PLANS.some((p) => p.key === sp.plan) ? sp.plan : null;
   const demo = process.env.DEMO_PAYMENTS === "true" && !process.env.PAYSTACK_SECRET_KEY;
   const live = sub && sub.current_period_end && new Date(sub.current_period_end) > new Date() && ["active", "cancelled"].includes(sub.status);
@@ -34,6 +37,7 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
     <div className="space-y-8">
       <PageHeader title="Subscription" text="Choose the plan that suits you. Plans renew monthly and you can cancel any time." />
       {sp.paid && <Notice kind="success">Payment received. Thank you!</Notice>}
+      {sp.credits && <Notice kind="success">Your first session is ready to book. Choose a therapist and a time that suits you.</Notice>}
       {sp.pending && <Notice kind="warning">We&apos;re confirming your payment. This page will update shortly.</Notice>}
       {demo && <Notice kind="info">Demo mode: choosing a plan activates it straight away, without a real payment.</Notice>}
       {sp.error && <Notice kind="error">We couldn&apos;t start the payment. Please try again or contact support.</Notice>}
@@ -116,7 +120,25 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
           );
         })}
       </div>
-      <div className="max-w-2xl">
+      <div className={showFirst ? "grid gap-4 lg:grid-cols-2" : "max-w-2xl"}>
+        {showFirst && (
+        <div className="card flex flex-col ring-2 ring-brand-500/30">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-700"><Ticket className="size-5" /></span>
+            <div>
+              <p className="font-display text-lg font-semibold">Try your first session</p>
+              <p className="text-sm text-muted">{`Not ready for a monthly plan? Meet a verified therapist once for ${naira(settings.first_session_price)}, then decide. Valid for 90 days; one per person.`}</p>
+            </div>
+          </div>
+          {ent.credits > 0 ? (
+            <p className="mt-4 rounded-xl bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-800"><span>Your first session is ready to book.</span> {ent.creditsExpire && <span data-no-translate>({formatDate(ent.creditsExpire)})</span>} <Link href="/patient/therapists" className="underline">Find a therapist</Link></p>
+          ) : (
+            <form action={buyFirstSession} className="mt-auto pt-5">
+              <SubmitButton className="btn-primary" pendingText="Opening Paystack…">{`Pay ${naira(settings.first_session_price)}`}</SubmitButton>
+            </form>
+          )}
+        </div>
+        )}
         <div className="card flex flex-col">
           <div className="flex items-start gap-3">
             <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-700"><Building2 className="size-5" /></span>
@@ -139,7 +161,7 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
               {payments.map((p) => (
                 <tr key={p.reference}>
                   <td>{formatDate(p.paid_at ?? p.created_at)}</td>
-                  <td className="capitalize">{p.plan}</td>
+                  <td className={p.plan?.startsWith("single") ? "" : "capitalize"}>{p.plan?.startsWith("single") ? "First session" : p.plan}</td>
                   <td>{naira(p.amount_kobo / 100)}</td>
                   <td><StatusBadge status={p.status} /></td>
                 </tr>

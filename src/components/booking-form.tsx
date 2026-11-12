@@ -6,21 +6,23 @@ import { SlotPicker } from "./slot-picker";
 import { SubmitButton } from "./ui/submit-button";
 import { Notice } from "./ui/misc";
 
-export type PlanUsage = { active: boolean; planName: string | null; used: number; limit: number; noticeHours: number };
+export type PlanUsage = { active: boolean; planName: string | null; used: number; limit: number; noticeHours: number; credits?: number };
 
 export function BookingForm({ therapistId, preferred, usage }: { therapistId: string; preferred: string; usage: PlanUsage }) {
   const [state, action] = useActionState(bookAppointment, undefined);
-  if (!usage.active) {
+  const credits = usage.credits ?? 0;
+  if (!usage.active && credits === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-line p-6 text-center">
         <p className="font-display text-lg font-semibold">Choose a plan to book</p>
-        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Plans start from ₦10,000 a month and include sessions with verified therapists like this one.</p>
-        <Link href="/patient/subscription" className="btn-accent mt-5">See plans</Link>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Plans start from ₦10,000 a month and include sessions with verified therapists like this one. New here? You can try a first session without a monthly plan.</p>
+        <Link href="/patient/subscription" className="btn-accent mt-5">See plans and prices</Link>
       </div>
     );
   }
-  const left = Math.max(0, usage.limit - usage.used);
-  if (left === 0) {
+  const left = usage.active ? Math.max(0, usage.limit - usage.used) : 0;
+  const payg = left === 0 && credits > 0;
+  if (left === 0 && credits === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-line p-6 text-center">
         <p className="font-display text-lg font-semibold">You&apos;ve used all your sessions</p>
@@ -33,6 +35,12 @@ export function BookingForm({ therapistId, preferred, usage }: { therapistId: st
     <form action={action} className="space-y-5">
       {state?.error && <Notice kind="error">{state.error}</Notice>}
       <input type="hidden" name="therapist_id" value={therapistId} />
+      {payg ? (
+        <div className="rounded-2xl bg-mist p-4 text-sm">
+          <div className="flex items-center justify-between"><span className="font-semibold">First session</span><span className="tabular-nums text-muted">Ready to book</span></div>
+          <p className="mt-2 text-xs text-muted">{`This booking uses your first session. Book at least ${usage.noticeHours} hours ahead.`}</p>
+        </div>
+      ) : (
       <div className="rounded-2xl bg-mist p-4">
         <div className="flex items-center justify-between text-sm">
           <span className="font-semibold">{usage.planName} plan</span>
@@ -43,6 +51,7 @@ export function BookingForm({ therapistId, preferred, usage }: { therapistId: st
         </div>
         <p className="mt-2 text-xs text-muted">Book at least {usage.noticeHours} hours ahead{usage.noticeHours <= 2 ? " (priority booking)" : ""}.</p>
       </div>
+      )}
       <SlotPicker therapistId={therapistId} />
       <div>
         <p className="label">Session type</p>

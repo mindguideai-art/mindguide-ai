@@ -90,7 +90,7 @@ export default async function TherapistDetail({ params }: { params: Promise<{ id
         </div>
         <div className="card h-fit p-6 sm:p-7 lg:sticky lg:top-24 lg:col-span-3">
           <PageHeader title="Book a session" text="Choose a time that suits you. Your therapist will confirm it." />
-          <BookingForm therapistId={t.id} preferred={pp?.preferred_support ?? "either"} usage={{ active: ent.active, planName: ent.planName, used: ent.sessionsUsed, limit: ent.features.sessionsPerMonth, noticeHours: ent.noticeHours }} />
+          <BookingForm therapistId={t.id} preferred={pp?.preferred_support ?? "either"} usage={{ active: ent.active, planName: ent.planName, used: ent.sessionsUsed, limit: ent.features.sessionsPerMonth, noticeHours: ent.noticeHours, credits: ent.credits }} />
         </div>
       </div>
     </div>

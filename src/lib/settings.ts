@@ -8,6 +8,8 @@ export type Settings = {
   helplines: Helpline[];
   /** Fixed pay per completed session for every therapist (₦). 0 means each therapist's own fee is used. */
   therapist_payout: number;
+  /** Price in naira of a one-off first session for people who haven't had a plan yet. 0 switches it off. */
+  first_session_price: number;
 };
 
 const DEFAULTS: Settings = {
@@ -22,6 +24,7 @@ const DEFAULTS: Settings = {
     { name: "She Writes Woman (24 hours, free)", phone: "0800 800 2000" },
     { name: "Cece Yara child helpline (children and teens, free)", phone: "0800 800 8001" },
   ],
+  first_session_price: 5000,
 };
 
 export async function getSettings(): Promise<Settings> {

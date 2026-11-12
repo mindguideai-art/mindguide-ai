@@ -26,7 +26,9 @@ export default async function PatientLayout({ children }: { children: React.Reac
 
   const plan = ent.active
     ? { label: `${ent.planName} plan`, sub: `${ent.sessionsLeft} of ${ent.features.sessionsPerMonth} sessions left`, cta: ent.plan === "family" || ent.plan === "premium" ? null : "Upgrade" }
-    : { label: "No plan yet", sub: "Choose a plan to book sessions", cta: "Choose a plan" };
+    : ent.credits > 0
+      ? { label: "First session", sub: "Ready to book", cta: "Choose a plan" }
+      : { label: "No plan yet", sub: "Choose a plan to book sessions", cta: "Choose a plan" };
 
   return (
     <AppShell nav={nav} userName={user.fullName || user.email || "Patient"} roleLabel="Patient" userId={user.id} withCalls plan={plan} helplines={settings.helplines}>

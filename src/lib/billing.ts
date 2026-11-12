@@ -30,6 +30,18 @@ export async function recordSuccessfulPayment(tx: PaystackTransaction) {
   }
   if (!patientId || !plan) return;
 
+  // Pay-as-you-go: "single:3" buys 3 session credits, valid for 90 days.
+  if (plan.startsWith("single")) {
+    const quantity = Math.max(1, Math.min(50, Number(plan.split(":")[1]) || 1));
+    const { data: already } = await admin.from("session_credits").select("id").eq("payment_reference", tx.reference).maybeSingle();
+    if (!already) {
+      await admin.from("session_credits").insert({
+        patient_id: patientId, quantity, source: "purchase", payment_reference: tx.reference,
+        expires_at: new Date(Date.now() + 90 * 86400000).toISOString(),
+      });
+    }
+    return;
+  }
 
   const { data: existing } = await admin
     .from("subscriptions")
